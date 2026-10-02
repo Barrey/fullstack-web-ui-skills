@@ -15,12 +15,21 @@ Repository ini secara spesifik mengatasi masalah tersebut dengan fokus pada:
 - **Hierarki Interior SaaS:** Navigasi aplikasi, density padding, kontras teks WCAG, dan tipografi monospaced untuk angka keuangan/telemetri.
 - **Zero-Build Architecture:** Seluruh output showcase membuktikan bahwa antarmuka kompleks dapat dibangun secara responsif hanya dengan **HTML5 + Tailwind CSS v4 Browser Engine + Vanilla JS**.
 
-> **💡 Catatan Kejujuran Mengenai Landing Page:**  
-> Fokus repo ini adalah **70% Web App / Dashboard Interior**. Meskipun demikian, beberapa style (seperti `style-linear-dark`, `style-neo-brutalism`, `style-spatial-glass`, dan `style-warm-editorial`) memiliki DNA visual yang sangat fleksibel dan dapat digunakan untuk membuat Hero section atau landing page produk teknologi.
+---
+
+## 🏗️ Structural Skill Khusus: `landing-page-anatomy`
+
+Ingin membangun **Landing Page dengan konversi tinggi** menggunakan visual style apa pun di bawah? Tersedia skill struktural terpisah:
+- **Lokasi:** [`.agents/skills/landing-page-anatomy/SKILL.md`](./.agents/skills/landing-page-anatomy/SKILL.md)
+- **Fungsi:** Mengatur arsitektur konversi landing page (Hero Section, Social Proof Logo Cloud, Bento Grid Features, Alternating Deep-Dives, Interactive Pricing Matrix, FAQ Accordion, dan Closing Anchor CTA).
+- **Plug-and-Play Pairing:** Skill ini murni struktural dan dapat **dikombinasikan dengan 9 visual style mana pun**:
+  ```text
+  /style-linear-dark with /landing-page-anatomy create a high-converting landing page for an AI developer platform
+  ```
 
 ---
 
-## 📂 Pemetaan 9 Skill & Output Showcase
+## 📂 Pemetaan 9 Visual Style & Output Showcase
 
 | Skill Name | Niche & Karakteristik Utama | Output Showcase (HTML) | Fleksibilitas Landing Page |
 |---|---|---|:---:|
@@ -116,7 +125,8 @@ Di bawah ini adalah tangkapan layar langsung dari output masing-masing style tan
 
 ```text
 ├── .agents/
-│   └── skills/                         # Koleksi 9 Skill Desain Web App
+│   └── skills/                         # Koleksi 10 Skill (9 Visual + 1 Structural)
+│       ├── landing-page-anatomy/       # Arsitektur Konversi Landing Page
 │       ├── style-clean-enterprise/     # B2B SaaS & Admin Portals
 │       ├── style-cyberpunk-hud/        # Sci-Fi Telemetry & Web3 Gaming
 │       ├── style-linear-dark/          # Developer-Centric Dark Mode
