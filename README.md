@@ -17,15 +17,31 @@ Repository ini secara spesifik mengatasi masalah tersebut dengan fokus pada:
 
 ---
 
-## 🏗️ Structural Skill Khusus: `landing-page-anatomy`
+## 🏗️ Structural Skill: `landing-page-anatomy`
 
 Ingin membangun **Landing Page dengan konversi tinggi** menggunakan visual style apa pun di bawah? Tersedia skill struktural terpisah:
 - **Lokasi:** [`.agents/skills/landing-page-anatomy/SKILL.md`](./.agents/skills/landing-page-anatomy/SKILL.md)
 - **Fungsi:** Mengatur arsitektur konversi landing page (Hero Section, Social Proof Logo Cloud, Bento Grid Features, Alternating Deep-Dives, Interactive Pricing Matrix, FAQ Accordion, dan Closing Anchor CTA).
-- **Plug-and-Play Pairing:** Skill ini murni struktural dan dapat **dikombinasikan dengan 9 visual style mana pun**:
-  ```text
-  /style-linear-dark with /landing-page-anatomy create a high-converting landing page for an AI developer platform
-  ```
+
+---
+
+## ⚡ Finishing & Polish Skill: `motion-choreography`
+
+Ingin menyuntikkan fisika gerak yang halus, staggered entrances, scroll-linked progress, dan micro-interaction tactile?
+- **Lokasi:** [`.agents/skills/motion-choreography/SKILL.md`](./.agents/skills/motion-choreography/SKILL.md)
+- **Engine:** Menggunakan **`motion` by Framer (Vanilla JS WAAPI Engine ~15KB)** tanpa React, tanpa build step.
+- **Fungsi:** Sebagai *Finishing Layer (Polish Phase)* untuk menghidupkan antarmuka dengan spring physics, in-view reveals, 3D mouse parallax tilt, dan KPI count-up rolls.
+
+---
+
+## 🧬 Tri-Factor Orthogonal Pairing (Structure + Aesthetic + Motion)
+
+Ketiga dimensi skill di repository ini dapat digabungkan secara bebas:
+```text
+/style-spatial-glass with /landing-page-anatomy and /motion-choreography create a landing page for a Web3 spatial note app
+```
+
+- **Live Showcase Lengkap:** [`showcases/landing-spatial-glass.html`](./showcases/landing-spatial-glass.html) — Landing page *AETHERIA* (Web3 Spatial Knowledge OS) yang mengimplementasikan ke-11 seksi konversi, estetika frosted glassmorphism VisionOS, dan orkestrasi animasi Framer Motion vanilla JS.
 
 ---
 
