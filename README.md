@@ -17,6 +17,40 @@ Repository ini secara spesifik mengatasi masalah tersebut dengan fokus pada:
 
 ---
 
+## 🚀 Quick Install (Universal CLI)
+
+Gunakan perintah satu baris via `npx` di terminal project web Anda untuk langsung meng-inject skill ini ke editor favorit Anda (**Google Antigravity, Cursor, OpenCode, Claude Code, Windsurf, Codex/Copilot, atau OMP**):
+
+```bash
+# 1. Mode Interaktif (Pilih style & editor via checklist interaktif)
+npx github:Barrey/fullstack-web-ui-skills
+
+# 2. Pasang style spesifik (Auto-detect editor yang aktif di project Anda)
+npx github:Barrey/fullstack-web-ui-skills add style-spatial-glass
+
+# 3. Pasang sistem Tri-Factor lengkap (Style + Anatomy + Motion)
+npx github:Barrey/fullstack-web-ui-skills add style-linear-dark landing-page-anatomy motion-choreography
+
+# 4. Targetkan editor tertentu secara eksplisit
+npx github:Barrey/fullstack-web-ui-skills add style-spatial-glass --target=cursor,antigravity,opencode
+
+# 5. Pasang seluruh 11 skill ke semua editor sekaligus
+npx github:Barrey/fullstack-web-ui-skills add --all --target=all
+```
+
+### 🎯 Matrix Target Platform yang Didukung:
+| Platform | Target Output | Keterangan Format |
+|---|---|---|
+| **Google Antigravity** | `.agents/skills/<name>/SKILL.md` | Native Agentic Skill format |
+| **Cursor** | `.cursor/rules/<name>.mdc` | Cursor Rules dengan frontmatter `.mdc` |
+| **OpenCode** | `.opencode/skills/<name>/SKILL.md` | OpenCode agent skill format |
+| **Claude Code** | `.claude/skills/<name>/SKILL.md` | Native Claude Code skills |
+| **Windsurf** | `.windsurf/rules/<name>.md` | Cascade rules format |
+| **Codex / GitHub Copilot** | `.github/copilot-instructions.md` | Injected guidelines section |
+| **OMP** | `.omp/skills/<name>/SKILL.md` | Modular prompt structure |
+
+---
+
 ## 🏗️ Structural Skill Khusus: `landing-page-anatomy`
 
 Ingin membangun **Landing Page dengan konversi tinggi** menggunakan visual style apa pun di bawah? Tersedia skill struktural terpisah:

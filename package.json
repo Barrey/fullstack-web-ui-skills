@@ -1,0 +1,45 @@
+{
+  "name": "fullstack-web-ui-skills",
+  "version": "1.0.0",
+  "description": "Universal Agentic UI Design Skills for Antigravity, Cursor, OpenCode, Claude Code, Windsurf, Codex, and OMP",
+  "type": "module",
+  "main": "./src/index.mjs",
+  "bin": {
+    "fullstack-web-ui-skills": "./bin/cli.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    ".agents/skills"
+  ],
+  "scripts": {
+    "start": "node ./bin/cli.mjs",
+    "test": "node ./bin/cli.mjs list"
+  },
+  "keywords": [
+    "antigravity",
+    "cursor",
+    "opencode",
+    "claude-code",
+    "windsurf",
+    "codex",
+    "copilot",
+    "omp",
+    "design-system",
+    "agentic-skills",
+    "tailwind"
+  ],
+  "author": "Barrey",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Barrey/fullstack-web-ui-skills.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Barrey/fullstack-web-ui-skills/issues"
+  },
+  "homepage": "https://github.com/Barrey/fullstack-web-ui-skills#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
