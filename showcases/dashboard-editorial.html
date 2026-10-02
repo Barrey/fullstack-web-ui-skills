@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Ledger & Gazette — Personal Finance Journal</title>
+  
+  <!-- Tailwind CSS v4 Browser Engine -->
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  
+  <!-- Typography: Newsreader (Literary Serif) + Plus Jakarta Sans (Editorial Body) + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --canvas-parchment: #FBF9F5;
+      --paper-white: #FFFFFF;
+      --paper-inset: #F3EFE6;
+      --hairline-divider: #E5E0D8;
+      --ink-deep: #1C1917;
+      --ink-charcoal: #44403C;
+      --ink-stone: #78716C;
+      --accent-terracotta: #C25E3E;
+      --accent-sage: #4A6B53;
+      --accent-gold: #B48C36;
+    }
+
+    body {
+      background-color: var(--canvas-parchment);
+      color: var(--ink-deep);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .font-serif-editorial {
+      font-family: 'Newsreader', Georgia, serif;
+      font-feature-settings: "kern", "liga", "onum";
+    }
+
+    .font-mono-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Subtle paper texture overlay */
+    .paper-texture {
+      background-image: radial-gradient(rgba(120, 113, 108, 0.04) 1px, transparent 0);
+      background-size: 24px 24px;
+    }
+
+    /* Editorial hair-rule styling */
+    .hairline-b {
+      border-bottom: 1px solid var(--hairline-divider);
+    }
+    .hairline-t {
+      border-top: 1px solid var(--hairline-divider);
+    }
+    .hairline-l {
+      border-left: 1px solid var(--hairline-divider);
+    }
+    .hairline-r {
+      border-right: 1px solid var(--hairline-divider);
+    }
+    .hairline-all {
+      border: 1px solid var(--hairline-divider);
+    }
+
+    /* Custom scrollbar for tables */
+    ::-webkit-scrollbar {
+      height: 4px;
+      width: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--paper-inset);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #D4CDC3;
+      border-radius: 2px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #B8B0A2;
+    }
+
+    /* Subtle print-grade box shadow */
+    .shadow-editorial {
+      box-shadow: 0 4px 24px -4px rgba(28, 25, 23, 0.05), 0 1px 2px 0 rgba(28, 25, 23, 0.03);
+    }
+
+    /* Drop-cap for lead essay */
+    .editorial-dropcap::first-letter {
+      float: left;
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 3.4rem;
+      line-height: 0.82;
+      padding-top: 4px;
+      padding-right: 8px;
+      padding-bottom: 2px;
+      color: var(--accent-terracotta);
+      font-weight: 500;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen text-stone-900 paper-texture pb-28 selection:bg-[#F3EFE6] selection:text-[#C25E3E]">
+
+  <!-- THEME SWITCHER RIBBON -->
+  <aside aria-label="Theme Navigation" class="border-b border-[#E5E0D8] bg-[#F7F4EE] py-1.5 px-3 sm:px-6">
+    <div class="max-w-6xl mx-auto flex items-center justify-between text-xs font-sans">
+      <div class="flex items-center gap-2">
+        <label for="themeSelect" class="text-stone-500 font-mono text-[10px] uppercase font-bold tracking-widest flex items-center gap-1.5">
+          <span>Theme:</span>
+        </label>
+        <div class="relative">
+          <select id="themeSelect" onchange="window.location.href=this.value" class="appearance-none bg-white hairline-all text-stone-800 text-xs font-semibold px-2.5 py-1 pr-6 rounded-sm shadow-2xs hover:border-stone-400 focus:outline-none focus:ring-1 focus:ring-stone-400 cursor-pointer transition-colors">
+            <option value="dashboard-editorial.html" selected>📜 Warm Editorial</option>
+            <option value="dashboard-spatial.html">🫧 Spatial Glass</option>
+            <option value="dashboard-ops-terminal.html">🎛️ Ops Terminal</option>
+            <option value="dashboard-cyberpunk.html">⚡ Cyberpunk HUD</option>
+            <option value="dashboard-enterprise.html">🏢 Clean Enterprise</option>
+            <option value="dashboard-linear.html">🔮 Linear Dark</option>
+            <option value="dashboard-quiet.html">🕊️ Quiet Minimal</option>
+            <option value="dashboard-playful.html">🎨 Playful Creative</option>
+            <option value="dashboard-neo-brutalism.html">⚡ Neo-Brutalist</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-stone-500 text-[9px]">
+            ▼
+          </div>
+        </div>
+      </div>
+      <div class="hidden lg:flex items-center gap-2 text-stone-500 text-[11px]">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#4A6B53]"></span>
+        <span>PRESS EDITION • VOL. XXVI NO. 10</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- EDITORIAL MASTHEAD -->
+  <header class="border-b border-[#E5E0D8] bg-[#FBF9F5]">
+    <!-- Top Folio Line -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 pt-4 pb-2 border-b border-[#EAE4D9] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] uppercase tracking-wider text-stone-500 font-sans">
+      <div class="flex items-center gap-3">
+        <span class="font-semibold text-stone-800">Autumn Equinox Edition</span>
+        <span class="text-[#D4CDC3]">/</span>
+        <time datetime="2026-10-02" id="currentDateFolio">Friday, October 2, 2026</time>
+        <span class="text-[#D4CDC3] hidden md:inline">/</span>
+        <span class="hidden md:inline">Circulation: Private Sovereign Office</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span>Treasury Status: <strong class="text-[#4A6B53]">Solvent & Resilient</strong></span>
+        <span class="text-[#D4CDC3]">/</span>
+        <span class="font-mono-num text-stone-700">EUR/USD 1.092 • S&P 500 +0.4%</span>
+      </div>
+    </div>
+
+    <!-- Main Broadsheet Title Banner -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="inline-block px-2 py-0.5 text-[10px] uppercase font-bold tracking-widest text-[#C25E3E] bg-[#F3EFE6] border border-[#E5E0D8] rounded-sm">
+            Monograph No. 418
+          </span>
+          <span class="text-xs italic font-serif-editorial text-stone-500">De Finibus Bonorum et Malorum</span>
+        </div>
+        <h1 class="font-serif-editorial text-3xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-stone-950 leading-[1.08]">
+          The Ledger <span class="italic font-normal text-stone-700">&</span> Gazette
+        </h1>
+        <p class="mt-2 text-stone-600 font-sans text-sm sm:text-base max-w-xl leading-relaxed">
+          A disciplined record of liquidity, capital preservation, sustainable yield, and sovereign reserves.
+        </p>
+      </div>
+
+      <!-- Action & Currency Selectors -->
+      <div class="flex items-center flex-wrap gap-2.5 shrink-0 self-start md:self-end">
+        <!-- Currency Selection -->
+        <div class="relative">
+          <label for="currencySelect" class="sr-only">Currency</label>
+          <select id="currencySelect" onchange="changeCurrency(this.value)" class="appearance-none bg-white hairline-all px-3 py-1.5 pr-8 rounded-sm text-xs font-medium text-stone-800 shadow-xs cursor-pointer hover:border-stone-400 focus:outline-none focus:ring-1 focus:ring-stone-400 transition-colors">
+            <option value="USD">USD ($) Dollar</option>
+            <option value="IDR">IDR (Rp) Rupiah</option>
+            <option value="EUR">EUR (€) Euro</option>
+            <option value="GBP">GBP (£) Sterling</option>
+            <option value="JPY">JPY (¥) Yen</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-2.5 flex items-center text-stone-500 text-[10px]">
+            ▼
+          </div>
+        </div>
+
+        <!-- Print & Export Button -->
+        <button onclick="exportToCsv()" class="inline-flex items-center gap-1.5 bg-white hairline-all hover:bg-[#F3EFE6] text-stone-700 px-3 py-1.5 rounded-sm text-xs font-medium shadow-xs transition-colors cursor-pointer" title="Export Ledger to CSV">
+          <svg class="w-3.5 h-3.5 text-stone-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+          </svg>
+          <span>Export .CSV</span>
+        </button>
+
+        <!-- Record Inscription CTA -->
+        <button onclick="openModal()" class="inline-flex items-center gap-1.5 bg-[#1C1917] hover:bg-[#2E2A27] text-[#FBF9F5] px-3.5 py-1.5 rounded-sm text-xs font-medium shadow-xs transition-all cursor-pointer">
+          <svg class="w-3.5 h-3.5 text-[#C25E3E]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+          </svg>
+          <span>Inscribe Entry</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Editorial Sub-Bar Navigation / Sections -->
+    <nav class="border-t border-[#E5E0D8] bg-[#F7F4EE]/60 px-4 sm:px-6">
+      <div class="max-w-6xl mx-auto flex items-center justify-between overflow-x-auto py-2 text-xs font-sans text-stone-600">
+        <div class="flex items-center gap-6 shrink-0">
+          <a href="#summary-section" class="font-semibold text-stone-900 border-b border-stone-900 pb-0.5">I. Sovereign Balance</a>
+          <a href="#cashflow-section" class="hover:text-stone-900 transition-colors">II. Cashflow Chronicle</a>
+          <a href="#vaults-section" class="hover:text-stone-900 transition-colors">III. Dedicated Reserves</a>
+          <a href="#ledger-section" class="hover:text-stone-900 transition-colors">IV. Register of Settlements</a>
+          <a href="#dispatches-section" class="hover:text-stone-900 transition-colors hidden sm:inline">V. Treasury Commentary</a>
+        </div>
+        <div class="hidden md:flex items-center gap-2 text-stone-500 text-[11px] font-mono-num shrink-0">
+          <span>RUNWAY RATIO: 39.4 MO</span>
+          <span>•</span>
+          <span>LIQUIDITY FACTOR: 94.2%</span>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- MAIN EDITORIAL CONTENT -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 pt-8 space-y-10">
+
+    <!-- SECTION I: THE SOVEREIGN BALANCE SHEET & CORE METRICS -->
+    <section id="summary-section" class="space-y-6">
+      
+      <!-- Lead Dispatch Card & Net Worth Pillar -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-white hairline-all p-6 sm:p-8 rounded-sm shadow-editorial">
+        
+        <!-- Left: Net Worth Master Pillar (7 cols) -->
+        <div class="lg:col-span-7 flex flex-col justify-between space-y-6 lg:border-r lg:border-[#E5E0D8] lg:pr-8">
+          <div>
+            <div class="flex items-center justify-between border-b border-[#E5E0D8] pb-2.5 text-[11px] font-semibold uppercase tracking-widest text-stone-500">
+              <span>Section I • Consolidated Capital</span>
+              <span>Audited Oct 2026</span>
+            </div>
+            
+            <div class="mt-4">
+              <span class="text-xs uppercase tracking-widest text-stone-500 font-medium">Consolidated Net Worth</span>
+              <div class="mt-1 flex items-baseline gap-3 flex-wrap">
+                <h2 id="totalNetWorth" class="font-serif-editorial text-4xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-stone-950">
+                  $164,850.00
+                </h2>
+                <span class="inline-flex items-center gap-1 text-xs font-semibold text-[#4A6B53] bg-[#EBF2ED] px-2 py-0.5 rounded-sm border border-[#4A6B53]/20">
+                  ▲ +14.6% <span class="font-normal text-stone-500">trailing 6 mo</span>
+                </span>
+              </div>
+            </div>
+
+            <p class="mt-4 font-serif-editorial italic text-stone-700 text-base sm:text-lg leading-relaxed">
+              "Enduring personal solvency does not stem from high-velocity turnover, but from maintaining an unshakeable margin of safety and disciplined capital allocation."
+            </p>
+          </div>
+
+          <!-- Quick breakdown stats strip -->
+          <div class="grid grid-cols-3 gap-4 pt-4 border-t border-[#E5E0D8] text-xs">
+            <div>
+              <span class="block text-stone-500 text-[10px] uppercase tracking-wider">Direct Liquidity</span>
+              <span id="statLiquid" class="font-mono-num font-semibold text-stone-900 text-sm sm:text-base">$48,200.00</span>
+              <span class="block text-[10px] text-stone-400">Cash & Treasury bills</span>
+            </div>
+            <div>
+              <span class="block text-stone-500 text-[10px] uppercase tracking-wider">Invested Capital</span>
+              <span id="statInvested" class="font-mono-num font-semibold text-stone-900 text-sm sm:text-base">$94,150.00</span>
+              <span class="block text-[10px] text-stone-400">Index ETF & Equities</span>
+            </div>
+            <div>
+              <span class="block text-stone-500 text-[10px] uppercase tracking-wider">Allocated Vaults</span>
+              <span id="statVaults" class="font-mono-num font-semibold text-stone-900 text-sm sm:text-base">$22,500.00</span>
+              <span class="block text-[10px] text-stone-400">Sinking funds</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: The Editorial Dispatch Note (5 cols) -->
+        <div class="lg:col-span-5 flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center justify-between border-b border-[#E5E0D8] pb-2.5 text-[11px] font-semibold uppercase tracking-widest text-[#C25E3E]">
+              <span>Executive Dispatch</span>
+              <span>Discipline & Runway</span>
+            </div>
+            
+            <h3 class="mt-3 font-serif-editorial text-xl font-normal text-stone-900 leading-snug">
+              On the Prudence of Ample Reserves
+            </h3>
+
+            <div class="mt-2 text-stone-700 text-xs sm:text-sm leading-relaxed space-y-3 font-sans editorial-dropcap">
+              <p>
+                Treasury inflows for the opening weeks of October have maintained steady pacing. Retainer billings and secondary royalty accruals have widened our defensive runway to nearly forty months of unhurried living.
+              </p>
+              <p>
+                Operating overhead remains constrained at twenty-six percent of recurring gross inflow, allowing substantial surpluses to filter directly into long-term compounding instruments without emotional turbulence.
+              </p>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-[#E5E0D8] flex items-center justify-between text-[11px] text-stone-500 font-sans">
+            <span>Authored by Chancellor of Accounts</span>
+            <span class="font-mono-num">VERIFIED // LEDGER RECORD</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 4 Core Financial Telemetry Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Metric 1: Monthly Inflow Stream -->
+        <div class="bg-white hairline-all p-5 rounded-sm shadow-editorial transition-all hover:border-stone-400">
+          <div class="flex items-center justify-between text-[10px] uppercase tracking-widest text-stone-500 font-semibold">
+            <span>Inflow Stream</span>
+            <span class="text-[#4A6B53]">Surplus</span>
+          </div>
+          <div class="mt-2">
+            <span id="metricInflow" class="font-mono-num text-2xl sm:text-3xl font-semibold text-stone-900">+$15,800.00</span>
+          </div>
+          <p class="mt-1 text-xs text-stone-600">
+            Advisory retainers, royalties & quarterly dividends.
+          </p>
+          <div class="mt-3 pt-2.5 border-t border-[#EAE4D9] flex items-center justify-between text-[11px] text-stone-500">
+            <span>Monthly Target: <strong class="text-stone-800">$12,000</strong></span>
+            <span class="text-[#4A6B53] font-semibold">131% Achieved</span>
+          </div>
+        </div>
+
+        <!-- Metric 2: Monthly Disbursement Velocity -->
+        <div class="bg-white hairline-all p-5 rounded-sm shadow-editorial transition-all hover:border-stone-400">
+          <div class="flex items-center justify-between text-[10px] uppercase tracking-widest text-stone-500 font-semibold">
+            <span>Disbursement Velocity</span>
+            <span class="text-stone-700">Contained</span>
+          </div>
+          <div class="mt-2">
+            <span id="metricOutflow" class="font-mono-num text-2xl sm:text-3xl font-semibold text-stone-900">-$4,210.00</span>
+          </div>
+          <p class="mt-1 text-xs text-stone-600">
+            Fixed operational overhead, dwelling & food staples.
+          </p>
+          <div class="mt-3 pt-2.5 border-t border-[#EAE4D9] flex items-center justify-between text-[11px] text-stone-500">
+            <span>Burn Ratio:</span>
+            <span class="font-mono-num font-semibold text-stone-800">26.6% of inflow</span>
+          </div>
+        </div>
+
+        <!-- Metric 3: Net Operational Surplus -->
+        <div class="bg-white hairline-all p-5 rounded-sm shadow-editorial transition-all hover:border-stone-400">
+          <div class="flex items-center justify-between text-[10px] uppercase tracking-widest text-stone-500 font-semibold">
+            <span>Net Operating Surplus</span>
+            <span class="text-[#4A6B53]">Compounding</span>
+          </div>
+          <div class="mt-2">
+            <span id="metricSurplus" class="font-mono-num text-2xl sm:text-3xl font-semibold text-[#4A6B53]">+$11,590.00</span>
+          </div>
+          <p class="mt-1 text-xs text-stone-600">
+            Free cash directed to indexation & reserve buffers.
+          </p>
+          <div class="mt-3 pt-2.5 border-t border-[#EAE4D9] flex items-center justify-between text-[11px] text-stone-500">
+            <span>Savings Rate:</span>
+            <span class="font-mono-num font-semibold text-[#4A6B53]">73.4% of gross</span>
+          </div>
+        </div>
+
+        <!-- Metric 4: Sovereign Defensive Runway -->
+        <div class="bg-white hairline-all p-5 rounded-sm shadow-editorial transition-all hover:border-stone-400">
+          <div class="flex items-center justify-between text-[10px] uppercase tracking-widest text-stone-500 font-semibold">
+            <span>Defensive Runway</span>
+            <span class="text-[#B48C36]">Fortified</span>
+          </div>
+          <div class="mt-2">
+            <span id="metricRunway" class="font-mono-num text-2xl sm:text-3xl font-semibold text-stone-900">39.2 <span class="text-base font-normal font-sans text-stone-600">Months</span></span>
+          </div>
+          <p class="mt-1 text-xs text-stone-600">
+            Zero-inflow survival timeline under normal standard of living.
+          </p>
+          <div class="mt-3 pt-2.5 border-t border-[#EAE4D9] flex items-center justify-between text-[11px] text-stone-500">
+            <span>Target Benchmark:</span>
+            <span class="font-mono-num font-semibold text-stone-800">24.0 Months</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION II: THE CASHFLOW CHRONICLE & INFOGRAPHIC -->
+    <section id="cashflow-section" class="bg-white hairline-all p-6 sm:p-8 rounded-sm shadow-editorial space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#E5E0D8] pb-4">
+        <div>
+          <span class="text-[11px] font-semibold uppercase tracking-widest text-stone-500">Section II • Financial Historiography</span>
+          <h3 class="font-serif-editorial text-2xl sm:text-3xl font-normal text-stone-900 mt-1">
+            Six-Month Cashflow Chronicle
+          </h3>
+          <p class="text-xs sm:text-sm text-stone-600 font-sans mt-0.5">
+            A comparative study of revenue intake versus expenditure discipline through the seasons.
+          </p>
+        </div>
+        
+        <div class="flex items-center gap-3 text-xs font-sans">
+          <div class="flex items-center gap-1.5">
+            <span class="w-3 h-3 bg-[#1C1917] rounded-xs inline-block"></span>
+            <span class="text-stone-700">Gross Inflow</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-3 h-3 bg-[#E5E0D8] rounded-xs inline-block"></span>
+            <span class="text-stone-700">Disbursements</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-3 h-3 bg-[#C25E3E] rounded-xs inline-block"></span>
+            <span class="text-[#C25E3E] font-medium">Net Surplus</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Editorial Graph Presentation -->
+      <div class="pt-4 overflow-x-auto">
+        <div class="min-w-[550px] space-y-5">
+          
+          <!-- Month Bar Rows -->
+          <!-- May 2026 -->
+          <div class="grid grid-cols-12 items-center gap-3 text-xs">
+            <div class="col-span-2 font-mono-num font-medium text-stone-700">MAY 2026</div>
+            <div class="col-span-8 flex items-center h-7 bg-[#F3EFE6] rounded-xs p-1 gap-1">
+              <div class="bg-[#1C1917] h-full rounded-xs transition-all duration-500" style="width: 72%;" title="Inflow: $12,800"></div>
+              <div class="bg-[#D4CDC3] h-full rounded-xs transition-all duration-500" style="width: 25%;" title="Outflow: $4,400"></div>
+            </div>
+            <div class="col-span-2 text-right font-mono-num text-xs text-stone-900 font-semibold">+$8,400</div>
+          </div>
+
+          <!-- June 2026 -->
+          <div class="grid grid-cols-12 items-center gap-3 text-xs">
+            <div class="col-span-2 font-mono-num font-medium text-stone-700">JUN 2026</div>
+            <div class="col-span-8 flex items-center h-7 bg-[#F3EFE6] rounded-xs p-1 gap-1">
+              <div class="bg-[#1C1917] h-full rounded-xs transition-all duration-500" style="width: 78%;" title="Inflow: $13,900"></div>
+              <div class="bg-[#D4CDC3] h-full rounded-xs transition-all duration-500" style="width: 22%;" title="Outflow: $3,900"></div>
+            </div>
+            <div class="col-span-2 text-right font-mono-num text-xs text-stone-900 font-semibold">+$10,000</div>
+          </div>
+
+          <!-- July 2026 -->
+          <div class="grid grid-cols-12 items-center gap-3 text-xs">
+            <div class="col-span-2 font-mono-num font-medium text-stone-700">JUL 2026</div>
+            <div class="col-span-8 flex items-center h-7 bg-[#F3EFE6] rounded-xs p-1 gap-1">
+              <div class="bg-[#1C1917] h-full rounded-xs transition-all duration-500" style="width: 82%;" title="Inflow: $14,500"></div>
+              <div class="bg-[#D4CDC3] h-full rounded-xs transition-all duration-500" style="width: 28%;" title="Outflow: $4,800"></div>
+            </div>
+            <div class="col-span-2 text-right font-mono-num text-xs text-stone-900 font-semibold">+$9,700</div>
+          </div>
+
+          <!-- August 2026 -->
+          <div class="grid grid-cols-12 items-center gap-3 text-xs">
+            <div class="col-span-2 font-mono-num font-medium text-stone-700">AUG 2026</div>
+            <div class="col-span-8 flex items-center h-7 bg-[#F3EFE6] rounded-xs p-1 gap-1">
+              <div class="bg-[#1C1917] h-full rounded-xs transition-all duration-500" style="width: 80%;" title="Inflow: $14,200"></div>
+              <div class="bg-[#D4CDC3] h-full rounded-xs transition-all duration-500" style="width: 21%;" title="Outflow: $3,750"></div>
+            </div>
+            <div class="col-span-2 text-right font-mono-num text-xs text-stone-900 font-semibold">+$10,450</div>
+          </div>
+
+          <!-- September 2026 -->
+          <div class="grid grid-cols-12 items-center gap-3 text-xs">
+            <div class="col-span-2 font-mono-num font-medium text-stone-700">SEP 2026</div>
+            <div class="col-span-8 flex items-center h-7 bg-[#F3EFE6] rounded-xs p-1 gap-1">
+              <div class="bg-[#1C1917] h-full rounded-xs transition-all duration-500" style="width: 86%;" title="Inflow: $15,100"></div>
+              <div class="bg-[#D4CDC3] h-full rounded-xs transition-all duration-500" style="width: 24%;" title="Outflow: $4,100"></div>
+            </div>
+            <div class="col-span-2 text-right font-mono-num text-xs text-stone-900 font-semibold">+$11,000</div>
+          </div>
+
+          <!-- October 2026 (Current Trajectory) -->
+          <div class="grid grid-cols-12 items-center gap-3 text-xs bg-[#FBF9F5] p-2 rounded-xs border border-[#E5E0D8]">
+            <div class="col-span-2 font-mono-num font-semibold text-[#C25E3E]">OCT 2026*</div>
+            <div class="col-span-8 flex items-center h-7 bg-white rounded-xs p-1 gap-1 border border-[#E5E0D8]">
+              <div class="bg-[#1C1917] h-full rounded-xs transition-all duration-500" style="width: 90%;" title="Projected Inflow: $15,800"></div>
+              <div class="bg-[#C25E3E]/60 h-full rounded-xs transition-all duration-500" style="width: 26%;" title="Projected Outflow: $4,210"></div>
+            </div>
+            <div class="col-span-2 text-right font-mono-num text-xs text-[#4A6B53] font-bold">+$11,590*</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Footnote Annotation -->
+      <div class="pt-3 border-t border-[#E5E0D8] flex flex-col sm:flex-row sm:items-center justify-between text-xs text-stone-500 gap-2">
+        <p class="italic font-serif-editorial">
+          * Figures for October reflect current month-to-date tracking with conservative recurring accruals.
+        </p>
+        <span class="font-mono-num text-[11px] text-stone-600">AVG MONTHLY SURPLUS: +$10,190.00</span>
+      </div>
+    </section>
+
+    <!-- SECTION III: DEDICATED RESERVES (SINKING FUNDS & VAULTS) -->
+    <section id="vaults-section" class="space-y-4">
+      <div class="flex items-center justify-between border-b border-[#E5E0D8] pb-2">
+        <div>
+          <span class="text-[11px] font-semibold uppercase tracking-widest text-stone-500">Section III • Dedicated Envelopes</span>
+          <h3 class="font-serif-editorial text-2xl font-normal text-stone-900 mt-0.5">
+            Sovereign Sinking Reserves
+          </h3>
+        </div>
+        <span class="text-xs text-stone-500 hidden sm:inline font-mono-num">TOTAL ALLOCATED: $22,500.00</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Vault 1: Sovereign Liquidity Buffer -->
+        <div class="bg-white hairline-all p-5 rounded-sm shadow-editorial flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center justify-between text-[11px] text-stone-500">
+              <span class="font-mono-num font-semibold text-stone-800">VAULT § 01</span>
+              <span class="text-[#4A6B53] font-semibold text-[10px] uppercase">100% Funded</span>
+            </div>
+            <h4 class="font-serif-editorial text-lg font-medium text-stone-900 mt-1">
+              Sovereign Living Buffer
+            </h4>
+            <p class="text-xs text-stone-600 mt-1">
+              High-yield instant liquidity preserving psychological equanimity.
+            </p>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-baseline justify-between text-xs">
+              <span class="font-mono-num text-lg font-semibold text-stone-900" id="vaultAmount1">$10,000.00</span>
+              <span class="text-stone-500 text-[11px]">Cap: $10,000</span>
+            </div>
+            <!-- Progress Rule -->
+            <div class="w-full bg-[#F3EFE6] h-1.5 rounded-full overflow-hidden">
+              <div class="bg-[#4A6B53] h-full" style="width: 100%;"></div>
+            </div>
+            <button onclick="promptTransfer('Sovereign Living Buffer', 1)" class="w-full text-center text-xs py-1.5 bg-[#FBF9F5] hairline-all hover:bg-stone-900 hover:text-white text-stone-800 rounded-sm font-medium transition-all cursor-pointer">
+              + Transfer Allocation
+            </button>
+          </div>
+        </div>
+
+        <!-- Vault 2: Equity Index Accumulation -->
+        <div class="bg-white hairline-all p-5 rounded-sm shadow-editorial flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center justify-between text-[11px] text-stone-500">
+              <span class="font-mono-num font-semibold text-stone-800">VAULT § 02</span>
+              <span class="text-stone-700 font-semibold text-[10px] uppercase">86% Funded</span>
+            </div>
+            <h4 class="font-serif-editorial text-lg font-medium text-stone-900 mt-1">
+              Global Broad Index
+            </h4>
+            <p class="text-xs text-stone-600 mt-1">
+              Automated capital deployment into all-world productive enterprise.
+            </p>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-baseline justify-between text-xs">
+              <span class="font-mono-num text-lg font-semibold text-stone-900" id="vaultAmount2">$6,900.00</span>
+              <span class="text-stone-500 text-[11px]">Cap: $8,000</span>
+            </div>
+            <!-- Progress Rule -->
+            <div class="w-full bg-[#F3EFE6] h-1.5 rounded-full overflow-hidden">
+              <div class="bg-stone-800 h-full" style="width: 86%;"></div>
+            </div>
+            <button onclick="promptTransfer('Global Broad Index', 2)" class="w-full text-center text-xs py-1.5 bg-[#FBF9F5] hairline-all hover:bg-stone-900 hover:text-white text-stone-800 rounded-sm font-medium transition-all cursor-pointer">
+              + Transfer Allocation
+            </button>
+          </div>
+        </div>
+
+        <!-- Vault 3: Private Library & Atelier -->
+        <div class="bg-white hairline-all p-5 rounded-sm shadow-editorial flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center justify-between text-[11px] text-stone-500">
+              <span class="font-mono-num font-semibold text-stone-800">VAULT § 03</span>
+              <span class="text-stone-700 font-semibold text-[10px] uppercase">72% Funded</span>
+            </div>
+            <h4 class="font-serif-editorial text-lg font-medium text-stone-900 mt-1">
+              Library & Atelier Guild
+            </h4>
+            <p class="text-xs text-stone-600 mt-1">
+              Fine folio printings, antique drafting furniture, studio tools.
+            </p>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-baseline justify-between text-xs">
+              <span class="font-mono-num text-lg font-semibold text-stone-900" id="vaultAmount3">$3,600.00</span>
+              <span class="text-stone-500 text-[11px]">Cap: $5,000</span>
+            </div>
+            <!-- Progress Rule -->
+            <div class="w-full bg-[#F3EFE6] h-1.5 rounded-full overflow-hidden">
+              <div class="bg-stone-800 h-full" style="width: 72%;"></div>
+            </div>
+            <button onclick="promptTransfer('Library & Atelier Guild', 3)" class="w-full text-center text-xs py-1.5 bg-[#FBF9F5] hairline-all hover:bg-stone-900 hover:text-white text-stone-800 rounded-sm font-medium transition-all cursor-pointer">
+              + Transfer Allocation
+            </button>
+          </div>
+        </div>
+
+        <!-- Vault 4: Kyoto & Alpine Sabbatical -->
+        <div class="bg-white hairline-all p-5 rounded-sm shadow-editorial flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center justify-between text-[11px] text-stone-500">
+              <span class="font-mono-num font-semibold text-stone-800">VAULT § 04</span>
+              <span class="text-[#C25E3E] font-semibold text-[10px] uppercase">40% Funded</span>
+            </div>
+            <h4 class="font-serif-editorial text-lg font-medium text-stone-900 mt-1">
+              Kyoto Residency 2027
+            </h4>
+            <p class="text-xs text-stone-600 mt-1">
+              A 3-month writing retreat among ancient cedar temples and tea halls.
+            </p>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-baseline justify-between text-xs">
+              <span class="font-mono-num text-lg font-semibold text-stone-900" id="vaultAmount4">$2,000.00</span>
+              <span class="text-stone-500 text-[11px]">Cap: $5,000</span>
+            </div>
+            <!-- Progress Rule -->
+            <div class="w-full bg-[#F3EFE6] h-1.5 rounded-full overflow-hidden">
+              <div class="bg-[#C25E3E] h-full" style="width: 40%;"></div>
+            </div>
+            <button onclick="promptTransfer('Kyoto Residency 2027', 4)" class="w-full text-center text-xs py-1.5 bg-[#FBF9F5] hairline-all hover:bg-stone-900 hover:text-white text-stone-800 rounded-sm font-medium transition-all cursor-pointer">
+              + Transfer Allocation
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION IV: THE REGISTER OF SETTLEMENTS (TRANSACTION LEDGER) -->
+    <section id="ledger-section" class="bg-white hairline-all rounded-sm shadow-editorial p-6 sm:p-8 space-y-6">
+      
+      <!-- Ledger Header & Filter Controls -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#E5E0D8] pb-4">
+        <div>
+          <span class="text-[11px] font-semibold uppercase tracking-widest text-stone-500">Section IV • Financial Inscriptions</span>
+          <h3 class="font-serif-editorial text-2xl sm:text-3xl font-normal text-stone-900 mt-1">
+            The Register of Daily Settlements
+          </h3>
+          <p class="text-xs sm:text-sm text-stone-600 font-sans mt-0.5">
+            Every transaction faithfully stamped and cross-verified against verified accounts.
+          </p>
+        </div>
+
+        <!-- Filter & Search Controls -->
+        <div class="flex items-center flex-wrap gap-2.5">
+          <!-- Search Input -->
+          <div class="relative">
+            <label for="ledgerSearch" class="sr-only">Search ledger</label>
+            <input type="text" id="ledgerSearch" oninput="renderTransactions()" placeholder="Search payee or tag..." class="bg-[#FBF9F5] hairline-all rounded-sm px-3 py-1.5 text-xs text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-1 focus:ring-stone-400 w-44 sm:w-56 transition-all">
+          </div>
+
+          <!-- Type Filter Tabs -->
+          <div class="inline-flex rounded-sm hairline-all bg-[#F3EFE6] p-0.5 text-xs">
+            <button onclick="setFilter('all')" id="filterAll" class="px-2.5 py-1 rounded-xs font-semibold bg-white text-stone-900 shadow-xs cursor-pointer">
+              All
+            </button>
+            <button onclick="setFilter('inflow')" id="filterInflow" class="px-2.5 py-1 rounded-xs text-stone-600 hover:text-stone-900 cursor-pointer">
+              Inflow
+            </button>
+            <button onclick="setFilter('outflow')" id="filterOutflow" class="px-2.5 py-1 rounded-xs text-stone-600 hover:text-stone-900 cursor-pointer">
+              Disbursements
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ledger Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="border-b border-[#E5E0D8] text-[10px] uppercase tracking-wider text-stone-500 font-semibold font-sans">
+              <th class="py-2.5 pr-4">Inscription Date</th>
+              <th class="py-2.5 px-4">Payee / Description</th>
+              <th class="py-2.5 px-4">Category Seal</th>
+              <th class="py-2.5 px-4">Settlement Account</th>
+              <th class="py-2.5 pl-4 text-right">Sum Transacted</th>
+              <th class="py-2.5 pl-4 text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody id="transactionTableBody" class="divide-y divide-[#EAE4D9] font-sans">
+            <!-- Populated dynamically via JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Ledger Footer & Summary -->
+      <div class="pt-4 border-t border-[#E5E0D8] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-stone-500 font-sans">
+        <div class="flex items-center gap-2">
+          <span>Active Ledger: <strong id="recordCount" class="text-stone-800">8 Inscriptions</strong></span>
+          <span>•</span>
+          <span>Status: Verified & Balanced</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="text-stone-400">Page 1 of 1</span>
+          <button onclick="openModal()" class="text-stone-800 font-semibold hover:text-[#C25E3E] underline decoration-stone-300 transition-colors cursor-pointer">
+            + Inscribe New Transaction
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SECTION V: EDITORIAL FOOTNOTES & MONOGRAPH NOTES -->
+    <section id="dispatches-section" class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-[#E5E0D8]">
+      
+      <div class="space-y-2">
+        <span class="text-[10px] font-semibold uppercase tracking-widest text-[#C25E3E]">Marginalia § I</span>
+        <h4 class="font-serif-editorial text-lg text-stone-900 font-medium">The Rule of Quiet Cash</h4>
+        <p class="text-xs text-stone-600 leading-relaxed font-sans">
+          Never allow a bank account to fall below nine months of living expense. The yield on cash is not measured merely in percentage points, but in calm sleepless nights.
+        </p>
+      </div>
+
+      <div class="space-y-2">
+        <span class="text-[10px] font-semibold uppercase tracking-widest text-[#4A6B53]">Marginalia § II</span>
+        <h4 class="font-serif-editorial text-lg text-stone-900 font-medium">Frugality Without Deprivation</h4>
+        <p class="text-xs text-stone-600 leading-relaxed font-sans">
+          Spend lavishly on books, fine coffee, and well-made work tools that last twenty seasons. Cut ruthlessly on status posturing and empty convenience subscriptions.
+        </p>
+      </div>
+
+      <div class="space-y-2">
+        <span class="text-[10px] font-semibold uppercase tracking-widest text-stone-600">Marginalia § III</span>
+        <h4 class="font-serif-editorial text-lg text-stone-900 font-medium">The Long Horizon</h4>
+        <p class="text-xs text-stone-600 leading-relaxed font-sans">
+          Market pullbacks are simply periodic discounts extended to patient stewards. Treat portfolio fluctuation as unread letters from an excitable stranger.
+        </p>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- FLOATING QUICK INSCRIPTION SLIP (EDITORIAL BOOKMARK DOCK) -->
+  <div class="fixed bottom-5 inset-x-0 mx-auto max-w-xl px-4 z-40">
+    <div class="bg-white/95 hairline-all rounded-full p-2 pl-4 pr-2 shadow-editorial flex items-center justify-between gap-2 backdrop-blur-md">
+      
+      <!-- Quick Micro-Expense Chips -->
+      <div class="flex items-center gap-1.5 overflow-x-auto text-xs py-0.5">
+        <span class="text-[10px] uppercase font-bold text-stone-500 tracking-wider shrink-0 font-sans">Quick Stamp:</span>
+        <button onclick="quickExpense('Morning Espresso & Brioche', 5.50, 'Culinary & Hearth', 'Disbursement')" class="px-2 py-1 rounded-full bg-[#FBF9F5] hairline-all hover:bg-[#F3EFE6] text-stone-800 text-[11px] font-medium shrink-0 transition-colors cursor-pointer">
+          ☕ $5.50
+        </button>
+        <button onclick="quickExpense('Independent Folio Book', 32.00, 'Library & Guild', 'Disbursement')" class="px-2 py-1 rounded-full bg-[#FBF9F5] hairline-all hover:bg-[#F3EFE6] text-stone-800 text-[11px] font-medium shrink-0 transition-colors cursor-pointer">
+          📖 $32.00
+        </button>
+        <button onclick="quickExpense('Artisan Market Staple', 48.00, 'Culinary & Hearth', 'Disbursement')" class="px-2 py-1 rounded-full bg-[#FBF9F5] hairline-all hover:bg-[#F3EFE6] text-stone-800 text-[11px] font-medium shrink-0 transition-colors cursor-pointer">
+          🥖 $48.00
+        </button>
+      </div>
+
+      <!-- Action Button -->
+      <button onclick="openModal()" class="shrink-0 flex items-center gap-1.5 bg-[#1C1917] hover:bg-[#2E2A27] text-[#FBF9F5] px-3.5 py-1.5 rounded-full text-xs font-medium shadow-xs transition-colors cursor-pointer">
+        <svg class="w-3.5 h-3.5 text-[#C25E3E]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+        </svg>
+        <span class="hidden sm:inline">Inscribe Entry</span>
+        <span class="sm:hidden">+ Entry</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- MODAL: INSCRIBE NEW ENTRY (LETTERPRESS SHEET) -->
+  <div id="entryModal" class="fixed inset-0 z-50 hidden bg-stone-900/40 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white hairline-all rounded-sm shadow-editorial max-w-lg w-full p-6 sm:p-8 space-y-6 animate-in fade-in zoom-in-95 duration-200">
+      
+      <div class="flex items-start justify-between border-b border-[#E5E0D8] pb-3">
+        <div>
+          <span class="text-[10px] uppercase font-bold tracking-widest text-[#C25E3E]">Monograph Register</span>
+          <h3 class="font-serif-editorial text-2xl font-normal text-stone-900 mt-0.5">
+            Inscribe Financial Entry
+          </h3>
+          <p class="text-xs text-stone-600 font-sans mt-0.5">
+            Record a verified disbursement or incoming capital receipt.
+          </p>
+        </div>
+        <button onclick="closeModal()" class="text-stone-400 hover:text-stone-900 p-1 text-lg leading-none cursor-pointer">
+          ✕
+        </button>
+      </div>
+
+      <form id="newEntryForm" onsubmit="handleNewEntry(event)" class="space-y-4 text-xs font-sans">
+        
+        <!-- Type Selection -->
+        <div class="grid grid-cols-2 gap-3">
+          <label class="cursor-pointer">
+            <input type="radio" name="entryType" value="Disbursement" checked class="peer sr-only">
+            <div class="p-2.5 text-center hairline-all rounded-sm bg-[#FBF9F5] peer-checked:bg-[#1C1917] peer-checked:text-white peer-checked:border-[#1C1917] font-medium transition-all">
+              Disbursement (Outflow)
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="entryType" value="Inflow" class="peer sr-only">
+            <div class="p-2.5 text-center hairline-all rounded-sm bg-[#FBF9F5] peer-checked:bg-[#1C1917] peer-checked:text-white peer-checked:border-[#1C1917] font-medium transition-all">
+              Capital Intake (Inflow)
+            </div>
+          </label>
+        </div>
+
+        <!-- Description / Payee -->
+        <div class="space-y-1">
+          <label for="entryPayee" class="block font-medium text-stone-700 uppercase tracking-wider text-[10px]">
+            Payee or Description
+          </label>
+          <input type="text" id="entryPayee" required placeholder="e.g., Faber & Faber Rare Manuscripts" class="w-full bg-[#FBF9F5] hairline-all rounded-sm px-3 py-2 text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-1 focus:ring-stone-400">
+        </div>
+
+        <!-- Amount & Category Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="space-y-1">
+            <label for="entryAmount" class="block font-medium text-stone-700 uppercase tracking-wider text-[10px]">
+              Transacted Amount (USD)
+            </label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-3 flex items-center text-stone-400 font-mono">$</span>
+              <input type="number" id="entryAmount" step="0.01" min="0.01" required placeholder="0.00" class="w-full bg-[#FBF9F5] hairline-all rounded-sm pl-7 pr-3 py-2 text-stone-900 placeholder-stone-400 font-mono-num focus:outline-none focus:ring-1 focus:ring-stone-400">
+            </div>
+          </div>
+
+          <div class="space-y-1">
+            <label for="entryCategory" class="block font-medium text-stone-700 uppercase tracking-wider text-[10px]">
+              Category Seal
+            </label>
+            <select id="entryCategory" class="w-full bg-[#FBF9F5] hairline-all rounded-sm px-3 py-2 text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-400 cursor-pointer">
+              <option value="Publishing & Advisory">Publishing & Advisory</option>
+              <option value="Library & Guild">Library & Guild</option>
+              <option value="Culinary & Hearth">Culinary & Hearth</option>
+              <option value="Dwelling & Manor">Dwelling & Manor</option>
+              <option value="Health & Vitality">Health & Vitality</option>
+              <option value="Capital Preservation">Capital Preservation</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Account Selection -->
+        <div class="space-y-1">
+          <label for="entryAccount" class="block font-medium text-stone-700 uppercase tracking-wider text-[10px]">
+            Settlement Account
+          </label>
+          <select id="entryAccount" class="w-full bg-[#FBF9F5] hairline-all rounded-sm px-3 py-2 text-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-400 cursor-pointer">
+            <option value="Coutts Sovereign Checking">Coutts Sovereign Checking (••912)</option>
+            <option value="Pictet Treasury Reserves">Pictet Treasury Reserves (••401)</option>
+            <option value="Vanguard All-World Index">Vanguard All-World Index (••788)</option>
+            <option value="Hand-carried Specie">Hand-carried Specie / Cash</option>
+          </select>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="pt-3 border-t border-[#E5E0D8] flex items-center justify-end gap-3">
+          <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-sm hairline-all hover:bg-[#F3EFE6] text-stone-700 font-medium transition-colors cursor-pointer">
+            Cancel
+          </button>
+          <button type="submit" class="px-5 py-2 rounded-sm bg-[#1C1917] hover:bg-[#2E2A27] text-white font-medium shadow-xs transition-colors cursor-pointer">
+            Inscribe in Ledger
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toastNotification" class="fixed top-5 right-5 z-50 max-w-sm bg-white hairline-all p-3.5 rounded-sm shadow-editorial transition-all duration-300 transform translate-y-[-100px] opacity-0 flex items-center gap-3">
+    <div class="w-2 h-2 rounded-full bg-[#4A6B53]"></div>
+    <div>
+      <p id="toastMessage" class="text-xs font-semibold text-stone-900">Ledger successfully balanced.</p>
+      <span class="text-[10px] text-stone-500 font-mono-num">OCTOBER 2, 2026 • RECORD ARCHIVED</span>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT STATE ENGINE (NO REACT) -->
+  <script>
+    // State Store with LocalStorage Persistence
+    const STORAGE_KEY = 'editorial_finance_ledger_v1';
+    const CURRENCY_KEY = 'editorial_currency_v1';
+
+    // Currency Multipliers relative to USD
+    const CURRENCY_RATES = {
+      USD: { symbol: '$', rate: 1.0, position: 'prefix', label: 'USD' },
+      IDR: { symbol: 'Rp ', rate: 15600, position: 'prefix', label: 'IDR' },
+      EUR: { symbol: '€', rate: 0.92, position: 'prefix', label: 'EUR' },
+      GBP: { symbol: '£', rate: 0.77, position: 'prefix', label: 'GBP' },
+      JPY: { symbol: '¥', rate: 148.5, position: 'prefix', label: 'JPY' }
+    };
+
+    let currentCurrency = localStorage.getItem(CURRENCY_KEY) || 'USD';
+    let currentFilter = 'all';
+
+    // Initial Ledger Records
+    const defaultTransactions = [
+      {
+        id: 1,
+        date: 'Oct 02, 2026',
+        payee: 'Hedgehog Review Publishing Retainer',
+        category: 'Publishing & Advisory',
+        account: 'Coutts Sovereign Checking',
+        amount: 5200.00,
+        type: 'Inflow'
+      },
+      {
+        id: 2,
+        date: 'Oct 01, 2026',
+        payee: 'Estate Ground & Heating Utility',
+        category: 'Dwelling & Manor',
+        account: 'Coutts Sovereign Checking',
+        amount: 840.00,
+        type: 'Disbursement'
+      },
+      {
+        id: 3,
+        date: 'Sep 30, 2026',
+        payee: 'Vanguard FTSE All-World Dividend',
+        category: 'Capital Preservation',
+        account: 'Pictet Treasury Reserves',
+        amount: 2150.00,
+        type: 'Inflow'
+      },
+      {
+        id: 4,
+        date: 'Sep 29, 2026',
+        payee: 'Blackwells Antiquarian Booksellers',
+        category: 'Library & Guild',
+        account: 'Hand-carried Specie',
+        amount: 145.00,
+        type: 'Disbursement'
+      },
+      {
+        id: 5,
+        date: 'Sep 28, 2026',
+        payee: 'Weekly Farmers Market & Hearth Stuffs',
+        category: 'Culinary & Hearth',
+        account: 'Coutts Sovereign Checking',
+        amount: 210.00,
+        type: 'Disbursement'
+      },
+      {
+        id: 6,
+        date: 'Sep 26, 2026',
+        payee: 'Monocle Bureau Column Honorarium',
+        category: 'Publishing & Advisory',
+        account: 'Coutts Sovereign Checking',
+        amount: 1800.00,
+        type: 'Inflow'
+      },
+      {
+        id: 7,
+        date: 'Sep 24, 2026',
+        payee: 'Kyoto Hand-crafted Tea Ceramics',
+        category: 'Library & Guild',
+        account: 'Pictet Treasury Reserves',
+        amount: 320.00,
+        type: 'Disbursement'
+      },
+      {
+        id: 8,
+        date: 'Sep 22, 2026',
+        payee: 'Thermal Bath & Botanical Movement Club',
+        category: 'Health & Vitality',
+        account: 'Coutts Sovereign Checking',
+        amount: 180.00,
+        type: 'Disbursement'
+      }
+    ];
+
+    // Sinking Reserves Initial Balances
+    let vaultBalances = {
+      1: 10000.00, // Sovereign Living Buffer
+      2: 6900.00,  // Global Broad Index
+      3: 3600.00,  // Library & Atelier Guild
+      4: 2000.00   // Kyoto Residency 2027
+    };
+
+    let transactions = [];
+
+    // Initialize Engine
+    function init() {
+      // Load saved transactions or defaults
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          transactions = JSON.parse(saved);
+        } catch (e) {
+          transactions = [...defaultTransactions];
+        }
+      } else {
+        transactions = [...defaultTransactions];
+      }
+
+      // Sync currency selector
+      document.getElementById('currencySelect').value = currentCurrency;
+
+      // Update calculations and UI
+      recalculateMetrics();
+      renderTransactions();
+    }
+
+    // Format Currency Numbers with Swiss / Editorial Discipline
+    function formatMoney(amountInUSD) {
+      const config = CURRENCY_RATES[currentCurrency] || CURRENCY_RATES.USD;
+      const converted = amountInUSD * config.rate;
+      
+      let formattedNumber;
+      if (currentCurrency === 'IDR' || currentCurrency === 'JPY') {
+        formattedNumber = Math.round(converted).toLocaleString('en-US');
+      } else {
+        formattedNumber = converted.toLocaleString('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+      }
+
+      return `${config.symbol}${formattedNumber}`;
+    }
+
+    // Recalculate Dashboard Totals
+    function recalculateMetrics() {
+      let totalInflows = 0;
+      let totalOutflows = 0;
+
+      transactions.forEach(t => {
+        if (t.type === 'Inflow') {
+          totalInflows += t.amount;
+        } else {
+          totalOutflows += t.amount;
+        }
+      });
+
+      // Fixed base wealth for realistic broadsheet sizing
+      const baseLiquid = 48200.00;
+      const baseInvested = 94150.00;
+      const totalVaults = Object.values(vaultBalances).reduce((a, b) => a + b, 0);
+
+      const netWorthTotal = baseLiquid + baseInvested + totalVaults + (totalInflows - totalOutflows);
+      const monthlyInflowEstimate = 15800.00;
+      const monthlyOutflowEstimate = 4210.00;
+      const monthlySurplus = monthlyInflowEstimate - monthlyOutflowEstimate;
+      const runwayMonths = (netWorthTotal / monthlyOutflowEstimate).toFixed(1);
+
+      // DOM updates
+      document.getElementById('totalNetWorth').textContent = formatMoney(netWorthTotal);
+      document.getElementById('statLiquid').textContent = formatMoney(baseLiquid);
+      document.getElementById('statInvested').textContent = formatMoney(baseInvested);
+      document.getElementById('statVaults').textContent = formatMoney(totalVaults);
+
+      document.getElementById('metricInflow').textContent = `+${formatMoney(monthlyInflowEstimate)}`;
+      document.getElementById('metricOutflow').textContent = `-${formatMoney(monthlyOutflowEstimate)}`;
+      document.getElementById('metricSurplus').textContent = `+${formatMoney(monthlySurplus)}`;
+      document.getElementById('metricRunway').innerHTML = `${runwayMonths} <span class="text-base font-normal font-sans text-stone-600">Months</span>`;
+
+      // Update vaults
+      document.getElementById('vaultAmount1').textContent = formatMoney(vaultBalances[1]);
+      document.getElementById('vaultAmount2').textContent = formatMoney(vaultBalances[2]);
+      document.getElementById('vaultAmount3').textContent = formatMoney(vaultBalances[3]);
+      document.getElementById('vaultAmount4').textContent = formatMoney(vaultBalances[4]);
+    }
+
+    // Render Transaction Ledger
+    function renderTransactions() {
+      const tbody = document.getElementById('transactionTableBody');
+      const searchTerm = (document.getElementById('ledgerSearch').value || '').toLowerCase();
+
+      const filtered = transactions.filter(t => {
+        const matchesFilter = (currentFilter === 'all') || 
+                              (currentFilter === 'inflow' && t.type === 'Inflow') ||
+                              (currentFilter === 'outflow' && t.type === 'Disbursement');
+        
+        const matchesSearch = t.payee.toLowerCase().includes(searchTerm) ||
+                              t.category.toLowerCase().includes(searchTerm) ||
+                              t.account.toLowerCase().includes(searchTerm);
+
+        return matchesFilter && matchesSearch;
+      });
+
+      document.getElementById('recordCount').textContent = `${filtered.length} Inscription${filtered.length === 1 ? '' : 's'}`;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="py-8 text-center text-stone-400 italic font-serif-editorial text-sm">
+              No matching records discovered in the archive.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(t => {
+        const isInflow = t.type === 'Inflow';
+        const amountPrefix = isInflow ? '+' : '-';
+        const amountColor = isInflow ? 'text-[#4A6B53]' : 'text-stone-900';
+
+        return `
+          <tr class="hover:bg-[#FBF9F5] transition-colors group">
+            <td class="py-3 pr-4 font-mono-num text-[11px] text-stone-500 whitespace-nowrap">
+              ${t.date}
+            </td>
+            <td class="py-3 px-4 font-medium text-stone-900">
+              ${escapeHtml(t.payee)}
+            </td>
+            <td class="py-3 px-4 whitespace-nowrap">
+              <span class="inline-block px-2 py-0.5 rounded-xs text-[10px] uppercase font-semibold tracking-wider ${
+                isInflow ? 'bg-[#EBF2ED] text-[#4A6B53]' : 'bg-[#F3EFE6] text-stone-700'
+              }">
+                ${t.category}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-stone-600 text-[11px] whitespace-nowrap">
+              ${t.account}
+            </td>
+            <td class="py-3 pl-4 text-right font-mono-num font-semibold ${amountColor} whitespace-nowrap">
+              ${amountPrefix}${formatMoney(t.amount)}
+            </td>
+            <td class="py-3 pl-4 text-center whitespace-nowrap">
+              <button onclick="deleteTransaction(${t.id})" class="text-stone-300 hover:text-[#C25E3E] text-xs transition-colors p-1 opacity-60 group-hover:opacity-100 cursor-pointer" title="Void Inscription">
+                ✕
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Filter Buttons Toggle
+    function setFilter(filterType) {
+      currentFilter = filterType;
+      
+      const btnAll = document.getElementById('filterAll');
+      const btnInflow = document.getElementById('filterInflow');
+      const btnOutflow = document.getElementById('filterOutflow');
+
+      [btnAll, btnInflow, btnOutflow].forEach(b => {
+        b.className = "px-2.5 py-1 rounded-xs text-stone-600 hover:text-stone-900 cursor-pointer";
+      });
+
+      if (filterType === 'all') {
+        btnAll.className = "px-2.5 py-1 rounded-xs font-semibold bg-white text-stone-900 shadow-xs cursor-pointer";
+      } else if (filterType === 'inflow') {
+        btnInflow.className = "px-2.5 py-1 rounded-xs font-semibold bg-white text-stone-900 shadow-xs cursor-pointer";
+      } else if (filterType === 'outflow') {
+        btnOutflow.className = "px-2.5 py-1 rounded-xs font-semibold bg-white text-stone-900 shadow-xs cursor-pointer";
+      }
+
+      renderTransactions();
+    }
+
+    // Handle New Entry Submission
+    function handleNewEntry(e) {
+      e.preventDefault();
+      
+      const form = e.target;
+      const type = form.entryType.value;
+      const payee = document.getElementById('entryPayee').value.trim();
+      const amount = parseFloat(document.getElementById('entryAmount').value);
+      const category = document.getElementById('entryCategory').value;
+      const account = document.getElementById('entryAccount').value;
+
+      if (!payee || isNaN(amount) || amount <= 0) return;
+
+      const newRecord = {
+        id: Date.now(),
+        date: 'Oct 02, 2026',
+        payee: payee,
+        category: category,
+        account: account,
+        amount: amount,
+        type: type
+      };
+
+      transactions.unshift(newRecord);
+      saveState();
+      
+      closeModal();
+      form.reset();
+      
+      recalculateMetrics();
+      renderTransactions();
+      showToast(`Inscription recorded: ${payee}`);
+    }
+
+    // Quick Micro-Expense Inscription
+    function quickExpense(payee, amountUSD, category, type) {
+      const record = {
+        id: Date.now(),
+        date: 'Oct 02, 2026',
+        payee: payee,
+        category: category,
+        account: 'Hand-carried Specie',
+        amount: amountUSD,
+        type: type
+      };
+
+      transactions.unshift(record);
+      saveState();
+      recalculateMetrics();
+      renderTransactions();
+      showToast(`Quick stamp inscribed: ${payee} (${formatMoney(amountUSD)})`);
+    }
+
+    // Delete / Void Transaction
+    function deleteTransaction(id) {
+      const target = transactions.find(t => t.id === id);
+      if (!target) return;
+
+      if (confirm(`Do you wish to void the inscription for "${target.payee}"?`)) {
+        transactions = transactions.filter(t => t.id !== id);
+        saveState();
+        recalculateMetrics();
+        renderTransactions();
+        showToast(`Record voided: ${target.payee}`);
+      }
+    }
+
+    // Transfer prompt for Dedicated Reserves
+    function promptTransfer(vaultName, vaultId) {
+      const input = prompt(`Enter capital transfer amount (USD) to allocate to "${vaultName}":`, "250.00");
+      if (input !== null) {
+        const amount = parseFloat(input);
+        if (!isNaN(amount) && amount > 0) {
+          vaultBalances[vaultId] = (vaultBalances[vaultId] || 0) + amount;
+          
+          // Inscribe transfer in transactions as disbursement
+          transactions.unshift({
+            id: Date.now(),
+            date: 'Oct 02, 2026',
+            payee: `Reserve Transfer: ${vaultName}`,
+            category: 'Capital Preservation',
+            account: 'Coutts Sovereign Checking',
+            amount: amount,
+            type: 'Disbursement'
+          });
+
+          saveState();
+          recalculateMetrics();
+          renderTransactions();
+          showToast(`Allocated ${formatMoney(amount)} to ${vaultName}`);
+        }
+      }
+    }
+
+    // Currency Switcher
+    function changeCurrency(newCurrency) {
+      currentCurrency = newCurrency;
+      localStorage.setItem(CURRENCY_KEY, newCurrency);
+      recalculateMetrics();
+      renderTransactions();
+      showToast(`Denomination altered to ${newCurrency}`);
+    }
+
+    // Export to CSV
+    function exportToCsv() {
+      const headers = ['Date', 'Payee', 'Category', 'Account', 'Amount_USD', 'Type'];
+      const rows = transactions.map(t => [
+        `"${t.date}"`,
+        `"${t.payee.replace(/"/g, '""')}"`,
+        `"${t.category}"`,
+        `"${t.account}"`,
+        t.amount,
+        `"${t.type}"`
+      ]);
+
+      const csvContent = 'data:text/csv;charset=utf-8,' + 
+        [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `the_ledger_gazette_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showToast('Ledger successfully exported as .CSV');
+    }
+
+    // Modal Visibility
+    function openModal() {
+      document.getElementById('entryModal').classList.remove('hidden');
+      document.getElementById('entryPayee').focus();
+    }
+
+    function closeModal() {
+      document.getElementById('entryModal').classList.add('hidden');
+    }
+
+    // Toast Alert
+    let toastTimeout;
+    function showToast(message) {
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastMessage').textContent = message;
+
+      toast.classList.remove('translate-y-[-100px]', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-[-100px]', 'opacity-0');
+      }, 3500);
+    }
+
+    // Persistence Helper
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
+    }
+
+    // Utility: HTML Escaping
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Keyboard Shortcuts (Esc to close modal)
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // Boot on DOM Ready
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

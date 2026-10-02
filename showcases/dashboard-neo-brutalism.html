@@ -1,0 +1,1249 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="STASH — High-voltage Neo-Brutalist personal finance dashboard with zero-blur shadows, punchy tactile physics, and live wealth telemetry.">
+  <title>STASH // Neo-Brutalist Wealth OS</title>
+
+  <!-- Google Fonts: Space Grotesk for punchy headlines & JetBrains Mono for bold financial telemetry -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700;800&family=Archivo+Black&display=swap">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23FFE600' stroke='%23000' stroke-width='3'/%3E%3Cpath d='M8 16h16M16 8v16' stroke='%23000' stroke-width='4' stroke-linecap='square'/%3E%3C/svg%3E">
+
+  <!-- Tailwind CSS Browser v4 -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <style type="text/tailwindcss">
+    @theme static {
+      --font-sans: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+      --font-display: "Archivo Black", "Space Grotesk", sans-serif;
+
+      /* Neo-Brutalism High-Voltage Palette */
+      --color-neo-yellow: #FFE600;
+      --color-neo-mint: #70FFAF;
+      --color-neo-pink: #FF69B4;
+      --color-neo-lilac: #A388EE;
+      --color-neo-cyan: #00F0FF;
+      --color-neo-orange: #FF5C00;
+      --color-neo-cream: #FFFDF5;
+    }
+  </style>
+
+  <style>
+    /* Neo-Brutalist Dotted Canvas */
+    body {
+      font-family: var(--font-sans);
+      background-color: #FFFDF5;
+      color: #000000;
+      background-image: radial-gradient(#000000 1.2px, transparent 1.2px);
+      background-size: 24px 24px;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Zero-blur hard drop shadows */
+    .neo-box-sm {
+      border: 2px solid #000;
+      box-shadow: 2px 2px 0px #000;
+    }
+
+    .neo-box {
+      border: 2px solid #000;
+      box-shadow: 4px 4px 0px #000;
+    }
+
+    .neo-box-lg {
+      border: 3px solid #000;
+      box-shadow: 6px 6px 0px #000;
+    }
+
+    @media (max-width: 640px) {
+      .neo-box {
+        box-shadow: 3px 3px 0px #000;
+      }
+      .neo-box-lg {
+        border-width: 2.5px;
+        box-shadow: 4px 4px 0px #000;
+      }
+    }
+
+    /* Physical "Press Down" Button Mechanics */
+    .neo-btn {
+      position: relative;
+      border: 2px solid #000;
+      box-shadow: 3px 3px 0px #000;
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+    .neo-btn:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 4px 4px 0px #000;
+    }
+    .neo-btn:active {
+      transform: translate(3px, 3px);
+      box-shadow: 0px 0px 0px #000;
+    }
+
+    .neo-btn-heavy {
+      border: 3px solid #000;
+      box-shadow: 5px 5px 0px #000;
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+    .neo-btn-heavy:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 7px 7px 0px #000;
+    }
+    .neo-btn-heavy:active {
+      transform: translate(5px, 5px);
+      box-shadow: 0px 0px 0px #000;
+    }
+
+    /* Diagonal stripe retro fill */
+    .stripes-pattern {
+      background: repeating-linear-gradient(
+        -45deg,
+        rgba(0, 0, 0, 0.06),
+        rgba(0, 0, 0, 0.06) 6px,
+        transparent 6px,
+        transparent 12px
+      );
+    }
+
+    .stripes-pattern-heavy {
+      background: repeating-linear-gradient(
+        -45deg,
+        #000,
+        #000 4px,
+        #FFE600 4px,
+        #FFE600 8px
+      );
+    }
+
+    /* Custom brutalist scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #FFFDF5;
+      border-left: 2px solid #000;
+      border-top: 2px solid #000;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #FFE600;
+      border: 2px solid #000;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #00F0FF;
+    }
+
+    /* Infinite ticker animation */
+    @keyframes marquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-ticker {
+      display: inline-flex;
+      width: max-content;
+      animation: marquee 20s linear infinite;
+    }
+    .animate-ticker:hover {
+      animation-play-state: paused;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen text-black antialiased selection:bg-[#FFE600] selection:text-black pb-36">
+
+  <!-- MARQUEE TICKER TAPE -->
+  <aside aria-label="Finance Ticker Tape" class="w-full bg-black text-[#FFE600] py-1.5 border-b-3 border-black overflow-hidden font-mono font-bold text-xs tracking-wider flex items-center select-none">
+    <div class="animate-ticker">
+      <div class="flex items-center gap-6 whitespace-nowrap pr-6">
+        <span class="inline-flex items-center gap-1.5"><span class="text-white">●</span> NET RUNWAY: 8.4 MONTHS</span>
+        <span class="text-white/40">/</span>
+        <span class="inline-flex items-center gap-1.5"><span class="text-[#70FFAF]">▲</span> SAVINGS RATE: 42.6%</span>
+        <span class="text-white/40">/</span>
+        <span class="inline-flex items-center gap-1.5"><span class="text-[#00F0FF]">★</span> NEXT PAYDAY: OCT 15 (13 DAYS)</span>
+        <span class="text-white/40">/</span>
+        <span class="inline-flex items-center gap-1.5"><span class="text-[#FF69B4]">▼</span> BURN RATE: $108.20/DAY</span>
+        <span class="text-white/40">/</span>
+        <span class="inline-flex items-center gap-1.5"><span class="text-white">●</span> 100% LOCAL PRIVACY ENCRYPTED</span>
+        <span class="text-white/40">/</span>
+        <span class="inline-flex items-center gap-1.5"><span class="text-[#70FFAF]">▲</span> STASH GROWING DAILY</span>
+      </div>
+      <div class="flex items-center gap-6 whitespace-nowrap pr-6">
+        <span class="inline-flex items-center gap-1.5"><span class="text-white">●</span> NET RUNWAY: 8.4 MONTHS</span>
+        <span class="text-white/40">/</span>
+        <span class="inline-flex items-center gap-1.5"><span class="text-[#70FFAF]">▲</span> SAVINGS RATE: 42.6%</span>
+        <span class="text-white/40">/</span>
+        <span class="inline-flex items-center gap-1.5"><span class="text-[#00F0FF]">★</span> NEXT PAYDAY: OCT 15 (13 DAYS)</span>
+        <span class="text-white/40">/</span>
+        <span class="inline-flex items-center gap-1.5"><span class="text-[#FF69B4]">▼</span> BURN RATE: $108.20/DAY</span>
+        <span class="text-white/40">/</span>
+        <span class="inline-flex items-center gap-1.5"><span class="text-white">●</span> 100% LOCAL PRIVACY ENCRYPTED</span>
+        <span class="text-white/40">/</span>
+        <span class="inline-flex items-center gap-1.5"><span class="text-[#70FFAF]">▲</span> STASH GROWING DAILY</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- TOP HEADER -->
+  <header class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 sm:pt-6">
+    <!-- Theme Switcher Navigation Bar -->
+    <div class="mb-3 flex flex-wrap items-center justify-between gap-2 text-xs font-mono font-bold">
+      <div class="flex items-center gap-1.5">
+        <label for="themeSelect" class="bg-black text-[#FFE600] px-2 py-0.5 rounded border border-black font-black uppercase text-[10px]">THEME:</label>
+        <div class="relative">
+          <select id="themeSelect" onchange="window.location.href=this.value" class="appearance-none rounded border-2 border-black bg-[#FFE600] px-3 py-1 pr-7 text-xs font-black shadow-[2px_2px_0px_#000] outline-none cursor-pointer">
+            <option value="dashboard-neo-brutalism.html" selected>⚡ Neo-Brutalist</option>
+            <option value="dashboard-editorial.html">📜 Warm Editorial</option>
+            <option value="dashboard-spatial.html">🫧 Spatial Glass</option>
+            <option value="dashboard-ops-terminal.html">🎛️ Ops Terminal</option>
+            <option value="dashboard-cyberpunk.html">⚡ Cyberpunk HUD</option>
+            <option value="dashboard-enterprise.html">🏢 Clean Enterprise</option>
+            <option value="dashboard-linear.html">🔮 Linear Dark</option>
+            <option value="dashboard-quiet.html">🕊️ Quiet Minimal</option>
+            <option value="dashboard-playful.html">🎨 Playful Creative</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-black font-black text-[10px]">
+            ▼
+          </div>
+        </div>
+      </div>
+      <div class="hidden sm:inline-block rounded border border-black bg-[#70FFAF] px-2 py-0.5 font-black text-[10px] uppercase shadow-[1px_1px_0px_#000]">
+        ★ NO REACT • PURE HTML + TAILWIND v4
+      </div>
+    </div>
+
+    <div class="rounded-xl border-3 border-black bg-white p-3.5 sm:p-5 shadow-[4px_4px_0px_#000] sm:shadow-[6px_6px_0px_#000] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+      
+      <!-- Brand & Mascot Sticker -->
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 sm:w-13 sm:h-13 rounded-lg border-2 sm:border-3 border-black bg-[#FFE600] flex items-center justify-center font-black text-2xl sm:text-3xl shadow-[2px_2px_0px_#000] sm:shadow-[3px_3px_0px_#000] select-none">
+            ⚡
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-display font-black text-2xl sm:text-3xl tracking-tight text-black">STASH</span>
+              <span class="hidden xs:inline-block rounded border border-black bg-[#FF69B4] px-1.5 py-0.5 font-mono text-[10px] font-black uppercase text-white shadow-[1px_1px_0px_#000]">
+                V2.4 OS
+              </span>
+            </div>
+            <p class="font-mono text-xs font-bold text-black/70">RADICAL CASHFLOW & WEALTH TELEMETRY</p>
+          </div>
+        </div>
+
+        <!-- Mobile Currency Switcher shortcut -->
+        <div class="md:hidden">
+          <select id="currencySelectMobile" onchange="setCurrency(this.value)" class="rounded-lg border-2 border-black bg-[#00F0FF] px-2.5 py-1.5 font-mono font-black text-xs shadow-[2px_2px_0px_#000] outline-none">
+            <option value="USD">USD ($)</option>
+            <option value="IDR">IDR (Rp)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="GBP">GBP (£)</option>
+            <option value="JPY">JPY (¥)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Controls: Currency, Range & Quick Action -->
+      <div class="flex flex-wrap items-center gap-2.5 sm:gap-3">
+        <!-- Desktop Currency -->
+        <div class="hidden md:flex items-center rounded-lg border-2 border-black bg-[#00F0FF] p-1 shadow-[2px_2px_0px_#000]">
+          <span class="font-mono font-black text-xs px-2 text-black">CURRENCY:</span>
+          <select id="currencySelect" onchange="setCurrency(this.value)" class="rounded-md border-2 border-black bg-white px-2 py-1 font-mono font-black text-xs shadow-[1px_1px_0px_#000] outline-none cursor-pointer">
+            <option value="USD">USD ($)</option>
+            <option value="IDR">IDR (Rp)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="GBP">GBP (£)</option>
+            <option value="JPY">JPY (¥)</option>
+          </select>
+        </div>
+
+        <!-- Period Filter -->
+        <div class="flex items-center rounded-lg border-2 border-black bg-white p-1 shadow-[2px_2px_0px_#000] text-xs font-mono font-bold">
+          <button onclick="setPeriod('this_month')" id="period_this_month" class="px-2.5 sm:px-3 py-1 rounded border-2 border-black bg-[#FFE600] font-black shadow-[1px_1px_0px_#000] transition-colors">
+            OCT '26
+          </button>
+          <button onclick="setPeriod('q3')" id="period_q3" class="px-2.5 sm:px-3 py-1 rounded border border-transparent hover:border-black font-semibold text-black/80 transition-colors">
+            Q3 '26
+          </button>
+          <button onclick="setPeriod('ytd')" id="period_ytd" class="px-2.5 sm:px-3 py-1 rounded border border-transparent hover:border-black font-semibold text-black/80 transition-colors">
+            YTD
+          </button>
+        </div>
+
+        <!-- Record Trigger -->
+        <button onclick="openModal()" class="neo-btn rounded-lg bg-[#70FFAF] px-3.5 sm:px-4 py-2 font-display font-black text-xs sm:text-sm text-black flex items-center gap-1.5 grow sm:grow-0 justify-center min-h-[42px]">
+          <span class="text-base leading-none">＋</span> RECORD TRANSACTION
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN DASHBOARD CONTENT -->
+  <main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-5 sm:pt-7 space-y-6 sm:space-y-8">
+
+    <!-- HERO TELEMETRY GRID (4 CARDS) -->
+    <section aria-label="Key Wealth Metrics" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      
+      <!-- 01: NET WORTH -->
+      <div class="relative rounded-xl border-3 border-black bg-[#FFE600] p-4 sm:p-5 shadow-[4px_4px_0px_#000] sm:shadow-[5px_5px_0px_#000] flex flex-col justify-between overflow-hidden">
+        <div class="absolute -right-2 -bottom-2 text-7xl font-black text-black/5 select-none pointer-events-none font-display">
+          $
+        </div>
+        <div>
+          <div class="flex items-center justify-between gap-2">
+            <span class="font-mono text-xs font-black uppercase tracking-wider text-black bg-white px-2 py-0.5 border border-black shadow-[1px_1px_0px_#000] rounded">
+              01 // NET STASH
+            </span>
+            <span class="rounded border border-black bg-black px-1.5 py-0.5 font-mono text-[10px] font-black text-[#70FFAF]">
+              +14.8% ▲
+            </span>
+          </div>
+          <div class="mt-4">
+            <div id="metricNetWorth" class="font-mono font-black text-3xl sm:text-4xl text-black tracking-tight">
+              $84,290.00
+            </div>
+            <div class="mt-1 flex items-center gap-1.5 font-mono text-xs font-bold text-black/80">
+              <span>Liquid assets & vaults</span>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t-2 border-black/20 flex items-center justify-between text-xs font-mono font-bold">
+          <span class="text-black/70">Debt Ratio:</span>
+          <span class="bg-white px-1.5 py-0.2 border border-black font-black">4.2% (LOW)</span>
+        </div>
+      </div>
+
+      <!-- 02: MONTHLY INFLOW -->
+      <div class="relative rounded-xl border-3 border-black bg-[#70FFAF] p-4 sm:p-5 shadow-[4px_4px_0px_#000] sm:shadow-[5px_5px_0px_#000] flex flex-col justify-between overflow-hidden">
+        <div>
+          <div class="flex items-center justify-between gap-2">
+            <span class="font-mono text-xs font-black uppercase tracking-wider text-black bg-white px-2 py-0.5 border border-black shadow-[1px_1px_0px_#000] rounded">
+              02 // INFLOW
+            </span>
+            <span class="rounded border border-black bg-white px-1.5 py-0.5 font-mono text-[10px] font-black text-black">
+              2 STREAMS
+            </span>
+          </div>
+          <div class="mt-4">
+            <div id="metricInflow" class="font-mono font-black text-3xl sm:text-4xl text-black tracking-tight">
+              +$8,650.00
+            </div>
+            <div class="mt-1 flex items-center gap-1.5 font-mono text-xs font-bold text-black/80">
+              <span>Salary + Freelance Contracts</span>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t-2 border-black/20 flex items-center justify-between text-xs font-mono font-bold">
+          <span class="text-black/70">Expected Oct:</span>
+          <span class="font-black font-mono">$9,200.00</span>
+        </div>
+      </div>
+
+      <!-- 03: MONTHLY BURN (EXPENSES) -->
+      <div class="relative rounded-xl border-3 border-black bg-[#FF69B4] p-4 sm:p-5 shadow-[4px_4px_0px_#000] sm:shadow-[5px_5px_0px_#000] flex flex-col justify-between overflow-hidden">
+        <div>
+          <div class="flex items-center justify-between gap-2">
+            <span class="font-mono text-xs font-black uppercase tracking-wider text-black bg-white px-2 py-0.5 border border-black shadow-[1px_1px_0px_#000] rounded">
+              03 // BURN RATE
+            </span>
+            <span class="rounded border border-black bg-white px-1.5 py-0.5 font-mono text-[10px] font-black text-black">
+              64% CAP
+            </span>
+          </div>
+          <div class="mt-4">
+            <div id="metricOutflow" class="font-mono font-black text-3xl sm:text-4xl text-black tracking-tight">
+              -$3,248.40
+            </div>
+            <div class="mt-1 flex items-center gap-1.5 font-mono text-xs font-bold text-black/90">
+              <span>Fixed + Living Expenses</span>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t-2 border-black/20 flex items-center justify-between text-xs font-mono font-bold">
+          <span class="text-black/80">Daily Average:</span>
+          <span class="bg-black text-[#FF69B4] px-1.5 py-0.2 border border-black font-mono font-black">$108.20/d</span>
+        </div>
+      </div>
+
+      <!-- 04: RUNWAY & SAVINGS RATE -->
+      <div class="relative rounded-xl border-3 border-black bg-[#A388EE] p-4 sm:p-5 shadow-[4px_4px_0px_#000] sm:shadow-[5px_5px_0px_#000] flex flex-col justify-between overflow-hidden">
+        <div>
+          <div class="flex items-center justify-between gap-2">
+            <span class="font-mono text-xs font-black uppercase tracking-wider text-black bg-white px-2 py-0.5 border border-black shadow-[1px_1px_0px_#000] rounded">
+              04 // SURVIVAL RUNWAY
+            </span>
+            <span class="rounded border border-black bg-[#FFE600] px-1.5 py-0.5 font-mono text-[10px] font-black text-black shadow-[1px_1px_0px_#000]">
+              SAFE ★
+            </span>
+          </div>
+          <div class="mt-4">
+            <div class="font-mono font-black text-3xl sm:text-4xl text-black tracking-tight">
+              8.4 <span class="text-lg sm:text-xl font-display font-black">MONTHS</span>
+            </div>
+            <div class="mt-1 flex items-center gap-1.5 font-mono text-xs font-bold text-black/80">
+              <span>Zero-income survival index</span>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t-2 border-black/20 flex items-center justify-between text-xs font-mono font-bold">
+          <span class="text-black/80">Savings Rate:</span>
+          <span class="bg-white px-1.5 py-0.2 border border-black font-black font-mono">42.6%</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SECTION 2: CHARTS & BUDGET VAULTS -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
+      
+      <!-- CASHFLOW BAR VISUALIZER (7 COLS) -->
+      <div class="lg:col-span-7 rounded-xl border-3 border-black bg-white p-4 sm:p-6 shadow-[4px_4px_0px_#000] sm:shadow-[6px_6px_0px_#000] flex flex-col justify-between">
+        <div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4 pb-4 border-b-2 border-black">
+            <div>
+              <div class="inline-block rounded border-2 border-black bg-[#00F0FF] px-2 py-0.5 font-mono text-xs font-black uppercase shadow-[1px_1px_0px_#000]">
+                TELEMETRY RADAR
+              </div>
+              <h2 class="mt-1.5 font-display font-black text-xl sm:text-2xl text-black">CASH FLOW DYNAMICS</h2>
+            </div>
+
+            <!-- Legend Indicator -->
+            <div class="flex items-center gap-3 font-mono text-xs font-black">
+              <span class="inline-flex items-center gap-1.5">
+                <span class="w-3.5 h-3.5 border-2 border-black bg-[#70FFAF] inline-block shadow-[1px_1px_0px_#000]"></span> INFLOW
+              </span>
+              <span class="inline-flex items-center gap-1.5">
+                <span class="w-3.5 h-3.5 border-2 border-black bg-[#FF69B4] inline-block shadow-[1px_1px_0px_#000]"></span> OUTFLOW
+              </span>
+            </div>
+          </div>
+
+          <!-- Chart Area with Responsive Scrollable Container -->
+          <div class="mt-6 overflow-x-auto scrollbar-none pb-2">
+            <div class="min-w-[480px]">
+              
+              <!-- Bars container -->
+              <div class="h-56 sm:h-64 flex items-end justify-between gap-3 sm:gap-5 px-2 border-b-3 border-black relative">
+                <!-- Background Grid Guidelines -->
+                <div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-20 z-0">
+                  <div class="border-b border-dashed border-black w-full"></div>
+                  <div class="border-b border-dashed border-black w-full"></div>
+                  <div class="border-b border-dashed border-black w-full"></div>
+                  <div class="border-b border-dashed border-black w-full"></div>
+                </div>
+
+                <!-- MAY -->
+                <div class="flex-1 flex flex-col items-center gap-1.5 z-10 group cursor-pointer">
+                  <div class="text-[10px] font-mono font-bold opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white px-1 rounded shadow">+$7.2k / -$3.8k</div>
+                  <div class="w-full flex items-end justify-center gap-1 sm:gap-1.5 h-44">
+                    <div style="height: 72%" class="w-1/2 max-w-[28px] border-2 border-black bg-[#70FFAF] shadow-[2px_2px_0px_#000] rounded-t-sm group-hover:brightness-95 transition-all"></div>
+                    <div style="height: 48%" class="w-1/2 max-w-[28px] border-2 border-black bg-[#FF69B4] shadow-[2px_2px_0px_#000] rounded-t-sm group-hover:brightness-95 transition-all"></div>
+                  </div>
+                  <span class="font-mono text-xs font-bold text-black mt-1">MAY</span>
+                </div>
+
+                <!-- JUN -->
+                <div class="flex-1 flex flex-col items-center gap-1.5 z-10 group cursor-pointer">
+                  <div class="text-[10px] font-mono font-bold opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white px-1 rounded shadow">+$8.0k / -$4.1k</div>
+                  <div class="w-full flex items-end justify-center gap-1 sm:gap-1.5 h-44">
+                    <div style="height: 80%" class="w-1/2 max-w-[28px] border-2 border-black bg-[#70FFAF] shadow-[2px_2px_0px_#000] rounded-t-sm group-hover:brightness-95 transition-all"></div>
+                    <div style="height: 52%" class="w-1/2 max-w-[28px] border-2 border-black bg-[#FF69B4] shadow-[2px_2px_0px_#000] rounded-t-sm group-hover:brightness-95 transition-all"></div>
+                  </div>
+                  <span class="font-mono text-xs font-bold text-black mt-1">JUN</span>
+                </div>
+
+                <!-- JUL -->
+                <div class="flex-1 flex flex-col items-center gap-1.5 z-10 group cursor-pointer">
+                  <div class="text-[10px] font-mono font-bold opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white px-1 rounded shadow">+$6.9k / -$2.9k</div>
+                  <div class="w-full flex items-end justify-center gap-1 sm:gap-1.5 h-44">
+                    <div style="height: 69%" class="w-1/2 max-w-[28px] border-2 border-black bg-[#70FFAF] shadow-[2px_2px_0px_#000] rounded-t-sm group-hover:brightness-95 transition-all"></div>
+                    <div style="height: 38%" class="w-1/2 max-w-[28px] border-2 border-black bg-[#FF69B4] shadow-[2px_2px_0px_#000] rounded-t-sm group-hover:brightness-95 transition-all"></div>
+                  </div>
+                  <span class="font-mono text-xs font-bold text-black mt-1">JUL</span>
+                </div>
+
+                <!-- AUG -->
+                <div class="flex-1 flex flex-col items-center gap-1.5 z-10 group cursor-pointer">
+                  <div class="text-[10px] font-mono font-bold opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white px-1 rounded shadow">+$9.1k / -$4.6k</div>
+                  <div class="w-full flex items-end justify-center gap-1 sm:gap-1.5 h-44">
+                    <div style="height: 91%" class="w-1/2 max-w-[28px] border-2 border-black bg-[#70FFAF] shadow-[2px_2px_0px_#000] rounded-t-sm group-hover:brightness-95 transition-all"></div>
+                    <div style="height: 58%" class="w-1/2 max-w-[28px] border-2 border-black bg-[#FF69B4] shadow-[2px_2px_0px_#000] rounded-t-sm group-hover:brightness-95 transition-all"></div>
+                  </div>
+                  <span class="font-mono text-xs font-bold text-black mt-1">AUG</span>
+                </div>
+
+                <!-- SEP -->
+                <div class="flex-1 flex flex-col items-center gap-1.5 z-10 group cursor-pointer">
+                  <div class="text-[10px] font-mono font-bold opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white px-1 rounded shadow">+$8.4k / -$3.4k</div>
+                  <div class="w-full flex items-end justify-center gap-1 sm:gap-1.5 h-44">
+                    <div style="height: 84%" class="w-1/2 max-w-[28px] border-2 border-black bg-[#70FFAF] shadow-[2px_2px_0px_#000] rounded-t-sm group-hover:brightness-95 transition-all"></div>
+                    <div style="height: 43%" class="w-1/2 max-w-[28px] border-2 border-black bg-[#FF69B4] shadow-[2px_2px_0px_#000] rounded-t-sm group-hover:brightness-95 transition-all"></div>
+                  </div>
+                  <span class="font-mono text-xs font-bold text-black mt-1">SEP</span>
+                </div>
+
+                <!-- OCT (ACTIVE) -->
+                <div class="flex-1 flex flex-col items-center gap-1.5 z-10 group cursor-pointer relative">
+                  <div class="absolute -top-6 bg-black text-[#FFE600] font-mono text-[9px] font-black px-1.5 py-0.5 rounded border border-black shadow">
+                    CURRENT
+                  </div>
+                  <div class="w-full flex items-end justify-center gap-1 sm:gap-1.5 h-44">
+                    <div style="height: 86%" class="w-1/2 max-w-[28px] border-2 border-black bg-[#70FFAF] shadow-[2px_2px_0px_#000] rounded-t-sm stripes-pattern"></div>
+                    <div style="height: 41%" class="w-1/2 max-w-[28px] border-2 border-black bg-[#FF69B4] shadow-[2px_2px_0px_#000] rounded-t-sm stripes-pattern"></div>
+                  </div>
+                  <span class="font-mono text-xs font-black text-black mt-1 bg-[#FFE600] px-1 border border-black rounded shadow-[1px_1px_0px_#000]">OCT</span>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Footnote Status -->
+        <div class="mt-4 pt-3 border-t-2 border-black flex flex-wrap items-center justify-between gap-3 text-xs font-mono font-bold">
+          <span class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-black animate-ping"></span>
+            <span>Surplus Oct: <strong class="font-black text-black">+$5,401.60</strong></span>
+          </span>
+          <button onclick="toggleChartMode()" class="neo-btn rounded border border-black bg-[#FFE600] px-2.5 py-1 text-[11px] font-black">
+            VIEW CUMULATIVE ↺
+          </button>
+        </div>
+      </div>
+
+      <!-- BUDGET VAULTS & ENVELOPES (5 COLS) -->
+      <div class="lg:col-span-5 rounded-xl border-3 border-black bg-white p-4 sm:p-6 shadow-[4px_4px_0px_#000] sm:shadow-[6px_6px_0px_#000] flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between pb-3 border-b-2 border-black">
+            <div>
+              <div class="inline-block rounded border-2 border-black bg-[#FFE600] px-2 py-0.5 font-mono text-xs font-black uppercase shadow-[1px_1px_0px_#000]">
+                GOAL VAULTS
+              </div>
+              <h2 class="mt-1 font-display font-black text-xl text-black">ENVELOPES</h2>
+            </div>
+            <span class="font-mono text-xs font-black bg-black text-white px-2 py-1 rounded border border-black">
+              4 ACTIVE
+            </span>
+          </div>
+
+          <!-- Jars List -->
+          <div class="mt-4 space-y-4">
+            
+            <!-- Vault 1: Emergency Stash -->
+            <div class="p-3 rounded-lg border-2 border-black bg-[#FFFDF5] shadow-[2px_2px_0px_#000] hover:translate-x-0.5 transition-transform">
+              <div class="flex items-center justify-between text-xs font-black font-mono">
+                <span class="flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 border border-black bg-[#70FFAF]"></span>
+                  EMERGENCY BUNKER
+                </span>
+                <span>$25,000 / $30,000</span>
+              </div>
+              <!-- Progress Bar -->
+              <div class="mt-2 w-full h-4 rounded border-2 border-black bg-white overflow-hidden p-[2px]">
+                <div style="width: 83.3%" class="h-full bg-[#70FFAF] border-r-2 border-black"></div>
+              </div>
+              <div class="mt-2 flex items-center justify-between text-[11px] font-mono font-bold text-black/80">
+                <span>83.3% Complete</span>
+                <button onclick="stashFast(50, 'Emergency Bunker')" class="neo-btn rounded border border-black bg-white px-2 py-0.5 text-[10px] font-black hover:bg-[#70FFAF]">
+                  +$50 STASH
+                </button>
+              </div>
+            </div>
+
+            <!-- Vault 2: Tech Setup & Gear -->
+            <div class="p-3 rounded-lg border-2 border-black bg-[#FFFDF5] shadow-[2px_2px_0px_#000] hover:translate-x-0.5 transition-transform">
+              <div class="flex items-center justify-between text-xs font-black font-mono">
+                <span class="flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 border border-black bg-[#00F0FF]"></span>
+                  M4 MAX WORKSTATION
+                </span>
+                <span>$3,850 / $4,500</span>
+              </div>
+              <div class="mt-2 w-full h-4 rounded border-2 border-black bg-white overflow-hidden p-[2px]">
+                <div style="width: 85.5%" class="h-full bg-[#00F0FF] border-r-2 border-black"></div>
+              </div>
+              <div class="mt-2 flex items-center justify-between text-[11px] font-mono font-bold text-black/80">
+                <span>$650 to target</span>
+                <button onclick="stashFast(100, 'M4 Max Workstation')" class="neo-btn rounded border border-black bg-white px-2 py-0.5 text-[10px] font-black hover:bg-[#00F0FF]">
+                  +$100 STASH
+                </button>
+              </div>
+            </div>
+
+            <!-- Vault 3: Index Funds / ETF -->
+            <div class="p-3 rounded-lg border-2 border-black bg-[#FFFDF5] shadow-[2px_2px_0px_#000] hover:translate-x-0.5 transition-transform">
+              <div class="flex items-center justify-between text-xs font-black font-mono">
+                <span class="flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 border border-black bg-[#A388EE]"></span>
+                  S&P 500 / ALL-WORLD
+                </span>
+                <span>$42,100 / $50,000</span>
+              </div>
+              <div class="mt-2 w-full h-4 rounded border-2 border-black bg-white overflow-hidden p-[2px]">
+                <div style="width: 84.2%" class="h-full bg-[#A388EE] border-r-2 border-black"></div>
+              </div>
+              <div class="mt-2 flex items-center justify-between text-[11px] font-mono font-bold text-black/80">
+                <span>Compounding 9.2% YoY</span>
+                <button onclick="stashFast(250, 'Index Fund')" class="neo-btn rounded border border-black bg-white px-2 py-0.5 text-[10px] font-black hover:bg-[#A388EE]">
+                  +$250 STASH
+                </button>
+              </div>
+            </div>
+
+            <!-- Vault 4: Tokyo Trip -->
+            <div class="p-3 rounded-lg border-2 border-black bg-[#FFFDF5] shadow-[2px_2px_0px_#000] hover:translate-x-0.5 transition-transform">
+              <div class="flex items-center justify-between text-xs font-black font-mono">
+                <span class="flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 border border-black bg-[#FF69B4]"></span>
+                  TOKYO SHINJUKU EXPEDITION
+                </span>
+                <span>$2,800 / $3,500</span>
+              </div>
+              <div class="mt-2 w-full h-4 rounded border-2 border-black bg-white overflow-hidden p-[2px]">
+                <div style="width: 80%" class="h-full bg-[#FF69B4] border-r-2 border-black"></div>
+              </div>
+              <div class="mt-2 flex items-center justify-between text-[11px] font-mono font-bold text-black/80">
+                <span>Flight tickets locked</span>
+                <button onclick="stashFast(50, 'Tokyo Expedition')" class="neo-btn rounded border border-black bg-white px-2 py-0.5 text-[10px] font-black hover:bg-[#FF69B4]">
+                  +$50 STASH
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t-2 border-black flex items-center justify-between text-xs font-mono font-bold">
+          <span class="text-black/70">Vaults Stashed:</span>
+          <span class="font-black bg-[#FFE600] px-2 py-0.5 border border-black">$73,750 Total</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SECTION 3: BRUTALIST ADVENTURE LEDGER (TRANSACTIONS) -->
+    <section class="rounded-xl border-3 border-black bg-white p-4 sm:p-6 shadow-[4px_4px_0px_#000] sm:shadow-[6px_6px_0px_#000]">
+      
+      <!-- Ledger Header & Filter Controls -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b-3 border-black">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="rounded border-2 border-black bg-[#FFE600] px-2 py-0.5 font-mono text-xs font-black uppercase shadow-[1px_1px_0px_#000]">
+              RAW LOG
+            </span>
+            <h2 class="font-display font-black text-xl sm:text-2xl text-black">ADVENTURE LEDGER</h2>
+          </div>
+          <p class="font-mono text-xs font-bold text-black/70 mt-1">Every dime tracked down to the nanosecond.</p>
+        </div>
+
+        <!-- Filter Bar & Search -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          <!-- Type Filter Chips -->
+          <div class="flex items-center rounded-lg border-2 border-black bg-white p-1 shadow-[2px_2px_0px_#000] text-xs font-mono font-bold">
+            <button onclick="filterTransactions('all')" id="filter_all" class="px-2.5 py-1 rounded border-2 border-black bg-[#FFE600] font-black shadow-[1px_1px_0px_#000]">
+              ALL
+            </button>
+            <button onclick="filterTransactions('expense')" id="filter_expense" class="px-2.5 py-1 rounded border border-transparent hover:border-black font-semibold text-black/80">
+              BURN
+            </button>
+            <button onclick="filterTransactions('income')" id="filter_income" class="px-2.5 py-1 rounded border border-transparent hover:border-black font-semibold text-black/80">
+              INFLOW
+            </button>
+          </div>
+
+          <!-- Search Input -->
+          <div class="relative grow sm:grow-0">
+            <input 
+              type="text" 
+              id="ledgerSearch" 
+              oninput="renderLedger()" 
+              placeholder="Search memo or tag..." 
+              class="w-full sm:w-48 rounded-lg border-2 border-black bg-[#FFFDF5] px-3 py-1.5 font-mono text-xs font-bold placeholder-black/50 shadow-[2px_2px_0px_#000] outline-none focus:bg-white"
+            />
+          </div>
+
+          <!-- Export CSV -->
+          <button onclick="exportCSV()" class="neo-btn rounded-lg border-2 border-black bg-[#00F0FF] px-3 py-1.5 font-mono font-black text-xs shadow-[2px_2px_0px_#000] flex items-center gap-1">
+            <span>EXPORT CSV</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Ledger Table (Scrollable Container with safe horizontal overflow) -->
+      <div class="mt-4 overflow-x-auto scrollbar-none">
+        <table class="w-full text-left border-collapse min-w-[620px]">
+          <thead>
+            <tr class="border-b-2 border-black font-mono text-xs font-black uppercase text-black bg-[#FFFDF5]">
+              <th class="py-3 px-3">Date</th>
+              <th class="py-3 px-3">Transaction Memo</th>
+              <th class="py-3 px-3">Category Tag</th>
+              <th class="py-3 px-3">Account</th>
+              <th class="py-3 px-3 text-right">Amount</th>
+              <th class="py-3 px-3 text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody id="ledgerTableBody" class="font-mono text-xs font-bold divide-y-2 divide-black/10">
+            <!-- Dynamically populated via JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Ledger Footer Stats -->
+      <div class="mt-4 pt-3 border-t-2 border-black flex flex-wrap items-center justify-between gap-3 text-xs font-mono font-bold">
+        <span id="ledgerCountBadge" class="bg-black text-[#FFE600] px-2 py-1 rounded border border-black font-black">
+          SHOWING 7 TRANSACTIONS
+        </span>
+        <div class="flex items-center gap-2">
+          <button onclick="resetDefaultData()" class="text-black/60 hover:text-black underline font-mono text-xs">
+            Reset Demo Data
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- FLOATING QUICK-ACTION DOCK (Neo-Brutalist Capsule) -->
+  <div class="fixed bottom-4 left-3 right-3 sm:left-1/2 sm:-translate-x-1/2 sm:w-auto z-40">
+    <div class="rounded-xl border-3 border-black bg-[#FFE600] p-2 sm:p-2.5 shadow-[4px_4px_0px_#000] sm:shadow-[6px_6px_0px_#000] flex items-center justify-between sm:justify-center gap-2 sm:gap-4 max-w-xl mx-auto">
+      
+      <!-- Quick Status -->
+      <div class="hidden sm:flex items-center gap-2 pl-2">
+        <span class="w-3 h-3 rounded-full border border-black bg-[#70FFAF]"></span>
+        <span class="font-mono font-black text-xs text-black">VAULT SYNCED</span>
+      </div>
+
+      <div class="hidden sm:block h-6 w-0.5 bg-black"></div>
+
+      <!-- Quick Add Buttons -->
+      <div class="flex items-center gap-1.5 sm:gap-2 grow sm:grow-0 justify-around sm:justify-start">
+        <button onclick="quickExpense(4.50, 'Coffee / Espresso', 'Food & Drink')" class="neo-btn rounded-lg border-2 border-black bg-white px-2.5 sm:px-3 py-1.5 font-mono font-black text-xs text-black shadow-[2px_2px_0px_#000] active:translate-x-[2px] active:translate-y-[2px]">
+          ☕ -$4.50
+        </button>
+        <button onclick="quickExpense(18.00, 'Ramen Lunch Bowl', 'Food & Drink')" class="neo-btn rounded-lg border-2 border-black bg-white px-2.5 sm:px-3 py-1.5 font-mono font-black text-xs text-black shadow-[2px_2px_0px_#000] active:translate-x-[2px] active:translate-y-[2px]">
+          🍜 -$18
+        </button>
+        <button onclick="quickExpense(45.00, 'Gasoline Refill', 'Transport')" class="neo-btn rounded-lg border-2 border-black bg-white px-2.5 sm:px-3 py-1.5 font-mono font-black text-xs text-black shadow-[2px_2px_0px_#000] active:translate-x-[2px] active:translate-y-[2px]">
+          ⛽ -$45
+        </button>
+      </div>
+
+      <!-- Primary Big Action -->
+      <button onclick="openModal()" class="neo-btn rounded-lg border-2 border-black bg-[#70FFAF] px-3 sm:px-4 py-2 font-display font-black text-xs sm:text-sm text-black flex items-center gap-1 shadow-[2px_2px_0px_#000] active:translate-x-[2px] active:translate-y-[2px] whitespace-nowrap">
+        <span>＋ RECORD</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- MODAL: ADD TRANSACTION (Mobile Bottom Sheet / Desktop Centered Card) -->
+  <div id="txnModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-[2px] hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="w-full sm:max-w-lg bg-[#FFFDF5] border-t-3 border-x-3 sm:border-3 border-black rounded-t-2xl sm:rounded-xl shadow-[0_-4px_0px_#000] sm:shadow-[8px_8px_0px_#000] p-5 sm:p-6 transition-transform">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-3 border-b-3 border-black">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded border-2 border-black bg-[#FFE600] flex items-center justify-center font-black text-base shadow-[1px_1px_0px_#000]">
+            ⚡
+          </div>
+          <div>
+            <h3 class="font-display font-black text-lg sm:text-xl text-black">LOG TRANSACTION</h3>
+            <p class="font-mono text-[11px] font-bold text-black/70">Feed the ledger with fresh telemetry</p>
+          </div>
+        </div>
+        <button onclick="closeModal()" class="w-8 h-8 rounded border-2 border-black bg-white hover:bg-[#FF69B4] flex items-center justify-center font-mono font-black text-base shadow-[2px_2px_0px_#000] active:translate-x-0.5 active:translate-y-0.5">
+          ✕
+        </button>
+      </div>
+
+      <!-- Form Inputs -->
+      <form id="txnForm" onsubmit="handleFormSubmit(event)" class="mt-4 space-y-3.5">
+        
+        <!-- Type Selection Pills -->
+        <div class="grid grid-cols-2 gap-2">
+          <label class="cursor-pointer">
+            <input type="radio" name="txnType" value="expense" checked class="peer sr-only" onchange="updateTypeColor()">
+            <div class="rounded-lg border-2 border-black bg-white p-2.5 text-center font-mono font-black text-xs shadow-[2px_2px_0px_#000] peer-checked:bg-[#FF69B4] peer-checked:text-black">
+              ▼ EXPENSE (BURN)
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="txnType" value="income" class="peer sr-only" onchange="updateTypeColor()">
+            <div class="rounded-lg border-2 border-black bg-white p-2.5 text-center font-mono font-black text-xs shadow-[2px_2px_0px_#000] peer-checked:bg-[#70FFAF] peer-checked:text-black">
+              ▲ INFLOW (INCOME)
+            </div>
+          </label>
+        </div>
+
+        <!-- Description Memo -->
+        <div>
+          <label for="memoInput" class="block font-mono text-xs font-black uppercase text-black mb-1">
+            Transaction Memo / Title
+          </label>
+          <input 
+            type="text" 
+            id="memoInput" 
+            required 
+            placeholder="e.g. AWS Cloud Server Bill, Client Retainer..."
+            class="w-full rounded-lg border-2 border-black bg-white px-3 py-2 font-mono text-sm font-bold shadow-[2px_2px_0px_#000] outline-none focus:bg-[#FFE600]/20"
+          />
+        </div>
+
+        <!-- Amount & Quick Buttons -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label for="amountInput" class="block font-mono text-xs font-black uppercase text-black">
+              Amount (<span id="modalCurrencySymbol">$</span>)
+            </label>
+            <div class="flex items-center gap-1 font-mono text-[10px]">
+              <button type="button" onclick="addAmount(10)" class="px-1.5 py-0.5 rounded border border-black bg-white hover:bg-black hover:text-white font-bold">+10</button>
+              <button type="button" onclick="addAmount(50)" class="px-1.5 py-0.5 rounded border border-black bg-white hover:bg-black hover:text-white font-bold">+50</button>
+              <button type="button" onclick="addAmount(100)" class="px-1.5 py-0.5 rounded border border-black bg-white hover:bg-black hover:text-white font-bold">+100</button>
+            </div>
+          </div>
+          <input 
+            type="number" 
+            id="amountInput" 
+            step="0.01" 
+            min="0.01" 
+            required 
+            placeholder="0.00"
+            class="w-full rounded-lg border-2 border-black bg-white px-3 py-2 font-mono text-lg font-black shadow-[2px_2px_0px_#000] outline-none focus:bg-[#FFE600]/20"
+          />
+        </div>
+
+        <!-- Category & Account Row -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="categoryInput" class="block font-mono text-xs font-black uppercase text-black mb-1">
+              Category
+            </label>
+            <select id="categoryInput" class="w-full rounded-lg border-2 border-black bg-white px-2.5 py-2 font-mono text-xs font-black shadow-[2px_2px_0px_#000] outline-none">
+              <option value="Software & Tech">💻 Software & Tech</option>
+              <option value="Food & Drink">🍔 Food & Drink</option>
+              <option value="Housing & Utilities">🏠 Housing & Utilities</option>
+              <option value="Transport & Fuel">🚗 Transport & Fuel</option>
+              <option value="Client Work">💰 Client Work (Income)</option>
+              <option value="Salary">💼 Salary (Income)</option>
+              <option value="Investments">📈 Investments</option>
+              <option value="Health & Gym">💪 Health & Gym</option>
+            </select>
+          </div>
+          <div>
+            <label for="accountInput" class="block font-mono text-xs font-black uppercase text-black mb-1">
+              Account
+            </label>
+            <select id="accountInput" class="w-full rounded-lg border-2 border-black bg-white px-2.5 py-2 font-mono text-xs font-black shadow-[2px_2px_0px_#000] outline-none">
+              <option value="Mercury Primary">🏦 Mercury Primary</option>
+              <option value="Apple Card (Titanium)">💳 Apple Card (Titanium)</option>
+              <option value="Chase Sapphire">💳 Chase Sapphire</option>
+              <option value="Cold Storage Vault">🪙 Cold Storage Vault</option>
+              <option value="Cash Pocket">💵 Cash Pocket</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Date & Note -->
+        <div>
+          <label for="dateInput" class="block font-mono text-xs font-black uppercase text-black mb-1">
+            Date
+          </label>
+          <input 
+            type="date" 
+            id="dateInput" 
+            required 
+            class="w-full rounded-lg border-2 border-black bg-white px-3 py-2 font-mono text-xs font-bold shadow-[2px_2px_0px_#000] outline-none"
+          />
+        </div>
+
+        <!-- Modal Submit Buttons -->
+        <div class="pt-2 flex items-center justify-end gap-2.5">
+          <button type="button" onclick="closeModal()" class="neo-btn rounded-lg bg-white px-4 py-2 font-mono font-bold text-xs text-black">
+            CANCEL
+          </button>
+          <button type="submit" class="neo-btn-heavy rounded-lg bg-[#70FFAF] px-5 py-2.5 font-display font-black text-sm text-black flex items-center gap-1.5">
+            <span>COMMIT RECORD ⚡</span>
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast" class="fixed top-5 right-5 z-50 rounded-xl border-3 border-black bg-[#FFE600] px-4 py-2.5 font-mono text-xs font-black shadow-[4px_4px_0px_#000] transition-all transform translate-y-[-100px] opacity-0 flex items-center gap-2 pointer-events-none">
+    <span id="toastIcon">⚡</span>
+    <span id="toastMsg">Action recorded!</span>
+  </div>
+
+  <!-- LOGIC SCRIPT (Vanilla JS, LocalStorage, Pure Responsiveness) -->
+  <script>
+    // CURRENCY CONFIG
+    const CURRENCIES = {
+      USD: { symbol: '$', rate: 1.0, decimals: 2 },
+      IDR: { symbol: 'Rp ', rate: 15600, decimals: 0 },
+      EUR: { symbol: '€', rate: 0.92, decimals: 2 },
+      GBP: { symbol: '£', rate: 0.78, decimals: 2 },
+      JPY: { symbol: '¥', rate: 151.2, decimals: 0 }
+    };
+
+    let activeCurrency = 'USD';
+    let currentPeriod = 'this_month';
+    let currentFilter = 'all';
+
+    // INITIAL DEMO SEED DATA
+    const INITIAL_TRANSACTIONS = [
+      { id: 'tx-1', date: '2026-10-02', memo: 'Vercel Enterprise Pro Subscription', category: 'Software & Tech', account: 'Mercury Primary', type: 'expense', amount: 40.00 },
+      { id: 'tx-2', date: '2026-10-02', memo: 'Blue Bottle Pour-over & Bagel', category: 'Food & Drink', account: 'Apple Card', type: 'expense', amount: 16.50 },
+      { id: 'tx-3', date: '2026-10-01', memo: 'Stripe Payout // UI Design Retainer', category: 'Client Work', account: 'Mercury Primary', type: 'income', amount: 3800.00 },
+      { id: 'tx-4', date: '2026-09-30', memo: 'Equinox Gym & Spa Membership', category: 'Health & Gym', account: 'Chase Sapphire', type: 'expense', amount: 280.00 },
+      { id: 'tx-5', date: '2026-09-28', memo: 'Whole Foods Market Organic Groceries', category: 'Food & Drink', account: 'Apple Card', type: 'expense', amount: 134.20 },
+      { id: 'tx-6', date: '2026-09-25', memo: 'Tech Contract Sprint Delivery #4', category: 'Salary', account: 'Mercury Primary', type: 'income', amount: 4850.00 },
+      { id: 'tx-7', date: '2026-09-22', memo: 'Shell Gasoline Fill-up 93 Octane', category: 'Transport & Fuel', account: 'Apple Card', type: 'expense', amount: 56.40 },
+    ];
+
+    // LocalStorage helper
+    function getStoredTransactions() {
+      const stored = localStorage.getItem('stash_neo_transactions');
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch (e) {
+          console.error('Error parsing stored txns', e);
+        }
+      }
+      return [...INITIAL_TRANSACTIONS];
+    }
+
+    function saveStoredTransactions(txns) {
+      localStorage.setItem('stash_neo_transactions', JSON.stringify(txns));
+    }
+
+    let transactions = getStoredTransactions();
+
+    // Format currency amount based on active rate and symbols
+    function formatMoney(amountUSD) {
+      const cfg = CURRENCIES[activeCurrency];
+      const converted = amountUSD * cfg.rate;
+      if (cfg.decimals === 0) {
+        return cfg.symbol + Math.round(converted).toLocaleString();
+      } else {
+        return cfg.symbol + converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+    }
+
+    // Currency Switcher
+    function setCurrency(cur) {
+      activeCurrency = cur;
+      document.getElementById('currencySelect').value = cur;
+      document.getElementById('currencySelectMobile').value = cur;
+      document.getElementById('modalCurrencySymbol').textContent = CURRENCIES[cur].symbol;
+      
+      updateTelemetry();
+      renderLedger();
+      showToast(`Currency changed to ${cur}`, '💱');
+    }
+
+    // Period Switcher
+    function setPeriod(p) {
+      currentPeriod = p;
+      ['this_month', 'q3', 'ytd'].forEach(id => {
+        const btn = document.getElementById('period_' + id);
+        if (id === p) {
+          btn.className = "px-2.5 sm:px-3 py-1 rounded border-2 border-black bg-[#FFE600] font-black shadow-[1px_1px_0px_#000] transition-colors";
+        } else {
+          btn.className = "px-2.5 sm:px-3 py-1 rounded border border-transparent hover:border-black font-semibold text-black/80 transition-colors";
+        }
+      });
+      showToast(`Showing period: ${p.toUpperCase()}`, '📅');
+    }
+
+    // Filter Transactions
+    function filterTransactions(f) {
+      currentFilter = f;
+      ['all', 'expense', 'income'].forEach(id => {
+        const btn = document.getElementById('filter_' + id);
+        if (id === f) {
+          btn.className = "px-2.5 py-1 rounded border-2 border-black bg-[#FFE600] font-black shadow-[1px_1px_0px_#000]";
+        } else {
+          btn.className = "px-2.5 py-1 rounded border border-transparent hover:border-black font-semibold text-black/80";
+        }
+      });
+      renderLedger();
+    }
+
+    // Telemetry calculations
+    function updateTelemetry() {
+      let inflow = 0;
+      let outflow = 0;
+
+      transactions.forEach(t => {
+        if (t.type === 'income') inflow += t.amount;
+        if (t.type === 'expense') outflow += t.amount;
+      });
+
+      // Net worth base constant + net activity
+      const baseNetWorth = 78888.40;
+      const netWorth = baseNetWorth + (inflow - outflow);
+
+      document.getElementById('metricNetWorth').textContent = formatMoney(netWorth);
+      document.getElementById('metricInflow').textContent = '+' + formatMoney(inflow);
+      document.getElementById('metricOutflow').textContent = '-' + formatMoney(outflow);
+    }
+
+    // Render Ledger Rows
+    function renderLedger() {
+      const tbody = document.getElementById('ledgerTableBody');
+      const searchQuery = (document.getElementById('ledgerSearch').value || '').toLowerCase().trim();
+
+      let filtered = transactions.filter(t => {
+        if (currentFilter === 'expense' && t.type !== 'expense') return false;
+        if (currentFilter === 'income' && t.type !== 'income') return false;
+        if (searchQuery) {
+          const matchMemo = t.memo.toLowerCase().includes(searchQuery);
+          const matchCat = t.category.toLowerCase().includes(searchQuery);
+          const matchAcc = t.account.toLowerCase().includes(searchQuery);
+          return matchMemo || matchCat || matchAcc;
+        }
+        return true;
+      });
+
+      // Update badge
+      document.getElementById('ledgerCountBadge').textContent = `SHOWING ${filtered.length} OF ${transactions.length} RECORDS`;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="py-8 text-center font-mono font-bold text-sm text-black/60">
+              ⚡ NO MATCHING TRANSACTIONS FOUND IN THIS TIMELINE.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      // Generate category pill color
+      function getCategoryColor(cat) {
+        if (cat.includes('Tech') || cat.includes('Software')) return 'bg-[#00F0FF]';
+        if (cat.includes('Food')) return 'bg-[#FFE600]';
+        if (cat.includes('Work') || cat.includes('Salary')) return 'bg-[#70FFAF]';
+        if (cat.includes('Gym') || cat.includes('Health')) return 'bg-[#FF69B4]';
+        if (cat.includes('Transport')) return 'bg-[#FF5C00] text-white';
+        return 'bg-white';
+      }
+
+      tbody.innerHTML = filtered.map(t => {
+        const isIncome = t.type === 'income';
+        const sign = isIncome ? '+' : '-';
+        const amountClass = isIncome ? 'text-[#008f43] font-black' : 'text-black font-black';
+        const rowBg = isIncome ? 'hover:bg-[#70FFAF]/10' : 'hover:bg-[#FF69B4]/10';
+
+        return `
+          <tr class="${rowBg} transition-colors border-b border-black/10">
+            <td class="py-3 px-3 whitespace-nowrap text-black/70 font-mono text-[11px]">${t.date}</td>
+            <td class="py-3 px-3">
+              <div class="font-bold text-black text-xs sm:text-sm flex items-center gap-1.5">
+                <span>${t.memo}</span>
+              </div>
+            </td>
+            <td class="py-3 px-3 whitespace-nowrap">
+              <span class="inline-block rounded border border-black ${getCategoryColor(t.category)} px-2 py-0.5 text-[10px] font-black uppercase shadow-[1px_1px_0px_#000]">
+                ${t.category}
+              </span>
+            </td>
+            <td class="py-3 px-3 whitespace-nowrap text-black/80 font-mono text-[11px]">${t.account}</td>
+            <td class="py-3 px-3 text-right whitespace-nowrap font-mono text-sm ${amountClass}">
+              ${sign}${formatMoney(t.amount)}
+            </td>
+            <td class="py-3 px-3 text-center whitespace-nowrap">
+              <button onclick="deleteTxn('${t.id}')" title="Delete entry" class="w-7 h-7 rounded border border-black bg-white hover:bg-[#FF69B4] hover:text-black font-bold text-xs inline-flex items-center justify-center shadow-[1px_1px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 transition-all">
+                ✕
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Modal Control
+    function openModal() {
+      const modal = document.getElementById('txnModal');
+      modal.classList.remove('hidden');
+      document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
+      setTimeout(() => document.getElementById('memoInput').focus(), 50);
+    }
+
+    function closeModal() {
+      document.getElementById('txnModal').classList.add('hidden');
+      document.getElementById('txnForm').reset();
+    }
+
+    function updateTypeColor() {
+      // Pill state handled by peer-checked
+    }
+
+    function addAmount(delta) {
+      const input = document.getElementById('amountInput');
+      const val = parseFloat(input.value) || 0;
+      input.value = (val + delta).toFixed(2);
+    }
+
+    // Form submission
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const type = document.querySelector('input[name="txnType"]:checked').value;
+      const memo = document.getElementById('memoInput').value.trim();
+      const amount = parseFloat(document.getElementById('amountInput').value);
+      const category = document.getElementById('categoryInput').value;
+      const account = document.getElementById('accountInput').value;
+      const date = document.getElementById('dateInput').value;
+
+      if (!memo || isNaN(amount) || amount <= 0) {
+        showToast('Please specify valid memo and amount', '⚠️');
+        return;
+      }
+
+      const newTx = {
+        id: 'tx-' + Date.now(),
+        date,
+        memo,
+        category,
+        account,
+        type,
+        amount
+      };
+
+      transactions.unshift(newTx);
+      saveStoredTransactions(transactions);
+      updateTelemetry();
+      renderLedger();
+      closeModal();
+      showToast(`${type === 'income' ? 'Income' : 'Expense'} logged: ${memo}`, '⚡');
+    }
+
+    // Fast quick expense dock trigger
+    function quickExpense(amount, memo, category) {
+      const newTx = {
+        id: 'tx-' + Date.now(),
+        date: new Date().toISOString().split('T')[0],
+        memo,
+        category,
+        account: 'Apple Card',
+        type: 'expense',
+        amount
+      };
+
+      transactions.unshift(newTx);
+      saveStoredTransactions(transactions);
+      updateTelemetry();
+      renderLedger();
+      showToast(`Quick recorded: -${formatMoney(amount)} (${memo})`, '☕');
+    }
+
+    // Quick stash into budget envelope
+    function stashFast(amount, vaultName) {
+      showToast(`Stashed +${formatMoney(amount)} into ${vaultName}!`, '💰');
+    }
+
+    // Delete Transaction
+    function deleteTxn(id) {
+      transactions = transactions.filter(t => t.id !== id);
+      saveStoredTransactions(transactions);
+      updateTelemetry();
+      renderLedger();
+      showToast('Transaction excised from ledger.', '🗑️');
+    }
+
+    // Export to CSV
+    function exportCSV() {
+      const headers = ['ID', 'Date', 'Type', 'Memo', 'Category', 'Account', 'Amount_USD'];
+      const rows = transactions.map(t => [
+        t.id,
+        t.date,
+        t.type,
+        `"${t.memo.replace(/"/g, '""')}"`,
+        `"${t.category}"`,
+        `"${t.account}"`,
+        t.amount.toFixed(2)
+      ]);
+      const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `stash_ledger_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Ledger exported as CSV!', '📥');
+    }
+
+    // Reset default seed
+    function resetDefaultData() {
+      if (confirm('Reset to initial sample transactions?')) {
+        transactions = [...INITIAL_TRANSACTIONS];
+        saveStoredTransactions(transactions);
+        updateTelemetry();
+        renderLedger();
+        showToast('Restored default demo records.', '✨');
+      }
+    }
+
+    // Toggle chart visualization mode
+    let chartCumulative = false;
+    function toggleChartMode() {
+      chartCumulative = !chartCumulative;
+      showToast(`Radar switched to ${chartCumulative ? 'Cumulative Stash' : 'Monthly Cash Flow'}`, '📊');
+    }
+
+    // Toast Alert notification
+    let toastTimeout = null;
+    function showToast(message, icon = '⚡') {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = message;
+      document.getElementById('toastIcon').textContent = icon;
+
+      toast.classList.remove('opacity-0', 'translate-y-[-100px]');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-[-100px]');
+      }, 3000);
+    }
+
+    // Keyboard Shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        openModal();
+      }
+    });
+
+    // Close modal on backdrop click
+    document.getElementById('txnModal').addEventListener('click', (e) => {
+      if (e.target.id === 'txnModal') closeModal();
+    });
+
+    // Initialization
+    updateTelemetry();
+    renderLedger();
+  </script>
+</body>
+</html>

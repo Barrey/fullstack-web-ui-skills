@@ -1,0 +1,1023 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Strata Capital — Clean, high-trust enterprise personal finance and treasury management dashboard inspired by Stripe and GitHub.">
+  <title>Strata // Enterprise Personal Wealth & Treasury</title>
+
+  <!-- Google Fonts: Inter for institutional clarity & JetBrains Mono for financial figures -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%232563eb'/%3E%3Cpath d='M7 14l5-5 5 5' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+
+  <!-- Tailwind CSS Browser v4 -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <style type="text/tailwindcss">
+    @theme static {
+      --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+
+      /* Enterprise Slate & Trust Palette */
+      --color-slate-50: #f8fafc;
+      --color-slate-100: #f1f5f9;
+      --color-slate-200: #e2e8f0;
+      --color-slate-300: #cbd5e1;
+      --color-slate-400: #94a3b8;
+      --color-slate-500: #64748b;
+      --color-slate-600: #475569;
+      --color-slate-700: #334155;
+      --color-slate-800: #1e293b;
+      --color-slate-900: #0f172a;
+
+      --color-brand-600: #2563eb;
+      --color-brand-700: #1d4ed8;
+      --color-brand-50: #eff6ff;
+    }
+  </style>
+
+  <style>
+    body {
+      font-family: var(--font-sans);
+      background-color: #f8fafc;
+      color: #0f172a;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Tabular numeric alignment */
+    .tabular {
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Enterprise subtle card transition */
+    .card-hover {
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .card-hover:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.03);
+    }
+
+    /* Custom enterprise clean scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f8fafc;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen text-slate-800 antialiased selection:bg-blue-100 selection:text-blue-900 pb-28">
+
+  <!-- TOP THEME NAVIGATION STRIP -->
+  <aside aria-label="Theme Navigation" class="border-b border-slate-200/90 bg-white py-1.5 px-3 sm:px-6">
+    <div class="max-w-7xl mx-auto flex items-center justify-between text-xs font-sans">
+      <div class="flex items-center gap-2">
+        <label for="themeSelect" class="text-slate-500 font-mono text-[10px] uppercase font-bold tracking-wider">Themes:</label>
+        <div class="relative">
+          <select id="themeSelect" onchange="window.location.href=this.value" class="appearance-none bg-slate-50 hover:bg-slate-100 text-blue-700 text-xs font-semibold px-2.5 py-1 pr-6 border border-slate-200 rounded-md shadow-2xs outline-none cursor-pointer transition-colors">
+            <option value="dashboard-enterprise.html" selected>🏢 Clean Enterprise</option>
+            <option value="dashboard-editorial.html">📜 Warm Editorial</option>
+            <option value="dashboard-spatial.html">🫧 Spatial Glass</option>
+            <option value="dashboard-ops-terminal.html">🎛️ Ops Terminal</option>
+            <option value="dashboard-cyberpunk.html">⚡ Cyberpunk HUD</option>
+            <option value="dashboard-linear.html">🔮 Linear Dark</option>
+            <option value="dashboard-quiet.html">🕊️ Quiet Minimal</option>
+            <option value="dashboard-playful.html">🎨 Playful Creative</option>
+            <option value="dashboard-neo-brutalism.html">⚡ Neo-Brutalist</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-slate-400 text-[9px]">
+            ▼
+          </div>
+        </div>
+      </div>
+      <div class="hidden md:flex items-center gap-2 text-slate-400 font-mono text-[11px]">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span>SECURE VAULT API v2.6.4</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ENTERPRISE HEADER -->
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
+      
+      <!-- Brand & Entity Name -->
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-9 h-9 rounded-lg bg-blue-600 flex shrink-0 items-center justify-center text-white font-bold text-sm shadow-xs">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/>
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <span class="text-base font-bold text-slate-900 tracking-tight truncate">Strata Treasury</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600 border border-slate-200 hidden xs:inline-flex">
+              Institutional Tier
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-500 font-medium hidden sm:block">Unified Wealth & Cashflow Telemetry</p>
+        </div>
+      </div>
+
+      <!-- Controls & Actions -->
+      <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+        
+        <!-- Currency Dropdown -->
+        <div class="relative">
+          <select id="currencySelect" onchange="setCurrency(this.value)" class="appearance-none bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs rounded-lg px-2.5 py-1.5 pr-6 border border-slate-200 outline-none cursor-pointer transition-colors">
+            <option value="USD">USD ($)</option>
+            <option value="IDR">IDR (Rp)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="GBP">GBP (£)</option>
+            <option value="JPY">JPY (¥)</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-1.5 flex items-center text-slate-400">
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </div>
+        </div>
+
+        <!-- Period Filter -->
+        <div class="hidden sm:flex items-center rounded-lg bg-slate-100 p-0.5 border border-slate-200/80 text-xs font-medium">
+          <button onclick="setPeriod('this_month')" id="period_this_month" class="px-2.5 py-1 rounded-md bg-white text-slate-900 font-semibold shadow-xs transition-colors">
+            October 2026
+          </button>
+          <button onclick="setPeriod('q3')" id="period_q3" class="px-2.5 py-1 rounded-md text-slate-600 hover:text-slate-900 transition-colors">
+            Q3 Trailing
+          </button>
+          <button onclick="setPeriod('ytd')" id="period_ytd" class="px-2.5 py-1 rounded-md text-slate-600 hover:text-slate-900 transition-colors">
+            YTD
+          </button>
+        </div>
+
+        <!-- Primary Action: New Record -->
+        <button onclick="openModal()" class="rounded-lg bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-3.5 py-1.5 sm:py-2 text-xs font-semibold shadow-xs hover:shadow transition-all flex items-center gap-1.5 cursor-pointer">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          <span class="hidden xs:inline">Record Transaction</span>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN ENTERPRISE CONTENT WRAPPER -->
+  <main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-5 sm:pt-7 space-y-6 sm:space-y-7">
+
+    <!-- 1. KEY ENTERPRISE TREASURY METRICS (4 CARDS) -->
+    <section aria-label="Treasury Financial Overview" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      
+      <!-- Card 01: Net Assets Under Management -->
+      <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-xs card-hover flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total Treasury Capital</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700 border border-emerald-200/60">
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+              +12.4% YoY
+            </span>
+          </div>
+          <div class="mt-3">
+            <div id="metricNetWorth" class="font-mono text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 tabular">
+              $142,850.00
+            </div>
+            <p class="mt-1 text-xs text-slate-500">Audited liquid assets & index holdings</p>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
+          <span>Solvency Ratio:</span>
+          <span class="font-semibold text-slate-900">96.2% (Strong)</span>
+        </div>
+      </div>
+
+      <!-- Card 02: Monthly Inflow / Revenue -->
+      <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-xs card-hover flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Gross Monthly Inflow</span>
+            <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200/60 px-2 py-0.5 rounded-full">
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+              2 Recurring
+            </span>
+          </div>
+          <div class="mt-3">
+            <div id="metricInflow" class="font-mono text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 tabular">
+              +$12,400.00
+            </div>
+            <p class="mt-1 text-xs text-slate-500">Contract retainer + Executive salary</p>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
+          <span>Target Target:</span>
+          <span class="font-semibold text-slate-900 font-mono">$12,000.00 (103%)</span>
+        </div>
+      </div>
+
+      <!-- Card 03: Operating Outflow / Burn -->
+      <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-xs card-hover flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Monthly Operating Burn</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700 border border-slate-200">
+              34% of Revenue
+            </span>
+          </div>
+          <div class="mt-3">
+            <div id="metricOutflow" class="font-mono text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 tabular">
+              -$4,218.60
+            </div>
+            <p class="mt-1 text-xs text-slate-500">Fixed overhead, living & tooling</p>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
+          <span>Daily Run Rate:</span>
+          <span class="font-semibold text-slate-900 font-mono">$140.62 / day</span>
+        </div>
+      </div>
+
+      <!-- Card 04: Liquidity Buffer & Runway -->
+      <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-xs card-hover flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Emergency Capital Runway</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700 border border-emerald-200/60">
+              Grade A+
+            </span>
+          </div>
+          <div class="mt-3">
+            <div class="font-mono text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 tabular">
+              14.2 <span class="text-sm font-sans font-semibold text-slate-600">Months</span>
+            </div>
+            <p class="mt-1 text-xs text-slate-500">Zero-revenue survival horizon</p>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
+          <span>Net Savings Margin:</span>
+          <span class="font-semibold text-emerald-600 font-mono">66.0%</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 2. CASH FLOW VISUALIZER & TREASURY ALLOCATION -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
+      
+      <!-- Cash Flow Dynamics Chart (7 Cols) -->
+      <div class="lg:col-span-7 rounded-xl border border-slate-200 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+        <div>
+          <!-- Chart Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+            <div>
+              <h2 class="text-base font-bold text-slate-900">Capital Flow & Liquidity Delta</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Trailing 6-month inflow versus operational burn</p>
+            </div>
+            
+            <div class="flex items-center gap-3 text-xs font-medium">
+              <span class="inline-flex items-center gap-1.5 text-slate-700">
+                <span class="w-3 h-3 rounded-sm bg-blue-600 inline-block"></span> Revenue Inflow
+              </span>
+              <span class="inline-flex items-center gap-1.5 text-slate-700">
+                <span class="w-3 h-3 rounded-sm bg-slate-300 inline-block"></span> Outflow Burn
+              </span>
+            </div>
+          </div>
+
+          <!-- Chart Visual Bars Area -->
+          <div class="mt-6 overflow-x-auto scrollbar-none pb-2">
+            <div class="min-w-[440px]">
+              <div class="h-52 flex items-end justify-between gap-4 px-2 border-b border-slate-200 relative">
+                
+                <!-- Horizontal Guidelines -->
+                <div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-40">
+                  <div class="border-b border-slate-100 w-full"></div>
+                  <div class="border-b border-slate-100 w-full"></div>
+                  <div class="border-b border-slate-100 w-full"></div>
+                  <div class="border-b border-slate-100 w-full"></div>
+                </div>
+
+                <!-- May -->
+                <div class="flex-1 flex flex-col items-center gap-1.5 group cursor-pointer relative z-10">
+                  <div class="opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900 text-white text-[10px] font-mono py-0.5 px-1.5 rounded shadow whitespace-nowrap absolute -top-6">+$10.8k / -$3.9k</div>
+                  <div class="w-full flex items-end justify-center gap-1.5 h-40">
+                    <div style="height: 75%" class="w-1/2 max-w-[20px] rounded-t bg-blue-600 group-hover:bg-blue-700 transition-all"></div>
+                    <div style="height: 38%" class="w-1/2 max-w-[20px] rounded-t bg-slate-300 group-hover:bg-slate-400 transition-all"></div>
+                  </div>
+                  <span class="text-xs font-medium text-slate-500">May</span>
+                </div>
+
+                <!-- Jun -->
+                <div class="flex-1 flex flex-col items-center gap-1.5 group cursor-pointer relative z-10">
+                  <div class="opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900 text-white text-[10px] font-mono py-0.5 px-1.5 rounded shadow whitespace-nowrap absolute -top-6">+$11.2k / -$4.1k</div>
+                  <div class="w-full flex items-end justify-center gap-1.5 h-40">
+                    <div style="height: 78%" class="w-1/2 max-w-[20px] rounded-t bg-blue-600 group-hover:bg-blue-700 transition-all"></div>
+                    <div style="height: 40%" class="w-1/2 max-w-[20px] rounded-t bg-slate-300 group-hover:bg-slate-400 transition-all"></div>
+                  </div>
+                  <span class="text-xs font-medium text-slate-500">Jun</span>
+                </div>
+
+                <!-- Jul -->
+                <div class="flex-1 flex flex-col items-center gap-1.5 group cursor-pointer relative z-10">
+                  <div class="opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900 text-white text-[10px] font-mono py-0.5 px-1.5 rounded shadow whitespace-nowrap absolute -top-6">+$10.5k / -$3.8k</div>
+                  <div class="w-full flex items-end justify-center gap-1.5 h-40">
+                    <div style="height: 72%" class="w-1/2 max-w-[20px] rounded-t bg-blue-600 group-hover:bg-blue-700 transition-all"></div>
+                    <div style="height: 36%" class="w-1/2 max-w-[20px] rounded-t bg-slate-300 group-hover:bg-slate-400 transition-all"></div>
+                  </div>
+                  <span class="text-xs font-medium text-slate-500">Jul</span>
+                </div>
+
+                <!-- Aug -->
+                <div class="flex-1 flex flex-col items-center gap-1.5 group cursor-pointer relative z-10">
+                  <div class="opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900 text-white text-[10px] font-mono py-0.5 px-1.5 rounded shadow whitespace-nowrap absolute -top-6">+$13.1k / -$4.6k</div>
+                  <div class="w-full flex items-end justify-center gap-1.5 h-40">
+                    <div style="height: 89%" class="w-1/2 max-w-[20px] rounded-t bg-blue-600 group-hover:bg-blue-700 transition-all"></div>
+                    <div style="height: 44%" class="w-1/2 max-w-[20px] rounded-t bg-slate-300 group-hover:bg-slate-400 transition-all"></div>
+                  </div>
+                  <span class="text-xs font-medium text-slate-500">Aug</span>
+                </div>
+
+                <!-- Sep -->
+                <div class="flex-1 flex flex-col items-center gap-1.5 group cursor-pointer relative z-10">
+                  <div class="opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900 text-white text-[10px] font-mono py-0.5 px-1.5 rounded shadow whitespace-nowrap absolute -top-6">+$11.8k / -$4.0k</div>
+                  <div class="w-full flex items-end justify-center gap-1.5 h-40">
+                    <div style="height: 82%" class="w-1/2 max-w-[20px] rounded-t bg-blue-600 group-hover:bg-blue-700 transition-all"></div>
+                    <div style="height: 39%" class="w-1/2 max-w-[20px] rounded-t bg-slate-300 group-hover:bg-slate-400 transition-all"></div>
+                  </div>
+                  <span class="text-xs font-medium text-slate-500">Sep</span>
+                </div>
+
+                <!-- Oct (Active) -->
+                <div class="flex-1 flex flex-col items-center gap-1.5 group cursor-pointer relative z-10">
+                  <div class="opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900 text-white text-[10px] font-mono py-0.5 px-1.5 rounded shadow whitespace-nowrap absolute -top-6">+$12.4k / -$4.2k (Current)</div>
+                  <div class="w-full flex items-end justify-center gap-1.5 h-40">
+                    <div style="height: 86%" class="w-1/2 max-w-[20px] rounded-t bg-blue-600 shadow-sm transition-all"></div>
+                    <div style="height: 41%" class="w-1/2 max-w-[20px] rounded-t bg-slate-400 transition-all"></div>
+                  </div>
+                  <span class="text-xs font-bold text-blue-700 bg-blue-50 px-1.5 py-0.2 rounded border border-blue-200/60">Oct</span>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart Summary Footnote -->
+        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+          <span>Net Retained Surplus (Oct): <strong class="font-mono text-slate-900 font-semibold">+$8,181.40</strong></span>
+          <span class="text-emerald-600 font-semibold flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Positive Operational Flow
+          </span>
+        </div>
+      </div>
+
+      <!-- Treasury Reserves / Sub-Accounts (5 Cols) -->
+      <div class="lg:col-span-5 rounded-xl border border-slate-200 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div>
+              <h2 class="text-base font-bold text-slate-900">Treasury Reserves</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Segregated liquidity buffers & targets</p>
+            </div>
+            <span class="text-xs font-semibold text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-md">
+              4 Accounts
+            </span>
+          </div>
+
+          <!-- Reserve Jars -->
+          <div class="mt-4 space-y-4">
+            
+            <!-- Vault 1: Tax Reserve Escrow -->
+            <div class="p-3 rounded-lg border border-slate-200/90 bg-slate-50/70 hover:bg-slate-50 transition-colors">
+              <div class="flex items-center justify-between text-xs font-semibold text-slate-800">
+                <span class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                  Corporate Tax Escrow (Q4)
+                </span>
+                <span class="font-mono text-slate-900">$28,000 / $30,000</span>
+              </div>
+              <div class="mt-2 w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+                <div style="width: 93.3%" class="h-full bg-blue-600 rounded-full"></div>
+              </div>
+              <div class="mt-2 flex items-center justify-between text-[11px] text-slate-500">
+                <span>93.3% Funded</span>
+                <button onclick="stashReserve(500, 'Tax Escrow')" class="text-blue-600 hover:text-blue-700 font-semibold">
+                  + Allocation ($500)
+                </button>
+              </div>
+            </div>
+
+            <!-- Vault 2: Index Fund Capital -->
+            <div class="p-3 rounded-lg border border-slate-200/90 bg-slate-50/70 hover:bg-slate-50 transition-colors">
+              <div class="flex items-center justify-between text-xs font-semibold text-slate-800">
+                <span class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  S&P 500 / Global Index Holding
+                </span>
+                <span class="font-mono text-slate-900">$64,500 / $80,000</span>
+              </div>
+              <div class="mt-2 w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+                <div style="width: 80.6%" class="h-full bg-emerald-500 rounded-full"></div>
+              </div>
+              <div class="mt-2 flex items-center justify-between text-[11px] text-slate-500">
+                <span>80.6% Target (DCA Monthly)</span>
+                <button onclick="stashReserve(1000, 'Index Holding')" class="text-blue-600 hover:text-blue-700 font-semibold">
+                  + Allocation ($1k)
+                </button>
+              </div>
+            </div>
+
+            <!-- Vault 3: Operations Liquidity -->
+            <div class="p-3 rounded-lg border border-slate-200/90 bg-slate-50/70 hover:bg-slate-50 transition-colors">
+              <div class="flex items-center justify-between text-xs font-semibold text-slate-800">
+                <span class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                  Operating Working Capital (90d)
+                </span>
+                <span class="font-mono text-slate-900">$35,350 / $35,000</span>
+              </div>
+              <div class="mt-2 w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+                <div style="width: 100%" class="h-full bg-indigo-500 rounded-full"></div>
+              </div>
+              <div class="mt-2 flex items-center justify-between text-[11px] text-slate-500">
+                <span class="text-emerald-600 font-medium">101.0% Optimal Buffer</span>
+                <span class="text-slate-400">Locked</span>
+              </div>
+            </div>
+
+            <!-- Vault 4: Hardware & Tech Capital -->
+            <div class="p-3 rounded-lg border border-slate-200/90 bg-slate-50/70 hover:bg-slate-50 transition-colors">
+              <div class="flex items-center justify-between text-xs font-semibold text-slate-800">
+                <span class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                  R&D Equipment & Hardware
+                </span>
+                <span class="font-mono text-slate-900">$15,000 / $20,000</span>
+              </div>
+              <div class="mt-2 w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+                <div style="width: 75%" class="h-full bg-amber-500 rounded-full"></div>
+              </div>
+              <div class="mt-2 flex items-center justify-between text-[11px] text-slate-500">
+                <span>75.0% Complete</span>
+                <button onclick="stashReserve(250, 'Equipment Reserve')" class="text-blue-600 hover:text-blue-700 font-semibold">
+                  + Allocation ($250)
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
+          <span>Total Segregated Capital:</span>
+          <span class="font-semibold text-slate-900 font-mono">$142,850.00</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 3. ENTERPRISE TRANSACTION LEDGER -->
+    <section class="rounded-xl border border-slate-200 bg-white shadow-xs overflow-hidden">
+      
+      <!-- Table Header & Controls Bar -->
+      <div class="p-4 sm:p-5 border-b border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-base font-bold text-slate-900">Institutional General Ledger</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Real-time settlement stream with multi-account reconciliation</p>
+        </div>
+
+        <!-- Filter Toolbar -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          <!-- Status Tabs -->
+          <div class="flex items-center rounded-lg bg-slate-100 p-0.5 border border-slate-200 text-xs font-medium">
+            <button onclick="filterTransactions('all')" id="filter_all" class="px-2.5 py-1 rounded-md bg-white text-slate-900 font-semibold shadow-xs transition-colors">
+              All
+            </button>
+            <button onclick="filterTransactions('expense')" id="filter_expense" class="px-2.5 py-1 rounded-md text-slate-600 hover:text-slate-900 transition-colors">
+              Disbursements
+            </button>
+            <button onclick="filterTransactions('income')" id="filter_income" class="px-2.5 py-1 rounded-md text-slate-600 hover:text-slate-900 transition-colors">
+              Receipts
+            </button>
+          </div>
+
+          <!-- Search Input -->
+          <div class="relative grow sm:grow-0">
+            <input 
+              type="text" 
+              id="ledgerSearch" 
+              oninput="renderLedger()" 
+              placeholder="Filter by description or tag..."
+              class="w-full sm:w-56 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 outline-none focus:bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+            />
+          </div>
+
+          <!-- Export CSV -->
+          <button onclick="exportCSV()" class="rounded-lg border border-slate-200 bg-white hover:bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-xs flex items-center gap-1.5 transition-colors">
+            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            <span>Export CSV</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- High-Density Enterprise Table -->
+      <div class="overflow-x-auto scrollbar-none">
+        <table class="w-full text-left border-collapse min-w-[700px]">
+          <thead>
+            <tr class="border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider bg-slate-50/80">
+              <th class="py-3 px-4">Date</th>
+              <th class="py-3 px-4">Entity / Transaction Description</th>
+              <th class="py-3 px-4">Category Allocation</th>
+              <th class="py-3 px-4">Settlement Account</th>
+              <th class="py-3 px-4">Status</th>
+              <th class="py-3 px-4 text-right">Amount</th>
+              <th class="py-3 px-4 text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody id="ledgerTableBody" class="divide-y divide-slate-100 text-xs font-medium text-slate-700">
+            <!-- Dynamically populated via JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Ledger Table Footer -->
+      <div class="p-3.5 bg-slate-50/60 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500">
+        <span id="ledgerCountBadge" class="font-medium text-slate-600">Showing 7 reconciled transactions</span>
+        <div class="flex items-center gap-3">
+          <button onclick="resetDefaultData()" class="text-slate-500 hover:text-slate-800 underline text-xs">
+            Reset Demo Dataset
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- MODAL: ADD TRANSACTION (Clean Enterprise Dialog / Mobile Bottom Sheet) -->
+  <div id="txnModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-[2px] hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="w-full sm:max-w-lg bg-white rounded-t-2xl sm:rounded-xl border-t sm:border border-slate-200 shadow-xl p-5 sm:p-6 transition-all">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div>
+          <h3 class="text-base font-bold text-slate-900">Record General Ledger Entry</h3>
+          <p class="text-xs text-slate-500 mt-0.5">Commit new financial receipt or disbursement</p>
+        </div>
+        <button onclick="closeModal()" class="w-7 h-7 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 flex items-center justify-center transition-colors">
+          ✕
+        </button>
+      </div>
+
+      <!-- Form Inputs -->
+      <form id="txnForm" onsubmit="handleFormSubmit(event)" class="mt-4 space-y-4">
+        
+        <!-- Type Selection -->
+        <div class="grid grid-cols-2 gap-2">
+          <label class="cursor-pointer">
+            <input type="radio" name="txnType" value="expense" checked class="peer sr-only">
+            <div class="rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-center text-xs font-semibold text-slate-600 peer-checked:bg-rose-50 peer-checked:border-rose-200 peer-checked:text-rose-700 transition-all">
+              Disbursement (Expense)
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="txnType" value="income" class="peer sr-only">
+            <div class="rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-center text-xs font-semibold text-slate-600 peer-checked:bg-emerald-50 peer-checked:border-emerald-200 peer-checked:text-emerald-700 transition-all">
+              Receipt (Revenue)
+            </div>
+          </label>
+        </div>
+
+        <!-- Memo Description -->
+        <div>
+          <label for="memoInput" class="block text-xs font-semibold text-slate-700 mb-1">
+            Transaction Description / Counterparty
+          </label>
+          <input 
+            type="text" 
+            id="memoInput" 
+            required 
+            placeholder="e.g. AWS Cloud Infrastructure, Retainer Payout..."
+            class="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-800 placeholder-slate-400 outline-none focus:bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          />
+        </div>
+
+        <!-- Amount & Quick Buttons -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label for="amountInput" class="block text-xs font-semibold text-slate-700">
+              Amount (<span id="modalCurrencySymbol">$</span>)
+            </label>
+            <div class="flex items-center gap-1 text-[11px]">
+              <button type="button" onclick="addAmount(50)" class="px-1.5 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold">+50</button>
+              <button type="button" onclick="addAmount(250)" class="px-1.5 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold">+250</button>
+              <button type="button" onclick="addAmount(1000)" class="px-1.5 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold">+1k</button>
+            </div>
+          </div>
+          <input 
+            type="number" 
+            id="amountInput" 
+            step="0.01" 
+            min="0.01" 
+            required 
+            placeholder="0.00"
+            class="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-base font-bold font-mono text-slate-900 placeholder-slate-400 outline-none focus:bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          />
+        </div>
+
+        <!-- Category & Settlement Account -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="categoryInput" class="block text-xs font-semibold text-slate-700 mb-1">
+              General Ledger Account
+            </label>
+            <select id="categoryInput" class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-xs font-medium text-slate-800 outline-none focus:bg-white focus:border-blue-500">
+              <option value="Cloud Infrastructure">💻 Cloud & SaaS Tools</option>
+              <option value="Professional Services">⚖️ Professional & Legal</option>
+              <option value="Office & Facilities">🏢 Facilities & Workspace</option>
+              <option value="Executive Payroll">💼 Executive Salary (Inflow)</option>
+              <option value="Contract Consulting">📈 Client Retainer (Inflow)</option>
+              <option value="Capital Investments">🏛️ Index & ETF Allocations</option>
+              <option value="Travel & Logistics">✈️ Travel & Executive Transport</option>
+            </select>
+          </div>
+          <div>
+            <label for="accountInput" class="block text-xs font-semibold text-slate-700 mb-1">
+              Settlement Custody
+            </label>
+            <select id="accountInput" class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 text-xs font-medium text-slate-800 outline-none focus:bg-white focus:border-blue-500">
+              <option value="Silicon Valley Bank">🏦 SVB Institutional</option>
+              <option value="Mercury Treasury">🏦 Mercury Treasury</option>
+              <option value="J.P. Morgan Private">🏛️ J.P. Morgan Private</option>
+              <option value="Corporate Brex Card">💳 Corporate Brex Card</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Date Input -->
+        <div>
+          <label for="dateInput" class="block text-xs font-semibold text-slate-700 mb-1">
+            Settlement Date
+          </label>
+          <input 
+            type="date" 
+            id="dateInput" 
+            required 
+            class="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-800 outline-none focus:bg-white focus:border-blue-500"
+          />
+        </div>
+
+        <!-- Submit & Cancel Buttons -->
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-2.5">
+          <button type="button" onclick="closeModal()" class="rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
+            Cancel
+          </button>
+          <button type="submit" class="rounded-lg bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-xs font-semibold shadow-xs transition-colors">
+            Commit to Ledger
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed top-5 right-5 z-50 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-xs font-medium text-slate-800 shadow-md transition-all transform translate-y-[-80px] opacity-0 flex items-center gap-2 pointer-events-none">
+    <span id="toastIcon" class="text-blue-600">✓</span>
+    <span id="toastMsg">Transaction recorded</span>
+  </div>
+
+  <!-- JAVASCRIPT STATE ENGINE (Pure Vanilla JS + LocalStorage) -->
+  <script>
+    // CURRENCY DEFINITIONS & RATES
+    const CURRENCIES = {
+      USD: { symbol: '$', rate: 1.0, decimals: 2 },
+      IDR: { symbol: 'Rp ', rate: 15600, decimals: 0 },
+      EUR: { symbol: '€', rate: 0.92, decimals: 2 },
+      GBP: { symbol: '£', rate: 0.78, decimals: 2 },
+      JPY: { symbol: '¥', rate: 151.2, decimals: 0 }
+    };
+
+    let activeCurrency = 'USD';
+    let currentPeriod = 'this_month';
+    let currentFilter = 'all';
+
+    // INITIAL RECONCILED DEMO DATA
+    const INITIAL_TRANSACTIONS = [
+      { id: 'tx-01', date: '2026-10-02', memo: 'Amazon Web Services (Production Cluster)', category: 'Cloud Infrastructure', account: 'Corporate Brex Card', type: 'expense', amount: 840.50, status: 'Settled' },
+      { id: 'tx-02', date: '2026-10-02', memo: 'Stripe Payout // Enterprise Software Retainer', category: 'Contract Consulting', account: 'Mercury Treasury', type: 'income', amount: 6200.00, status: 'Settled' },
+      { id: 'tx-03', date: '2026-10-01', memo: 'Google Cloud Platform & BigQuery Data Warehouse', category: 'Cloud Infrastructure', account: 'Corporate Brex Card', type: 'expense', amount: 320.00, status: 'Settled' },
+      { id: 'tx-04', date: '2026-09-30', memo: 'Gunderson Dettmer Legal Compliance Advisory', category: 'Professional Services', account: 'Silicon Valley Bank', type: 'expense', amount: 1450.00, status: 'Settled' },
+      { id: 'tx-05', date: '2026-09-28', memo: 'WeWork Executive Suite Office Lease', category: 'Office & Facilities', account: 'Silicon Valley Bank', type: 'expense', amount: 1200.00, status: 'Settled' },
+      { id: 'tx-06', date: '2026-09-25', memo: 'Monthly Executive Payroll Direct Deposit', category: 'Executive Payroll', account: 'Mercury Treasury', type: 'income', amount: 6200.00, status: 'Settled' },
+      { id: 'tx-07', date: '2026-09-22', memo: 'United Airlines Executive Business Transport', category: 'Travel & Logistics', account: 'Corporate Brex Card', type: 'expense', amount: 408.10, status: 'Settled' }
+    ];
+
+    // Local Storage Helpers
+    function getStoredTransactions() {
+      const stored = localStorage.getItem('strata_enterprise_txns');
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch (e) {
+          console.error('Error loading stored transactions', e);
+        }
+      }
+      return [...INITIAL_TRANSACTIONS];
+    }
+
+    function saveStoredTransactions(data) {
+      localStorage.setItem('strata_enterprise_txns', JSON.stringify(data));
+    }
+
+    let transactions = getStoredTransactions();
+
+    // Format Monetary Figures
+    function formatMoney(amountUSD) {
+      const cfg = CURRENCIES[activeCurrency];
+      const converted = amountUSD * cfg.rate;
+      if (cfg.decimals === 0) {
+        return cfg.symbol + Math.round(converted).toLocaleString();
+      } else {
+        return cfg.symbol + converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+    }
+
+    // Set Currency
+    function setCurrency(cur) {
+      activeCurrency = cur;
+      document.getElementById('currencySelect').value = cur;
+      document.getElementById('modalCurrencySymbol').textContent = CURRENCIES[cur].symbol;
+      updateTelemetry();
+      renderLedger();
+      showToast(`Base currency converted to ${cur}`);
+    }
+
+    // Set Period Filter
+    function setPeriod(p) {
+      currentPeriod = p;
+      ['this_month', 'q3', 'ytd'].forEach(id => {
+        const btn = document.getElementById('period_' + id);
+        if (id === p) {
+          btn.className = "px-2.5 py-1 rounded-md bg-white text-slate-900 font-semibold shadow-xs transition-colors";
+        } else {
+          btn.className = "px-2.5 py-1 rounded-md text-slate-600 hover:text-slate-900 transition-colors";
+        }
+      });
+      showToast(`Period filtered: ${p.toUpperCase()}`);
+    }
+
+    // Filter Ledger View
+    function filterTransactions(f) {
+      currentFilter = f;
+      ['all', 'expense', 'income'].forEach(id => {
+        const btn = document.getElementById('filter_' + id);
+        if (id === f) {
+          btn.className = "px-2.5 py-1 rounded-md bg-white text-slate-900 font-semibold shadow-xs transition-colors";
+        } else {
+          btn.className = "px-2.5 py-1 rounded-md text-slate-600 hover:text-slate-900 transition-colors";
+        }
+      });
+      renderLedger();
+    }
+
+    // Update Top Overview Metrics
+    function updateTelemetry() {
+      let inflow = 0;
+      let outflow = 0;
+
+      transactions.forEach(t => {
+        if (t.type === 'income') inflow += t.amount;
+        if (t.type === 'expense') outflow += t.amount;
+      });
+
+      const baseTreasury = 134668.60;
+      const netWorth = baseTreasury + (inflow - outflow);
+
+      document.getElementById('metricNetWorth').textContent = formatMoney(netWorth);
+      document.getElementById('metricInflow').textContent = '+' + formatMoney(inflow);
+      document.getElementById('metricOutflow').textContent = '-' + formatMoney(outflow);
+    }
+
+    // Render Ledger Rows
+    function renderLedger() {
+      const tbody = document.getElementById('ledgerTableBody');
+      const searchQuery = (document.getElementById('ledgerSearch').value || '').toLowerCase().trim();
+
+      let filtered = transactions.filter(t => {
+        if (currentFilter === 'expense' && t.type !== 'expense') return false;
+        if (currentFilter === 'income' && t.type !== 'income') return false;
+        if (searchQuery) {
+          return t.memo.toLowerCase().includes(searchQuery) ||
+                 t.category.toLowerCase().includes(searchQuery) ||
+                 t.account.toLowerCase().includes(searchQuery);
+        }
+        return true;
+      });
+
+      document.getElementById('ledgerCountBadge').textContent = `Showing ${filtered.length} of ${transactions.length} reconciled entries`;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="py-10 text-center text-slate-500 font-medium">
+              No general ledger records found matching current query parameters.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(t => {
+        const isIncome = t.type === 'income';
+        const sign = isIncome ? '+' : '-';
+        const amountClass = isIncome ? 'text-emerald-600 font-semibold' : 'text-slate-900 font-semibold';
+
+        return `
+          <tr class="hover:bg-slate-50/80 transition-colors">
+            <td class="py-3 px-4 font-mono text-[11px] text-slate-500 whitespace-nowrap">${t.date}</td>
+            <td class="py-3 px-4">
+              <span class="font-semibold text-slate-900">${t.memo}</span>
+            </td>
+            <td class="py-3 px-4 whitespace-nowrap">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                ${t.category}
+              </span>
+            </td>
+            <td class="py-3 px-4 whitespace-nowrap text-slate-600">${t.account}</td>
+            <td class="py-3 px-4 whitespace-nowrap">
+              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                ${t.status || 'Settled'}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-right font-mono tabular whitespace-nowrap ${amountClass}">
+              ${sign}${formatMoney(t.amount)}
+            </td>
+            <td class="py-3 px-4 text-center whitespace-nowrap">
+              <button onclick="deleteTxn('${t.id}')" title="Reconcile / Void" class="text-slate-400 hover:text-rose-600 p-1 rounded hover:bg-slate-100 transition-colors">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Modal Handlers
+    function openModal() {
+      const modal = document.getElementById('txnModal');
+      modal.classList.remove('hidden');
+      document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
+      setTimeout(() => document.getElementById('memoInput').focus(), 50);
+    }
+
+    function closeModal() {
+      document.getElementById('txnModal').classList.add('hidden');
+      document.getElementById('txnForm').reset();
+    }
+
+    function addAmount(delta) {
+      const input = document.getElementById('amountInput');
+      const val = parseFloat(input.value) || 0;
+      input.value = (val + delta).toFixed(2);
+    }
+
+    // Commit Transaction
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const type = document.querySelector('input[name="txnType"]:checked').value;
+      const memo = document.getElementById('memoInput').value.trim();
+      const amount = parseFloat(document.getElementById('amountInput').value);
+      const category = document.getElementById('categoryInput').value;
+      const account = document.getElementById('accountInput').value;
+      const date = document.getElementById('dateInput').value;
+
+      if (!memo || isNaN(amount) || amount <= 0) {
+        showToast('Please specify valid memo and amount', '⚠️');
+        return;
+      }
+
+      const newTx = {
+        id: 'tx-' + Date.now(),
+        date,
+        memo,
+        category,
+        account,
+        type,
+        amount,
+        status: 'Settled'
+      };
+
+      transactions.unshift(newTx);
+      saveStoredTransactions(transactions);
+      updateTelemetry();
+      renderLedger();
+      closeModal();
+      showToast(`Committed to ledger: ${memo}`);
+    }
+
+    // Stash to reserve jar
+    function stashReserve(amount, reserveName) {
+      showToast(`Allocated +${formatMoney(amount)} to ${reserveName}`);
+    }
+
+    // Delete / Void Transaction
+    function deleteTxn(id) {
+      transactions = transactions.filter(t => t.id !== id);
+      saveStoredTransactions(transactions);
+      updateTelemetry();
+      renderLedger();
+      showToast('Transaction voided from general ledger');
+    }
+
+    // Export to CSV
+    function exportCSV() {
+      const headers = ['Transaction_ID', 'Date', 'Type', 'Description', 'GL_Category', 'Account', 'Amount_USD', 'Status'];
+      const rows = transactions.map(t => [
+        t.id,
+        t.date,
+        t.type,
+        `"${t.memo.replace(/"/g, '""')}"`,
+        `"${t.category}"`,
+        `"${t.account}"`,
+        t.amount.toFixed(2),
+        t.status || 'Settled'
+      ]);
+      const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `strata_general_ledger_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('General ledger exported as CSV');
+    }
+
+    // Reset default seed
+    function resetDefaultData() {
+      if (confirm('Reset to standard enterprise baseline transactions?')) {
+        transactions = [...INITIAL_TRANSACTIONS];
+        saveStoredTransactions(transactions);
+        updateTelemetry();
+        renderLedger();
+        showToast('Dataset restored to enterprise baseline');
+      }
+    }
+
+    // Toast Alert
+    let toastTimeout = null;
+    function showToast(message, icon = '✓') {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = message;
+      document.getElementById('toastIcon').textContent = icon;
+
+      toast.classList.remove('opacity-0', 'translate-y-[-80px]');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-[-80px]');
+      }, 3000);
+    }
+
+    // Keyboard Shortcuts (Esc to close, Cmd+K / Ctrl+K to open modal)
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        openModal();
+      }
+    });
+
+    // Close modal on backdrop click
+    document.getElementById('txnModal').addEventListener('click', (e) => {
+      if (e.target.id === 'txnModal') closeModal();
+    });
+
+    // Initialize
+    updateTelemetry();
+    renderLedger();
+  </script>
+</body>
+</html>

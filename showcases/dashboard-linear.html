@@ -1,0 +1,1810 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Linear Dark styled personal finance engineering dashboard. Real-time cashflow, budget telemetry, asset allocation, and transaction logs.">
+  <title>Apex Finance — Wealth OS & Cashflow Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6'/%3E%3C/svg%3E">
+  
+  <!-- Tailwind CSS Browser v4 -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  
+  <style type="text/tailwindcss">
+    @theme static {
+      --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      
+      --color-canvas: #09090b;
+      --color-surface-card: #121215;
+      --color-surface-hover: #1c1c21;
+      --color-surface-elevated: #202026;
+      --color-border-hairline: rgba(255, 255, 255, 0.08);
+      --color-border-hover: rgba(255, 255, 255, 0.18);
+      --color-accent-indigo: #6366f1;
+      --color-accent-violet: #8b5cf6;
+      --color-accent-emerald: #10b981;
+      --color-accent-rose: #f43f5e;
+      --color-accent-amber: #f59e0b;
+      --color-accent-cyan: #06b6d4;
+    }
+  </style>
+
+  <style>
+    /* Custom linear dark glow & specular highlight utilities */
+    :root {
+      color-scheme: dark;
+    }
+    body {
+      background-color: #09090b;
+      color: #f4f4f5;
+      font-family: var(--font-sans);
+      selection-background-color: #6366f1;
+      selection-color: #ffffff;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    ::selection {
+      background: rgba(99, 102, 241, 0.35);
+      color: #ffffff;
+    }
+    
+    /* Linear specular top-edge highlight & subtle glow */
+    .linear-card {
+      position: relative;
+      background-color: rgba(18, 18, 21, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.07), 0 8px 30px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(12px);
+      transition: border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s ease;
+    }
+    .linear-card:hover {
+      border-color: rgba(255, 255, 255, 0.16);
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 12px 36px rgba(0, 0, 0, 0.45);
+    }
+
+    .linear-card-interactive {
+      cursor: pointer;
+    }
+    .linear-card-interactive:hover {
+      transform: translateY(-1px);
+    }
+
+    /* Ambient radial glow container */
+    .glow-radial-indigo {
+      background: radial-gradient(600px circle at 50% -10%, rgba(99, 102, 241, 0.14), transparent 70%);
+    }
+    .glow-radial-emerald {
+      background: radial-gradient(400px circle at 80% 0%, rgba(16, 185, 129, 0.08), transparent 70%);
+    }
+
+    /* Scrollbars styled sleek & minimal */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Chart SVG Glow */
+    .chart-glow {
+      filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.45));
+    }
+    .chart-emerald-glow {
+      filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.4));
+    }
+
+    /* Pulse beacon */
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.3); opacity: 0.2; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .beacon-ring {
+      animation: pulse-ring 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    /* Modal Backdrop */
+    .modal-backdrop {
+      background-color: rgba(9, 9, 11, 0.82);
+      backdrop-filter: blur(8px);
+    }
+
+    /* Number formatting tabular figures */
+    .tabular {
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#09090b] text-zinc-100 flex flex-col antialiased selection:bg-indigo-500/30 selection:text-white relative overflow-x-hidden">
+
+  <!-- Ambient Top Ambient Lighting -->
+  <div class="pointer-events-none fixed inset-0 z-0">
+    <div class="absolute -top-[200px] left-1/2 -translate-x-1/2 w-[1000px] h-[450px] bg-gradient-to-b from-indigo-500/10 via-violet-500/5 to-transparent blur-3xl opacity-70"></div>
+    <div class="absolute top-[300px] -right-[150px] w-[500px] h-[400px] bg-emerald-500/5 blur-3xl opacity-50"></div>
+    <div class="absolute top-[800px] -left-[100px] w-[450px] h-[400px] bg-indigo-500/5 blur-3xl opacity-40"></div>
+  </div>
+
+  <!-- Primary Wrapper -->
+  <div class="relative z-10 flex min-h-screen flex-col">
+
+    <!-- Top Command & Status Bar -->
+    <header class="sticky top-0 z-40 w-full border-b border-white/[0.08] bg-[#09090b]/80 backdrop-blur-xl transition-all">
+      <!-- Quick Theme Switcher Ribbon -->
+      <div class="border-b border-white/[0.06] bg-black/40 py-1 px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl flex items-center justify-between text-[11px] font-mono">
+          <div class="flex items-center gap-2">
+            <label for="themeSelect" class="text-zinc-500 uppercase text-[10px]">Theme:</label>
+            <div class="relative">
+              <select id="themeSelect" onchange="window.location.href=this.value" class="appearance-none bg-zinc-900 border border-white/10 text-indigo-300 text-[11px] font-mono px-2 py-0.5 pr-5 rounded shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] hover:border-indigo-500/40 outline-none cursor-pointer transition-colors">
+                <option value="dashboard-linear.html" class="bg-zinc-900 text-indigo-300" selected>🔮 Linear Dark</option>
+                <option value="dashboard-editorial.html" class="bg-zinc-900 text-zinc-300">📜 Warm Editorial</option>
+                <option value="dashboard-spatial.html" class="bg-zinc-900 text-zinc-300">🫧 Spatial Glass</option>
+                <option value="dashboard-ops-terminal.html" class="bg-zinc-900 text-zinc-300">🎛️ Ops Terminal</option>
+                <option value="dashboard-cyberpunk.html" class="bg-zinc-900 text-zinc-300">⚡ Cyberpunk HUD</option>
+                <option value="dashboard-enterprise.html" class="bg-zinc-900 text-zinc-300">🏢 Clean Enterprise</option>
+                <option value="dashboard-quiet.html" class="bg-zinc-900 text-zinc-300">🕊️ Quiet Minimal</option>
+                <option value="dashboard-playful.html" class="bg-zinc-900 text-zinc-300">🎨 Playful Creative</option>
+                <option value="dashboard-neo-brutalism.html" class="bg-zinc-900 text-zinc-300">⚡ Neo-Brutalist</option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-1.5 flex items-center text-zinc-500 text-[9px]">
+                ▼
+              </div>
+            </div>
+          </div>
+          <span class="hidden sm:inline text-zinc-500 text-[10px]">Pure HTML + Tailwind CSS v4</span>
+        </div>
+      </div>
+
+      <div class="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        
+        <!-- Left Brand & Context -->
+        <div class="flex items-center gap-4">
+          <a href="#" class="group flex items-center gap-2.5 transition-transform active:scale-95">
+            <div class="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-gradient-to-b from-zinc-800 to-zinc-900 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.2)] group-hover:border-indigo-500/40 transition-colors">
+              <svg class="h-4 w-4 text-indigo-400 group-hover:text-indigo-300 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-xs font-semibold tracking-wider uppercase text-zinc-100 font-mono flex items-center gap-1.5">
+                APEX<span class="text-indigo-400">.OS</span>
+                <span class="rounded bg-indigo-500/10 border border-indigo-500/20 px-1 py-0.2 text-[9px] text-indigo-300 tracking-normal">v2.4</span>
+              </span>
+              <span class="text-[10px] text-zinc-500 font-mono tracking-tight">PERSONAL WEALTH KERNEL</span>
+            </div>
+          </a>
+
+          <!-- Breadcrumbs Separator -->
+          <div class="hidden md:flex items-center text-zinc-600 font-mono text-xs">/</div>
+
+          <div class="hidden md:flex items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-medium text-emerald-400 font-mono">
+              <span class="relative flex h-1.5 w-1.5">
+                <span class="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 beacon-ring"></span>
+                <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+              </span>
+              SYNCED · 14ms
+            </span>
+
+            <div class="h-3.5 w-[1px] bg-zinc-800"></div>
+
+            <span id="headerClock" class="text-[11px] font-mono text-zinc-400 tabular">00:00:00 UTC</span>
+          </div>
+        </div>
+
+        <!-- Center Global Command Bar Trigger -->
+        <button id="cmdPaletteBtn" type="button" class="group flex items-center gap-3 rounded-lg border border-white/10 bg-zinc-900/60 px-3.5 py-1.5 text-xs text-zinc-400 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] hover:border-white/20 hover:bg-zinc-800/60 hover:text-zinc-200 transition-all w-48 sm:w-72 justify-between">
+          <div class="flex items-center gap-2 truncate">
+            <svg class="h-3.5 w-3.5 text-zinc-500 group-hover:text-zinc-300 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.3-4.3"/>
+            </svg>
+            <span class="truncate">Search telemetry, logs, actions...</span>
+          </div>
+          <kbd class="hidden sm:inline-flex items-center gap-0.5 rounded border border-zinc-700 bg-zinc-800/80 px-1.5 py-0.5 text-[10px] font-mono text-zinc-400 group-hover:text-zinc-200">
+            <span>⌘</span>K
+          </kbd>
+        </button>
+
+        <!-- Right Controls & Actions -->
+        <div class="flex items-center gap-2.5">
+          <!-- Currency Toggle Switcher -->
+          <div class="flex items-center rounded-lg border border-white/10 bg-zinc-900/80 p-0.5 text-xs font-mono">
+            <button data-curr="USD" class="curr-btn px-2 py-1 rounded text-zinc-200 bg-zinc-800 font-medium transition-colors">USD</button>
+            <button data-curr="EUR" class="curr-btn px-2 py-1 rounded text-zinc-400 hover:text-zinc-200 transition-colors">EUR</button>
+            <button data-curr="IDR" class="curr-btn px-2 py-1 rounded text-zinc-400 hover:text-zinc-200 transition-colors">IDR</button>
+          </div>
+
+          <!-- Quick New Transaction CTA -->
+          <button id="openNewTxModalBtn" type="button" class="inline-flex items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-zinc-950 shadow-sm hover:bg-zinc-200 active:scale-[0.98] transition-all">
+            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            <span class="hidden sm:inline">Record Entry</span>
+            <kbd class="ml-1 hidden sm:inline-block rounded bg-zinc-200 px-1 text-[9px] font-mono text-zinc-700">N</kbd>
+          </button>
+
+          <!-- System Status Dropdown/Notification -->
+          <button id="systemInfoBtn" class="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-zinc-900/60 text-zinc-400 hover:border-white/20 hover:text-zinc-200 hover:bg-zinc-800/60 transition-colors relative" title="System Shortcuts & Info">
+            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 16v-4M12 8h.01"/>
+            </svg>
+            <span class="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-indigo-500"></span>
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 lg:px-8 space-y-6">
+
+      <!-- View Header & Time Filter Range -->
+      <section class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-white/[0.06] pb-5">
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl sm:text-2xl font-semibold tracking-tight text-zinc-100">Financial Telemetry & Balance Ledger</h1>
+            <span class="rounded-md border border-white/10 bg-zinc-900/80 px-2 py-0.5 font-mono text-[11px] text-zinc-400">
+              AUDITED 2026
+            </span>
+          </div>
+          <p class="mt-1 text-xs sm:text-sm text-zinc-400 leading-relaxed">
+            Consolidated multi-asset liquidity, automated burn rate projection, and real-time cashflow telemetry.
+          </p>
+        </div>
+
+        <!-- Period Selector Filter Pills -->
+        <div class="flex items-center gap-2 self-start sm:self-auto">
+          <div class="flex items-center rounded-lg border border-white/10 bg-zinc-900/80 p-0.5 text-xs font-mono shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]">
+            <button data-period="7D" class="period-btn px-2.5 py-1 rounded text-zinc-400 hover:text-zinc-200 transition-colors">7D</button>
+            <button data-period="30D" class="period-btn px-2.5 py-1 rounded bg-zinc-800 text-zinc-100 font-medium transition-colors">30D</button>
+            <button data-period="90D" class="period-btn px-2.5 py-1 rounded text-zinc-400 hover:text-zinc-200 transition-colors">90D</button>
+            <button data-period="YTD" class="period-btn px-2.5 py-1 rounded text-zinc-400 hover:text-zinc-200 transition-colors">YTD</button>
+            <button data-period="ALL" class="period-btn px-2.5 py-1 rounded text-zinc-400 hover:text-zinc-200 transition-colors">ALL</button>
+          </div>
+
+          <button id="exportDataBtn" type="button" class="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-zinc-900/80 px-2.5 py-1 text-xs font-mono text-zinc-300 hover:border-white/20 hover:bg-zinc-800/80 transition-colors" title="Export Ledger as JSON/CSV">
+            <svg class="h-3.5 w-3.5 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <span class="hidden sm:inline">Export</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Key Financial Metrics Cards (Linear 4-Grid System) -->
+      <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        
+        <!-- Card 1: Net Worth / Liquid Balance -->
+        <div class="linear-card rounded-xl p-5 glow-radial-indigo">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-mono uppercase tracking-wider text-zinc-400">Total Net Liquidity</span>
+            <span class="inline-flex items-center gap-1 rounded border border-emerald-500/20 bg-emerald-500/10 px-1.5 py-0.5 font-mono text-[10px] text-emerald-400 font-medium">
+              <svg class="h-2.5 w-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <path d="m18 15-6-6-6 6"/>
+              </svg>
+              +8.4%
+            </span>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <h2 id="metricNetWorth" class="text-2xl font-bold tracking-tight text-zinc-100 font-mono tabular">$148,920.00</h2>
+          </div>
+          <div class="mt-3 flex items-center justify-between text-[11px] font-mono border-t border-white/[0.05] pt-2.5 text-zinc-500">
+            <span>Checking + Brokerage + Vault</span>
+            <span class="text-emerald-400/90">+$11,540 this mo</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Monthly Inflow -->
+        <div class="linear-card rounded-xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-mono uppercase tracking-wider text-zinc-400">Gross Monthly Inflow</span>
+            <span class="rounded border border-indigo-500/20 bg-indigo-500/10 px-1.5 py-0.5 font-mono text-[10px] text-indigo-400">
+              3 SOURCES
+            </span>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <h2 id="metricInflow" class="text-2xl font-bold tracking-tight text-zinc-100 font-mono tabular">$16,450.00</h2>
+          </div>
+          <div class="mt-3 flex items-center justify-between text-[11px] font-mono border-t border-white/[0.05] pt-2.5 text-zinc-500">
+            <span>Primary Salary + Consulting</span>
+            <span class="text-zinc-400">On Target (102%)</span>
+          </div>
+        </div>
+
+        <!-- Card 3: Monthly Outflow / Burn -->
+        <div class="linear-card rounded-xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-mono uppercase tracking-wider text-zinc-400">Total Outflow & Burn</span>
+            <span class="inline-flex items-center gap-1 rounded border border-rose-500/20 bg-rose-500/10 px-1.5 py-0.5 font-mono text-[10px] text-rose-400 font-medium">
+              -3.1% MoM
+            </span>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <h2 id="metricOutflow" class="text-2xl font-bold tracking-tight text-zinc-100 font-mono tabular">$6,840.00</h2>
+          </div>
+          <div class="mt-3 flex items-center justify-between text-[11px] font-mono border-t border-white/[0.05] pt-2.5 text-zinc-500">
+            <span>Budget Cap: $8,500</span>
+            <span class="text-zinc-400 tabular">$1,660 headroom</span>
+          </div>
+        </div>
+
+        <!-- Card 4: Savings Rate & Runway Telemetry -->
+        <div class="linear-card rounded-xl p-5 glow-radial-emerald">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-mono uppercase tracking-wider text-zinc-400">Savings & Runway</span>
+            <span class="inline-flex items-center gap-1 rounded border border-cyan-500/20 bg-cyan-500/10 px-1.5 py-0.5 font-mono text-[10px] text-cyan-400">
+              HEALTH: OPTIMAL
+            </span>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <h2 id="metricSavingsRate" class="text-2xl font-bold tracking-tight text-emerald-400 font-mono tabular">58.4%</h2>
+            <span class="text-xs font-mono text-zinc-400">/ 21.7 mo</span>
+          </div>
+          <div class="mt-3 flex items-center justify-between text-[11px] font-mono border-t border-white/[0.05] pt-2.5 text-zinc-500">
+            <span>Net Surplus Mo:</span>
+            <span id="metricNetSurplus" class="text-emerald-400 font-medium tabular">+$9,610.00</span>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Main Central Section: Interactive Chart + Accounts Stack -->
+      <section class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        
+        <!-- Interactive Chart Panel (2 Cols) -->
+        <div class="linear-card rounded-xl p-5 lg:col-span-2 flex flex-col justify-between">
+          <div>
+            <!-- Chart Header Controls -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-white/[0.06] pb-4">
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="text-sm font-semibold text-zinc-100 tracking-tight">Consolidated Cashflow Dynamics</h3>
+                  <span class="rounded bg-indigo-500/10 border border-indigo-500/20 px-1.5 py-0.2 font-mono text-[10px] text-indigo-300">
+                    LIVE CURVE
+                  </span>
+                </div>
+                <p class="text-xs text-zinc-400 mt-0.5">Historical equity growth and monthly cash intake vs expenditure vector</p>
+              </div>
+
+              <!-- Chart Mode Toggles -->
+              <div class="flex items-center gap-1.5">
+                <button id="chartViewArea" class="chart-mode-btn rounded-md border border-indigo-500/40 bg-indigo-500/10 px-2.5 py-1 text-[11px] font-mono text-indigo-200 transition-colors">
+                  Net Curve
+                </button>
+                <button id="chartViewBars" class="chart-mode-btn rounded-md border border-white/10 bg-zinc-900/60 px-2.5 py-1 text-[11px] font-mono text-zinc-400 hover:border-white/20 hover:text-zinc-200 transition-colors">
+                  In/Out Bars
+                </button>
+              </div>
+            </div>
+
+            <!-- Chart Hover Coordinate & Value readout -->
+            <div class="flex items-center justify-between py-2 text-xs font-mono">
+              <div class="flex items-center gap-4">
+                <div class="flex items-center gap-1.5">
+                  <span class="h-2 w-2 rounded-full bg-indigo-400 chart-glow"></span>
+                  <span class="text-zinc-400">Equity Trajectory</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+                  <span class="text-zinc-400">Inflow Baseline</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="h-2 w-2 rounded-full bg-rose-400"></span>
+                  <span class="text-zinc-400">Burn Baseline</span>
+                </div>
+              </div>
+
+              <div id="chartTooltipIndicator" class="text-right text-zinc-300 font-mono text-[11px]">
+                Hover data point to inspect
+              </div>
+            </div>
+
+            <!-- SVG Vector Interactive Chart Container -->
+            <div id="chartContainer" class="relative mt-2 h-64 w-full select-none">
+              <!-- SVG rendered dynamically via Javascript for crisp rendering -->
+              <svg id="financeSvgChart" class="h-full w-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 700 240">
+                <!-- Gradients Definition -->
+                <defs>
+                  <linearGradient id="indigoGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#6366f1" stop-opacity="0.25"/>
+                    <stop offset="100%" stop-color="#6366f1" stop-opacity="0.0"/>
+                  </linearGradient>
+                  <linearGradient id="emeraldBarGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#10b981" stop-opacity="0.8"/>
+                    <stop offset="100%" stop-color="#10b981" stop-opacity="0.2"/>
+                  </linearGradient>
+                  <linearGradient id="roseBarGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#f43f5e" stop-opacity="0.8"/>
+                    <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.2"/>
+                  </linearGradient>
+                </defs>
+
+                <!-- Gridlines -->
+                <g class="stroke-white/[0.05]" stroke-dasharray="3,3" stroke-width="1">
+                  <line x1="0" y1="40" x2="700" y2="40" />
+                  <line x1="0" y1="90" x2="700" y2="90" />
+                  <line x1="0" y1="140" x2="700" y2="140" />
+                  <line x1="0" y1="190" x2="700" y2="190" />
+                </g>
+
+                <!-- Dynamic Chart Paths injected by JS -->
+                <g id="chartSvgContent"></g>
+
+                <!-- Interactive hover vertical tracker line -->
+                <line id="trackerLine" x1="-10" y1="0" x2="-10" y2="210" stroke="rgba(255,255,255,0.25)" stroke-width="1" stroke-dasharray="2,2" class="opacity-0 transition-opacity duration-150 pointer-events-none" />
+                <circle id="trackerPoint" cx="-10" cy="-10" r="4" fill="#ffffff" stroke="#6366f1" stroke-width="2.5" class="opacity-0 transition-opacity duration-150 pointer-events-none" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Bottom Time Axis Labels -->
+          <div id="chartXAxis" class="mt-3 flex justify-between text-[11px] font-mono text-zinc-500 border-t border-white/[0.05] pt-2">
+            <span>Oct 01</span>
+            <span>Oct 08</span>
+            <span>Oct 15</span>
+            <span>Oct 22</span>
+            <span>Oct 29</span>
+            <span>Today (Live)</span>
+          </div>
+        </div>
+
+        <!-- Accounts & Liquid Storage Stack (1 Col) -->
+        <div class="linear-card rounded-xl p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between border-b border-white/[0.06] pb-3 mb-4">
+              <div class="flex items-center gap-2">
+                <h3 class="text-sm font-semibold text-zinc-100 tracking-tight">Active Vaults & Accounts</h3>
+                <span class="rounded bg-zinc-800 border border-zinc-700 px-1.5 py-0.2 font-mono text-[10px] text-zinc-300">4 ACTIVE</span>
+              </div>
+              <button id="addAccountBtn" class="text-zinc-400 hover:text-zinc-100 transition-colors p-1" title="Manage Accounts">
+                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- List of Vaults -->
+            <div class="space-y-2.5">
+              
+              <!-- Account 1 -->
+              <div class="group flex items-center justify-between rounded-lg border border-white/[0.06] bg-zinc-900/40 p-3 hover:border-white/15 hover:bg-zinc-900/80 transition-all">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-8 w-8 items-center justify-center rounded-md border border-indigo-500/20 bg-indigo-500/10 text-indigo-400">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect width="20" height="14" x="2" y="5" rx="2"/>
+                      <line x1="2" y1="10" x2="22" y2="10"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-1.5">
+                      <span class="text-xs font-medium text-zinc-200">Main Operating Checking</span>
+                      <span class="font-mono text-[10px] text-zinc-500">···4819</span>
+                    </div>
+                    <span class="text-[10px] font-mono text-zinc-400">JPMorgan Chase Private</span>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs font-mono font-medium text-zinc-100 tabular">$42,390.40</div>
+                  <span class="text-[10px] font-mono text-emerald-400">APY 0.05%</span>
+                </div>
+              </div>
+
+              <!-- Account 2 -->
+              <div class="group flex items-center justify-between rounded-lg border border-white/[0.06] bg-zinc-900/40 p-3 hover:border-white/15 hover:bg-zinc-900/80 transition-all">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-8 w-8 items-center justify-center rounded-md border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-1.5">
+                      <span class="text-xs font-medium text-zinc-200">High Yield Reserve (HYSA)</span>
+                      <span class="font-mono text-[10px] text-zinc-500">···9021</span>
+                    </div>
+                    <span class="text-[10px] font-mono text-zinc-400">Marcus by Goldman</span>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs font-mono font-medium text-zinc-100 tabular">$64,520.00</div>
+                  <span class="text-[10px] font-mono text-emerald-400">APY 4.75%</span>
+                </div>
+              </div>
+
+              <!-- Account 3 -->
+              <div class="group flex items-center justify-between rounded-lg border border-white/[0.06] bg-zinc-900/40 p-3 hover:border-white/15 hover:bg-zinc-900/80 transition-all">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-8 w-8 items-center justify-center rounded-md border border-violet-500/20 bg-violet-500/10 text-violet-400">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+                      <polyline points="16 7 22 7 22 13"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-1.5">
+                      <span class="text-xs font-medium text-zinc-200">Index Brokerage (VTI/VXUS)</span>
+                      <span class="font-mono text-[10px] text-zinc-500">···1104</span>
+                    </div>
+                    <span class="text-[10px] font-mono text-zinc-400">Vanguard Custody</span>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs font-mono font-medium text-zinc-100 tabular">$31,180.00</div>
+                  <span class="text-[10px] font-mono text-indigo-400">+14.2% YTD</span>
+                </div>
+              </div>
+
+              <!-- Account 4 -->
+              <div class="group flex items-center justify-between rounded-lg border border-white/[0.06] bg-zinc-900/40 p-3 hover:border-white/15 hover:bg-zinc-900/80 transition-all">
+                <div class="flex items-center gap-3">
+                  <div class="flex h-8 w-8 items-center justify-center rounded-md border border-cyan-500/20 bg-cyan-500/10 text-cyan-400">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-1.5">
+                      <span class="text-xs font-medium text-zinc-200">Hardware Cold Storage</span>
+                      <span class="font-mono text-[10px] text-zinc-500">···0x9c</span>
+                    </div>
+                    <span class="text-[10px] font-mono text-zinc-400">Ledger Nano X (BTC/ETH)</span>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs font-mono font-medium text-zinc-100 tabular">$10,829.60</div>
+                  <span class="text-[10px] font-mono text-cyan-400">0.14 BTC</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Quick Rebalance Trigger -->
+          <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between">
+            <span class="text-[11px] font-mono text-zinc-500">Target Cash Cushion: $40,000</span>
+            <button id="quickTransferBtn" class="text-[11px] font-mono text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1">
+              <span>Quick Move</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Middle Section: Budget Allocation Telemetry & Recurring Bills -->
+      <section class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        
+        <!-- Budget Allocation Telemetry (2 Cols) -->
+        <div class="linear-card rounded-xl p-5 lg:col-span-2">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-white/[0.06] pb-3 mb-4 gap-2">
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-sm font-semibold text-zinc-100 tracking-tight">Cap Allocations & Budget Thresholds</h3>
+                <span class="rounded bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.2 font-mono text-[10px] text-emerald-400">
+                  HEALTHY (80.4% UTILIZED)
+                </span>
+              </div>
+              <p class="text-xs text-zinc-400 mt-0.5">Real-time expenditure tracking against monthly departmental caps</p>
+            </div>
+            
+            <div class="text-right font-mono text-xs text-zinc-400">
+              Allocated: <span class="text-zinc-200 font-semibold tabular">$6,840</span> / <span class="text-zinc-500 tabular">$8,500</span>
+            </div>
+          </div>
+
+          <!-- Budget Progress Bars -->
+          <div class="space-y-4">
+            
+            <!-- Category 1 -->
+            <div>
+              <div class="flex items-center justify-between text-xs font-mono mb-1.5">
+                <div class="flex items-center gap-2">
+                  <span class="h-2 w-2 rounded-sm bg-indigo-500"></span>
+                  <span class="text-zinc-200 font-medium">Housing, Rent & Utilities</span>
+                </div>
+                <div class="text-zinc-400">
+                  <span class="text-zinc-200 tabular font-medium">$2,450.00</span> / <span class="text-zinc-500 tabular">$2,500.00</span>
+                  <span class="text-zinc-500 ml-1.5">(98%)</span>
+                </div>
+              </div>
+              <div class="h-1.5 w-full rounded-full bg-zinc-800/80 overflow-hidden">
+                <div class="h-full rounded-full bg-indigo-500 transition-all duration-500" style="width: 98%;"></div>
+              </div>
+            </div>
+
+            <!-- Category 2 -->
+            <div>
+              <div class="flex items-center justify-between text-xs font-mono mb-1.5">
+                <div class="flex items-center gap-2">
+                  <span class="h-2 w-2 rounded-sm bg-violet-500"></span>
+                  <span class="text-zinc-200 font-medium">Cloud Infrastructure & Dev Tools</span>
+                </div>
+                <div class="text-zinc-400">
+                  <span class="text-zinc-200 tabular font-medium">$840.50</span> / <span class="text-zinc-500 tabular">$1,200.00</span>
+                  <span class="text-emerald-400 ml-1.5">(70%)</span>
+                </div>
+              </div>
+              <div class="h-1.5 w-full rounded-full bg-zinc-800/80 overflow-hidden">
+                <div class="h-full rounded-full bg-violet-500 transition-all duration-500" style="width: 70%;"></div>
+              </div>
+            </div>
+
+            <!-- Category 3 -->
+            <div>
+              <div class="flex items-center justify-between text-xs font-mono mb-1.5">
+                <div class="flex items-center gap-2">
+                  <span class="h-2 w-2 rounded-sm bg-cyan-500"></span>
+                  <span class="text-zinc-200 font-medium">Dining, Nutrition & Provisions</span>
+                </div>
+                <div class="text-zinc-400">
+                  <span class="text-zinc-200 tabular font-medium">$1,120.00</span> / <span class="text-zinc-500 tabular">$1,500.00</span>
+                  <span class="text-emerald-400 ml-1.5">(74%)</span>
+                </div>
+              </div>
+              <div class="h-1.5 w-full rounded-full bg-zinc-800/80 overflow-hidden">
+                <div class="h-full rounded-full bg-cyan-500 transition-all duration-500" style="width: 74%;"></div>
+              </div>
+            </div>
+
+            <!-- Category 4 -->
+            <div>
+              <div class="flex items-center justify-between text-xs font-mono mb-1.5">
+                <div class="flex items-center gap-2">
+                  <span class="h-2 w-2 rounded-sm bg-emerald-500"></span>
+                  <span class="text-zinc-200 font-medium">Automated Index Investing</span>
+                </div>
+                <div class="text-zinc-400">
+                  <span class="text-zinc-200 tabular font-medium">$2,000.00</span> / <span class="text-zinc-500 tabular">$2,000.00</span>
+                  <span class="text-emerald-400 ml-1.5">(100% Filled)</span>
+                </div>
+              </div>
+              <div class="h-1.5 w-full rounded-full bg-zinc-800/80 overflow-hidden">
+                <div class="h-full rounded-full bg-emerald-500 transition-all duration-500" style="width: 100%;"></div>
+              </div>
+            </div>
+
+            <!-- Category 5 -->
+            <div>
+              <div class="flex items-center justify-between text-xs font-mono mb-1.5">
+                <div class="flex items-center gap-2">
+                  <span class="h-2 w-2 rounded-sm bg-amber-500"></span>
+                  <span class="text-zinc-200 font-medium">Transit, Mobility & Vehicle</span>
+                </div>
+                <div class="text-zinc-400">
+                  <span class="text-zinc-200 tabular font-medium">$429.50</span> / <span class="text-zinc-500 tabular">$800.00</span>
+                  <span class="text-emerald-400 ml-1.5">(53%)</span>
+                </div>
+              </div>
+              <div class="h-1.5 w-full rounded-full bg-zinc-800/80 overflow-hidden">
+                <div class="h-full rounded-full bg-amber-500 transition-all duration-500" style="width: 53.6%;"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Recurring Bills Radar & Subscriptions (1 Col) -->
+        <div class="linear-card rounded-xl p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between border-b border-white/[0.06] pb-3 mb-4">
+              <div class="flex items-center gap-2">
+                <h3 class="text-sm font-semibold text-zinc-100 tracking-tight">Recurring Commitments</h3>
+                <span class="rounded bg-zinc-800 border border-zinc-700 px-1.5 py-0.2 font-mono text-[10px] text-zinc-400">NEXT 14D</span>
+              </div>
+              <span class="text-xs font-mono text-zinc-400 tabular">$584/mo</span>
+            </div>
+
+            <!-- Upcoming List -->
+            <div class="space-y-3">
+              
+              <div class="flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2.5">
+                  <div class="flex h-7 w-7 items-center justify-center rounded border border-white/10 bg-zinc-800 font-mono text-[11px] font-bold text-zinc-200">
+                    AWS
+                  </div>
+                  <div>
+                    <div class="font-medium text-zinc-200">Amazon Web Services</div>
+                    <div class="text-[10px] font-mono text-zinc-500">EC2 + RDS + S3 Tier</div>
+                  </div>
+                </div>
+                <div class="text-right font-mono">
+                  <div class="text-zinc-200 font-medium tabular">$184.20</div>
+                  <span class="rounded bg-amber-500/10 border border-amber-500/20 px-1 py-0.2 text-[9px] text-amber-400">In 2 days</span>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2.5">
+                  <div class="flex h-7 w-7 items-center justify-center rounded border border-white/10 bg-zinc-800 font-mono text-[11px] font-bold text-zinc-200">
+                    GH
+                  </div>
+                  <div>
+                    <div class="font-medium text-zinc-200">GitHub Enterprise & Copilot</div>
+                    <div class="text-[10px] font-mono text-zinc-500">Org Developer Seat</div>
+                  </div>
+                </div>
+                <div class="text-right font-mono">
+                  <div class="text-zinc-200 font-medium tabular">$39.00</div>
+                  <span class="rounded bg-zinc-800 border border-zinc-700 px-1 py-0.2 text-[9px] text-zinc-400">In 5 days</span>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2.5">
+                  <div class="flex h-7 w-7 items-center justify-center rounded border border-white/10 bg-zinc-800 font-mono text-[11px] font-bold text-zinc-200">
+                    GYM
+                  </div>
+                  <div>
+                    <div class="font-medium text-zinc-200">Equinox Athletic Club</div>
+                    <div class="text-[10px] font-mono text-zinc-500">Executive Tier</div>
+                  </div>
+                </div>
+                <div class="text-right font-mono">
+                  <div class="text-zinc-200 font-medium tabular">$285.00</div>
+                  <span class="rounded bg-zinc-800 border border-zinc-700 px-1 py-0.2 text-[9px] text-zinc-400">In 9 days</span>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2.5">
+                  <div class="flex h-7 w-7 items-center justify-center rounded border border-white/10 bg-zinc-800 font-mono text-[11px] font-bold text-zinc-200">
+                    1P
+                  </div>
+                  <div>
+                    <div class="font-medium text-zinc-200">1Password Family Key</div>
+                    <div class="text-[10px] font-mono text-zinc-500">Vault Security</div>
+                  </div>
+                </div>
+                <div class="text-right font-mono">
+                  <div class="text-zinc-200 font-medium tabular">$7.99</div>
+                  <span class="rounded bg-zinc-800 border border-zinc-700 px-1 py-0.2 text-[9px] text-zinc-400">In 12 days</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between">
+            <span class="text-[11px] font-mono text-zinc-500">Auto-debit activated</span>
+            <span class="text-[11px] font-mono text-emerald-400 flex items-center gap-1">
+              <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+              All Scheduled
+            </span>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Ledger / Transaction Log Data Grid -->
+      <section class="linear-card rounded-xl overflow-hidden">
+        
+        <!-- Table Control Toolbar -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-white/[0.06] p-4 gap-3">
+          <div class="flex items-center gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-sm font-semibold text-zinc-100 tracking-tight">Ledger Operations & Transactions</h3>
+                <span id="txCountBadge" class="rounded bg-zinc-800 border border-zinc-700 px-1.5 py-0.2 font-mono text-[10px] text-zinc-300">
+                  12 ENTRIES
+                </span>
+              </div>
+              <p class="text-xs text-zinc-400">Immutable execution feed of all financial state mutations</p>
+            </div>
+          </div>
+
+          <!-- Filters & Search Toolbar -->
+          <div class="flex flex-wrap items-center gap-2.5">
+            <!-- Search Filter -->
+            <div class="relative">
+              <input id="txSearchInput" type="text" placeholder="Filter description or tag..." class="h-8 w-44 sm:w-56 rounded-md border border-white/10 bg-zinc-900/90 pl-8 pr-3 text-xs font-mono text-zinc-200 placeholder-zinc-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all">
+              <svg class="pointer-events-none absolute left-2.5 top-2.5 h-3.5 w-3.5 text-zinc-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.3-4.3"/>
+              </svg>
+            </div>
+
+            <!-- Type Filter -->
+            <select id="txTypeFilter" class="h-8 rounded-md border border-white/10 bg-zinc-900/90 px-2.5 text-xs font-mono text-zinc-300 focus:border-indigo-500 focus:outline-none transition-all">
+              <option value="ALL">All Types</option>
+              <option value="INFLOW">Inflow (+)</option>
+              <option value="OUTFLOW">Outflow (-)</option>
+            </select>
+
+            <!-- Category Filter -->
+            <select id="txCategoryFilter" class="h-8 rounded-md border border-white/10 bg-zinc-900/90 px-2.5 text-xs font-mono text-zinc-300 focus:border-indigo-500 focus:outline-none transition-all">
+              <option value="ALL">All Categories</option>
+              <option value="Salary">Salary & Contracts</option>
+              <option value="Cloud">Cloud & Infra</option>
+              <option value="Housing">Housing</option>
+              <option value="Dining">Dining</option>
+              <option value="Investment">Investment</option>
+              <option value="Health">Health</option>
+            </select>
+
+            <!-- Reset Filters -->
+            <button id="resetFiltersBtn" class="h-8 rounded-md border border-white/10 bg-zinc-800/80 px-2 text-xs font-mono text-zinc-400 hover:text-zinc-200 hover:border-white/20 transition-all" title="Reset Filters">
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <!-- Table Element -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-white/[0.06] bg-zinc-900/60 text-[11px] font-mono uppercase tracking-wider text-zinc-400">
+                <th class="py-3 pl-4 pr-3 sm:pl-6">TX Hash / Ref</th>
+                <th class="px-3 py-3">Description & Beneficiary</th>
+                <th class="px-3 py-3">Category</th>
+                <th class="px-3 py-3">Account Vault</th>
+                <th class="px-3 py-3">Timestamp</th>
+                <th class="px-3 py-3">Status</th>
+                <th class="py-3 pl-3 pr-4 sm:pr-6 text-right">Amount</th>
+                <th class="py-3 pr-4 text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody id="txTableBody" class="divide-y divide-zinc-800/50 text-xs font-mono">
+              <!-- Rendered dynamically by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table Footer / Quick Stats -->
+        <div class="flex items-center justify-between border-t border-white/[0.06] px-4 py-3 sm:px-6 bg-zinc-900/30 text-xs font-mono text-zinc-400">
+          <div id="txTableSummary">Showing all matching records</div>
+          <div class="flex items-center gap-2">
+            <button id="addInlineTxBtn" class="text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1 font-medium">
+              <span>+ Quick Record</span>
+              <kbd class="rounded border border-zinc-700 bg-zinc-800 px-1 text-[9px]">N</kbd>
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Footer System Status Bar (Linear Style) -->
+    <footer class="mt-auto border-t border-white/[0.06] bg-[#09090b]/90 py-3 backdrop-blur-md">
+      <div class="mx-auto flex max-w-7xl flex-col sm:flex-row items-center justify-between gap-3 px-4 text-xs font-mono text-zinc-500 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-4">
+          <span class="flex items-center gap-1.5">
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+            Telemetry Engine Active
+          </span>
+          <span>·</span>
+          <span>Zero-Knowledge Local Storage</span>
+          <span>·</span>
+          <span class="text-zinc-400">AES-GCM Local Sandbox</span>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-1.5">
+            <kbd class="rounded border border-zinc-700 bg-zinc-800 px-1 text-[10px] text-zinc-400">⌘K</kbd>
+            <span>Command</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <kbd class="rounded border border-zinc-700 bg-zinc-800 px-1 text-[10px] text-zinc-400">N</kbd>
+            <span>New Tx</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <kbd class="rounded border border-zinc-700 bg-zinc-800 px-1 text-[10px] text-zinc-400">/</kbd>
+            <span>Search</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ==================== MODALS & OVERLAYS ==================== -->
+
+  <!-- Raycast / Linear Style Command Palette (⌘K) -->
+  <div id="cmdPaletteModal" class="fixed inset-0 z-50 flex items-start justify-center pt-20 sm:pt-28 px-4 modal-backdrop opacity-0 pointer-events-none transition-all duration-200">
+    <div class="linear-card w-full max-w-xl rounded-xl border border-white/20 bg-zinc-900/95 shadow-2xl overflow-hidden scale-95 transition-all duration-200" id="cmdPaletteCard">
+      <!-- Input Search -->
+      <div class="flex items-center border-b border-white/10 px-4 py-3">
+        <svg class="h-4 w-4 text-zinc-400 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.3-4.3"/>
+        </svg>
+        <input id="cmdSearchInput" type="text" placeholder="Type a command or jump to feature..." class="w-full bg-transparent text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none font-mono">
+        <kbd class="rounded border border-zinc-700 bg-zinc-800 px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">ESC</kbd>
+      </div>
+
+      <!-- Command List Items -->
+      <div id="cmdResultsList" class="max-h-72 overflow-y-auto p-2 space-y-1 text-xs font-mono">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Command Footer -->
+      <div class="border-t border-white/[0.06] bg-zinc-950/60 px-4 py-2 text-[11px] font-mono text-zinc-500 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span><kbd class="text-zinc-300">↑↓</kbd> Navigate</span>
+          <span><kbd class="text-zinc-300">↵</kbd> Select</span>
+        </div>
+        <span>Linear Command Kernel</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Transaction Modal (N) -->
+  <div id="newTxModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop opacity-0 pointer-events-none transition-all duration-200">
+    <div class="linear-card w-full max-w-lg rounded-xl border border-white/20 bg-zinc-900/95 p-6 shadow-2xl scale-95 transition-all duration-200" id="newTxCard">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-5">
+        <div class="flex items-center gap-2">
+          <div class="flex h-7 w-7 items-center justify-center rounded-md border border-indigo-500/20 bg-indigo-500/10 text-indigo-400">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-sm font-semibold text-zinc-100 tracking-tight">Record Financial Transaction</h3>
+            <span class="text-[11px] font-mono text-zinc-400">Commit new state mutation to local ledger</span>
+          </div>
+        </div>
+        <button id="closeNewTxModalBtn" class="text-zinc-500 hover:text-zinc-200 transition-colors p-1">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6 6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <form id="newTxForm" class="space-y-4 text-xs font-mono">
+        <!-- Direction toggle (Expense vs Inflow) -->
+        <div>
+          <label class="block text-zinc-400 mb-1.5">Transaction Type</label>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="flex items-center justify-center gap-2 rounded-lg border border-white/10 bg-zinc-800/60 p-2.5 cursor-pointer hover:border-white/20 transition-all has-[:checked]:border-rose-500/50 has-[:checked]:bg-rose-500/10 has-[:checked]:text-rose-400 text-zinc-300">
+              <input type="radio" name="txType" value="OUTFLOW" checked class="hidden">
+              <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 15-6-6-6 6"/></svg>
+              <span>Outflow / Expense</span>
+            </label>
+            <label class="flex items-center justify-center gap-2 rounded-lg border border-white/10 bg-zinc-800/60 p-2.5 cursor-pointer hover:border-white/20 transition-all has-[:checked]:border-emerald-500/50 has-[:checked]:bg-emerald-500/10 has-[:checked]:text-emerald-400 text-zinc-300">
+              <input type="radio" name="txType" value="INFLOW" class="hidden">
+              <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+              <span>Inflow / Income</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Description & Merchant -->
+        <div>
+          <label for="txDesc" class="block text-zinc-400 mb-1">Description / Merchant</label>
+          <input id="txDesc" type="text" required placeholder="e.g. AWS Cloud Infrastructure, Retainer Client, Coffee" class="w-full rounded-lg border border-white/10 bg-zinc-950 px-3 py-2 text-zinc-100 placeholder-zinc-600 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+        </div>
+
+        <!-- Amount & Category Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="txAmount" class="block text-zinc-400 mb-1">Amount ($ USD)</label>
+            <input id="txAmount" type="number" step="0.01" min="0.01" required placeholder="0.00" class="w-full rounded-lg border border-white/10 bg-zinc-950 px-3 py-2 text-zinc-100 placeholder-zinc-600 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 tabular">
+          </div>
+          <div>
+            <label for="txCategory" class="block text-zinc-400 mb-1">Category</label>
+            <select id="txCategory" class="w-full rounded-lg border border-white/10 bg-zinc-950 px-3 py-2 text-zinc-100 focus:border-indigo-500 focus:outline-none">
+              <option value="Cloud">Cloud & Dev Tools</option>
+              <option value="Housing">Housing & Rent</option>
+              <option value="Dining">Dining & Coffee</option>
+              <option value="Salary">Salary & Retainer</option>
+              <option value="Investment">Investment & Equity</option>
+              <option value="Health">Health & Fitness</option>
+              <option value="Travel">Travel & Mobility</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Account Selection & Date -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="txAccount" class="block text-zinc-400 mb-1">Account Vault</label>
+            <select id="txAccount" class="w-full rounded-lg border border-white/10 bg-zinc-950 px-3 py-2 text-zinc-100 focus:border-indigo-500 focus:outline-none">
+              <option value="Checking (Chase)">Main Checking (···4819)</option>
+              <option value="HYSA (Marcus)">High Yield Savings (···9021)</option>
+              <option value="Brokerage (Vanguard)">Vanguard Index (···1104)</option>
+              <option value="Cold Storage">Hardware Vault (···0x9c)</option>
+            </select>
+          </div>
+          <div>
+            <label for="txDate" class="block text-zinc-400 mb-1">Transaction Date</label>
+            <input id="txDate" type="date" required class="w-full rounded-lg border border-white/10 bg-zinc-950 px-3 py-2 text-zinc-100 focus:border-indigo-500 focus:outline-none">
+          </div>
+        </div>
+
+        <!-- Submit & Actions -->
+        <div class="pt-4 border-t border-white/10 flex items-center justify-end gap-2.5">
+          <button type="button" id="cancelTxBtn" class="rounded-lg border border-white/10 bg-zinc-800/80 px-3.5 py-2 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-all">
+            Cancel
+          </button>
+          <button type="submit" class="rounded-lg bg-white px-4 py-2 font-medium text-zinc-950 shadow hover:bg-zinc-200 active:scale-[0.98] transition-all flex items-center gap-1.5">
+            <span>Commit Entry</span>
+            <kbd class="bg-zinc-200 text-zinc-800 rounded px-1 text-[9px]">↵</kbd>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification System -->
+  <div id="toastContainer" class="fixed bottom-14 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- ==================== JAVASCRIPT KERNEL ==================== -->
+  <script>
+    (function() {
+      'use strict';
+
+      // ==================== STATE MANAGEMENT ====================
+      const STORAGE_KEY = 'apex_finance_linear_data_v1';
+      const PREFS_KEY = 'apex_finance_prefs_v1';
+
+      // Default realistic dataset representing high-level tech/developer finance
+      const DEFAULT_TRANSACTIONS = [
+        { id: 'tx_98f1', desc: 'Anthropic Claude API & Compute', type: 'OUTFLOW', category: 'Cloud', amount: 342.80, account: 'Checking (Chase)', date: '2026-10-01', status: 'Completed' },
+        { id: 'tx_98f2', desc: 'Client Retainer: Stripe Settlement', type: 'INFLOW', category: 'Salary', amount: 7500.00, account: 'Checking (Chase)', date: '2026-10-01', status: 'Completed' },
+        { id: 'tx_98f3', desc: 'Luxury Loft Residence Lease', type: 'OUTFLOW', category: 'Housing', amount: 2450.00, account: 'Checking (Chase)', date: '2026-09-30', status: 'Completed' },
+        { id: 'tx_98f4', desc: 'Vanguard VOO Automated DCA', type: 'OUTFLOW', category: 'Investment', amount: 2000.00, account: 'Brokerage (Vanguard)', date: '2026-09-28', status: 'Completed' },
+        { id: 'tx_98f5', desc: 'Whole Foods Market Organic Provisions', type: 'OUTFLOW', category: 'Dining', amount: 184.50, account: 'Checking (Chase)', date: '2026-09-27', status: 'Completed' },
+        { id: 'tx_98f6', desc: 'GitHub Copilot Business Seat', type: 'OUTFLOW', category: 'Cloud', amount: 39.00, account: 'Checking (Chase)', date: '2026-09-25', status: 'Completed' },
+        { id: 'tx_98f7', desc: 'Principal Engineer Bi-Weekly Salary', type: 'INFLOW', category: 'Salary', amount: 8950.00, account: 'Checking (Chase)', date: '2026-09-24', status: 'Completed' },
+        { id: 'tx_98f8', desc: 'Equinox Athletic Membership', type: 'OUTFLOW', category: 'Health', amount: 285.00, account: 'Checking (Chase)', date: '2026-09-22', status: 'Completed' },
+        { id: 'tx_98f9', desc: 'Blue Bottle Specialty Coffee Roastery', type: 'OUTFLOW', category: 'Dining', amount: 68.20, account: 'Checking (Chase)', date: '2026-09-20', status: 'Completed' },
+        { id: 'tx_98fa', desc: 'AWS Global Cloud Hosting', type: 'OUTFLOW', category: 'Cloud', amount: 458.70, account: 'Checking (Chase)', date: '2026-09-18', status: 'Completed' },
+        { id: 'tx_98fb', desc: 'High-Yield Marcus Interest Payment', type: 'INFLOW', category: 'Salary', amount: 254.80, account: 'HYSA (Marcus)', date: '2026-09-15', status: 'Completed' },
+        { id: 'tx_98fc', desc: 'Tesla Supercharging Mobility Network', type: 'OUTFLOW', category: 'Travel', amount: 44.50, account: 'Checking (Chase)', date: '2026-09-12', status: 'Completed' }
+      ];
+
+      let state = {
+        transactions: [],
+        currency: 'USD',
+        period: '30D',
+        chartView: 'AREA', // 'AREA' or 'BARS'
+        rates: {
+          USD: 1,
+          EUR: 0.92,
+          IDR: 15600
+        }
+      };
+
+      // Load state from localStorage or initialize
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            state.transactions = JSON.parse(raw);
+          } else {
+            state.transactions = DEFAULT_TRANSACTIONS;
+            saveState();
+          }
+
+          const rawPrefs = localStorage.getItem(PREFS_KEY);
+          if (rawPrefs) {
+            const prefs = JSON.parse(rawPrefs);
+            state.currency = prefs.currency || 'USD';
+            state.period = prefs.period || '30D';
+            state.chartView = prefs.chartView || 'AREA';
+          }
+        } catch (e) {
+          console.warn('Failed to parse local storage, loading defaults:', e);
+          state.transactions = DEFAULT_TRANSACTIONS;
+        }
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state.transactions));
+          localStorage.setItem(PREFS_KEY, JSON.stringify({
+            currency: state.currency,
+            period: state.period,
+            chartView: state.chartView
+          }));
+        } catch (e) {
+          console.error('Error saving state:', e);
+        }
+      }
+
+      // Currency Formatter
+      function formatMoney(amountInUSD) {
+        const rate = state.rates[state.currency] || 1;
+        const converted = amountInUSD * rate;
+
+        if (state.currency === 'IDR') {
+          return 'Rp ' + Math.round(converted).toLocaleString('id-ID');
+        } else if (state.currency === 'EUR') {
+          return '€' + converted.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        } else {
+          return '$' + converted.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+      }
+
+      // ==================== METRICS CALCULATION ====================
+      function recalculateMetrics() {
+        let totalInflow = 0;
+        let totalOutflow = 0;
+
+        state.transactions.forEach(tx => {
+          if (tx.type === 'INFLOW') totalInflow += Number(tx.amount);
+          if (tx.type === 'OUTFLOW') totalOutflow += Number(tx.amount);
+        });
+
+        const netWorthBase = 148920.00;
+        const netWorthElement = document.getElementById('metricNetWorth');
+        const inflowElement = document.getElementById('metricInflow');
+        const outflowElement = document.getElementById('metricOutflow');
+        const savingsRateElement = document.getElementById('metricSavingsRate');
+        const netSurplusElement = document.getElementById('metricNetSurplus');
+
+        if (netWorthElement) netWorthElement.textContent = formatMoney(netWorthBase + (totalInflow - totalOutflow) - 9610);
+        if (inflowElement) inflowElement.textContent = formatMoney(totalInflow);
+        if (outflowElement) outflowElement.textContent = formatMoney(totalOutflow);
+
+        const surplus = totalInflow - totalOutflow;
+        if (netSurplusElement) {
+          netSurplusElement.textContent = (surplus >= 0 ? '+' : '-') + formatMoney(Math.abs(surplus));
+          netSurplusElement.className = surplus >= 0 ? 'text-emerald-400 font-medium tabular' : 'text-rose-400 font-medium tabular';
+        }
+
+        if (savingsRateElement) {
+          const ratePercent = totalInflow > 0 ? ((surplus / totalInflow) * 100).toFixed(1) : 0;
+          savingsRateElement.textContent = ratePercent + '%';
+        }
+      }
+
+      // ==================== CHART RENDERING ====================
+      function renderChart() {
+        const container = document.getElementById('chartSvgContent');
+        if (!container) return;
+
+        // Sample 8 data points representing the curve
+        const dataPoints = [
+          { label: 'Oct 01', balance: 139200, in: 7500, out: 2450 },
+          { label: 'Oct 05', balance: 140100, in: 2200, out: 820 },
+          { label: 'Oct 10', balance: 141900, in: 1800, out: 950 },
+          { label: 'Oct 15', balance: 143500, in: 3400, out: 1200 },
+          { label: 'Oct 20', balance: 144800, in: 1200, out: 1650 },
+          { label: 'Oct 25', balance: 146900, in: 4800, out: 1100 },
+          { label: 'Oct 28', balance: 147500, in: 2100, out: 740 },
+          { label: 'Today', balance: 148920, in: 8950, out: 6840 }
+        ];
+
+        const width = 700;
+        const height = 210;
+        const minVal = 135000;
+        const maxVal = 152000;
+
+        function getY(val) {
+          return height - ((val - minVal) / (maxVal - minVal)) * (height - 30) - 15;
+        }
+
+        function getX(i) {
+          return (i / (dataPoints.length - 1)) * (width - 40) + 20;
+        }
+
+        if (state.chartView === 'AREA') {
+          // Generate smooth SVG Catmull-Rom or bezier spline
+          let pathD = `M ${getX(0)} ${getY(dataPoints[0].balance)}`;
+          for (let i = 0; i < dataPoints.length - 1; i++) {
+            const x0 = getX(i);
+            const y0 = getY(dataPoints[i].balance);
+            const x1 = getX(i + 1);
+            const y1 = getY(dataPoints[i + 1].balance);
+            const cx = (x0 + x1) / 2;
+            pathD += ` C ${cx} ${y0}, ${cx} ${y1}, ${x1} ${y1}`;
+          }
+
+          const areaD = `${pathD} L ${getX(dataPoints.length - 1)} ${height} L ${getX(0)} ${height} Z`;
+
+          let dotsHtml = '';
+          dataPoints.forEach((pt, idx) => {
+            const px = getX(idx);
+            const py = getY(pt.balance);
+            dotsHtml += `
+              <circle cx="${px}" cy="${py}" r="3" fill="#09090b" stroke="#6366f1" stroke-width="2" class="cursor-pointer hover:r-5 transition-all" data-idx="${idx}"></circle>
+            `;
+          });
+
+          container.innerHTML = `
+            <path d="${areaD}" fill="url(#indigoGradient)" />
+            <path d="${pathD}" fill="none" stroke="#6366f1" stroke-width="2.2" stroke-linecap="round" class="chart-glow" />
+            ${dotsHtml}
+          `;
+        } else {
+          // BARS MODE: Inflow vs Outflow bars side-by-side
+          let barsHtml = '';
+          const maxBarVal = 10000;
+          dataPoints.forEach((pt, idx) => {
+            const centerX = getX(idx);
+            const inH = (pt.in / maxBarVal) * (height - 40);
+            const outH = (pt.out / maxBarVal) * (height - 40);
+
+            barsHtml += `
+              <g class="cursor-pointer" data-idx="${idx}">
+                <!-- Inflow Bar -->
+                <rect x="${centerX - 10}" y="${height - inH}" width="8" height="${inH}" rx="2" fill="url(#emeraldBarGrad)" stroke="#10b981" stroke-width="1" class="hover:opacity-80 transition-opacity" />
+                <!-- Outflow Bar -->
+                <rect x="${centerX + 2}" y="${height - outH}" width="8" height="${outH}" rx="2" fill="url(#roseBarGrad)" stroke="#f43f5e" stroke-width="1" class="hover:opacity-80 transition-opacity" />
+              </g>
+            `;
+          });
+
+          container.innerHTML = barsHtml;
+        }
+
+        // Attach interactive mouse listener to chart container for tracker
+        setupChartInteraction(dataPoints, getX, getY);
+      }
+
+      function setupChartInteraction(dataPoints, getX, getY) {
+        const svg = document.getElementById('financeSvgChart');
+        const trackerLine = document.getElementById('trackerLine');
+        const trackerPoint = document.getElementById('trackerPoint');
+        const tooltipIndicator = document.getElementById('chartTooltipIndicator');
+
+        if (!svg) return;
+
+        svg.onmousemove = function(e) {
+          const rect = svg.getBoundingClientRect();
+          const mouseX = ((e.clientX - rect.left) / rect.width) * 700;
+
+          // Find closest point
+          let closestIdx = 0;
+          let minDist = Infinity;
+          dataPoints.forEach((pt, idx) => {
+            const dist = Math.abs(getX(idx) - mouseX);
+            if (dist < minDist) {
+              minDist = dist;
+              closestIdx = idx;
+            }
+          });
+
+          const activePoint = dataPoints[closestIdx];
+          const px = getX(closestIdx);
+          const py = getY(activePoint.balance);
+
+          if (trackerLine) {
+            trackerLine.setAttribute('x1', px);
+            trackerLine.setAttribute('x2', px);
+            trackerLine.style.opacity = '1';
+          }
+
+          if (trackerPoint && state.chartView === 'AREA') {
+            trackerPoint.setAttribute('cx', px);
+            trackerPoint.setAttribute('cy', py);
+            trackerPoint.style.opacity = '1';
+          }
+
+          if (tooltipIndicator) {
+            tooltipIndicator.innerHTML = `
+              <span class="text-zinc-400">${activePoint.label}:</span>
+              <span class="text-indigo-400 font-semibold ml-1">${formatMoney(activePoint.balance)}</span>
+              <span class="text-emerald-400 ml-2">+${formatMoney(activePoint.in)}</span>
+              <span class="text-rose-400 ml-1">-${formatMoney(activePoint.out)}</span>
+            `;
+          }
+        };
+
+        svg.onmouseleave = function() {
+          if (trackerLine) trackerLine.style.opacity = '0';
+          if (trackerPoint) trackerPoint.style.opacity = '0';
+          if (tooltipIndicator) {
+            tooltipIndicator.textContent = 'Hover data point to inspect';
+          }
+        };
+      }
+
+      // ==================== TRANSACTION TABLE ====================
+      function renderTable() {
+        const tbody = document.getElementById('txTableBody');
+        const searchInput = document.getElementById('txSearchInput');
+        const typeFilter = document.getElementById('txTypeFilter');
+        const catFilter = document.getElementById('txCategoryFilter');
+        const badge = document.getElementById('txCountBadge');
+        const summary = document.getElementById('txTableSummary');
+
+        if (!tbody) return;
+
+        const query = (searchInput ? searchInput.value : '').toLowerCase().trim();
+        const selectedType = typeFilter ? typeFilter.value : 'ALL';
+        const selectedCat = catFilter ? catFilter.value : 'ALL';
+
+        const filtered = state.transactions.filter(tx => {
+          if (selectedType !== 'ALL' && tx.type !== selectedType) return false;
+          if (selectedCat !== 'ALL' && tx.category !== selectedCat) return false;
+          if (query && !tx.desc.toLowerCase().includes(query) && !tx.id.toLowerCase().includes(query) && !tx.category.toLowerCase().includes(query)) {
+            return false;
+          }
+          return true;
+        });
+
+        if (badge) badge.textContent = `${filtered.length} ENTRIES`;
+        if (summary) summary.textContent = `Displaying ${filtered.length} of ${state.transactions.length} recorded state transitions`;
+
+        if (filtered.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="8" class="py-12 text-center text-zinc-500 font-mono">
+                <svg class="mx-auto h-8 w-8 text-zinc-600 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <circle cx="11" cy="11" r="8"/>
+                  <path d="m21 21-4.3-4.3"/>
+                </svg>
+                No financial transactions match your query criteria.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tbody.innerHTML = filtered.map(tx => {
+          const isOutflow = tx.type === 'OUTFLOW';
+          const sign = isOutflow ? '-' : '+';
+          const amountColor = isOutflow ? 'text-zinc-200' : 'text-emerald-400 font-medium';
+          
+          let catBadgeClass = 'border-zinc-700 bg-zinc-800 text-zinc-300';
+          if (tx.category === 'Cloud') catBadgeClass = 'border-violet-500/20 bg-violet-500/10 text-violet-300';
+          else if (tx.category === 'Salary') catBadgeClass = 'border-emerald-500/20 bg-emerald-500/10 text-emerald-300';
+          else if (tx.category === 'Housing') catBadgeClass = 'border-indigo-500/20 bg-indigo-500/10 text-indigo-300';
+          else if (tx.category === 'Dining') catBadgeClass = 'border-cyan-500/20 bg-cyan-500/10 text-cyan-300';
+          else if (tx.category === 'Investment') catBadgeClass = 'border-emerald-500/20 bg-emerald-500/10 text-emerald-300';
+
+          return `
+            <tr class="hover:bg-zinc-900/60 transition-colors group">
+              <!-- TX Hash / ID -->
+              <td class="py-3 pl-4 pr-3 sm:pl-6 text-zinc-500 font-mono text-[11px] whitespace-nowrap">
+                <span class="rounded bg-zinc-900 border border-white/[0.06] px-1.5 py-0.5 group-hover:border-white/20 group-hover:text-zinc-300 transition-colors">
+                  ${tx.id}
+                </span>
+              </td>
+
+              <!-- Description -->
+              <td class="px-3 py-3 font-medium text-zinc-200 whitespace-nowrap">
+                ${tx.desc}
+              </td>
+
+              <!-- Category Pill -->
+              <td class="px-3 py-3 whitespace-nowrap">
+                <span class="rounded-full border px-2 py-0.5 text-[10px] font-mono ${catBadgeClass}">
+                  ${tx.category}
+                </span>
+              </td>
+
+              <!-- Account -->
+              <td class="px-3 py-3 text-zinc-400 whitespace-nowrap text-[11px]">
+                ${tx.account}
+              </td>
+
+              <!-- Timestamp -->
+              <td class="px-3 py-3 text-zinc-500 whitespace-nowrap text-[11px]">
+                ${tx.date}
+              </td>
+
+              <!-- Status -->
+              <td class="px-3 py-3 whitespace-nowrap">
+                <span class="inline-flex items-center gap-1 text-[11px] text-zinc-400 font-mono">
+                  <span class="h-1.5 w-1.5 rounded-full ${isOutflow ? 'bg-zinc-400' : 'bg-emerald-400'}"></span>
+                  ${tx.status || 'Completed'}
+                </span>
+              </td>
+
+              <!-- Amount -->
+              <td class="py-3 pl-3 pr-4 sm:pr-6 text-right whitespace-nowrap tabular font-mono ${amountColor}">
+                ${sign}${formatMoney(Number(tx.amount))}
+              </td>
+
+              <!-- Delete Action -->
+              <td class="py-3 pr-4 text-center whitespace-nowrap">
+                <button class="delete-tx-btn text-zinc-600 hover:text-rose-400 transition-colors p-1" data-id="${tx.id}" title="Remove entry">
+                  <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                  </svg>
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        // Attach delete listeners
+        tbody.querySelectorAll('.delete-tx-btn').forEach(btn => {
+          btn.onclick = function(e) {
+            e.stopPropagation();
+            const id = this.getAttribute('data-id');
+            deleteTransaction(id);
+          };
+        });
+      }
+
+      function deleteTransaction(id) {
+        state.transactions = state.transactions.filter(t => t.id !== id);
+        saveState();
+        recalculateMetrics();
+        renderTable();
+        renderChart();
+        showToast('Transaction record archived & purged from ledger');
+      }
+
+      // ==================== TOAST NOTIFICATIONS ====================
+      function showToast(message, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = 'linear-card pointer-events-auto flex items-center gap-2.5 rounded-lg border border-white/20 bg-zinc-900/95 px-3.5 py-2.5 text-xs font-mono text-zinc-200 shadow-xl transition-all duration-300 translate-y-3 opacity-0';
+        toast.innerHTML = `
+          <span class="flex h-2 w-2 rounded-full ${type === 'success' ? 'bg-emerald-400' : 'bg-indigo-400'}"></span>
+          <span>${message}</span>
+        `;
+
+        container.appendChild(toast);
+
+        // Animate In
+        requestAnimationFrame(() => {
+          toast.classList.remove('translate-y-3', 'opacity-0');
+        });
+
+        // Auto remove
+        setTimeout(() => {
+          toast.classList.add('translate-y-3', 'opacity-0');
+          setTimeout(() => toast.remove(), 300);
+        }, 3200);
+      }
+
+      // ==================== MODALS & SHORTCUTS ====================
+      const newTxModal = document.getElementById('newTxModal');
+      const newTxCard = document.getElementById('newTxCard');
+      const cmdPaletteModal = document.getElementById('cmdPaletteModal');
+      const cmdPaletteCard = document.getElementById('cmdPaletteCard');
+
+      function openNewTxModal() {
+        if (!newTxModal) return;
+        newTxModal.classList.remove('opacity-0', 'pointer-events-none');
+        if (newTxCard) newTxCard.classList.remove('scale-95');
+        const descInput = document.getElementById('txDesc');
+        const dateInput = document.getElementById('txDate');
+        if (dateInput && !dateInput.value) {
+          dateInput.value = new Date().toISOString().split('T')[0];
+        }
+        setTimeout(() => descInput && descInput.focus(), 100);
+      }
+
+      function closeNewTxModal() {
+        if (!newTxModal) return;
+        newTxModal.classList.add('opacity-0', 'pointer-events-none');
+        if (newTxCard) newTxCard.classList.add('scale-95');
+      }
+
+      function openCmdPalette() {
+        if (!cmdPaletteModal) return;
+        cmdPaletteModal.classList.remove('opacity-0', 'pointer-events-none');
+        if (cmdPaletteCard) cmdPaletteCard.classList.remove('scale-95');
+        const input = document.getElementById('cmdSearchInput');
+        renderCmdResults('');
+        setTimeout(() => input && input.focus(), 100);
+      }
+
+      function closeCmdPalette() {
+        if (!cmdPaletteModal) return;
+        cmdPaletteModal.classList.add('opacity-0', 'pointer-events-none');
+        if (cmdPaletteCard) cmdPaletteCard.classList.add('scale-95');
+      }
+
+      // Command List Data
+      const COMMANDS = [
+        { title: 'Record New Transaction', subtitle: 'Add income or expense mutation', icon: '+', action: () => { closeCmdPalette(); openNewTxModal(); } },
+        { title: 'Switch Currency: USD ($)', subtitle: 'Format ledger values in US Dollars', icon: '$', action: () => { setCurrency('USD'); closeCmdPalette(); } },
+        { title: 'Switch Currency: EUR (€)', subtitle: 'Format ledger values in Euros', icon: '€', action: () => { setCurrency('EUR'); closeCmdPalette(); } },
+        { title: 'Switch Currency: IDR (Rp)', subtitle: 'Format ledger values in Indonesian Rupiah', icon: 'Rp', action: () => { setCurrency('IDR'); closeCmdPalette(); } },
+        { title: 'Export Ledger (JSON)', subtitle: 'Download all records to local disk', icon: '↓', action: () => { exportData(); closeCmdPalette(); } },
+        { title: 'Toggle Chart: Cashflow Bars', subtitle: 'Switch to comparative bar visualizer', icon: '📊', action: () => { setChartView('BARS'); closeCmdPalette(); } },
+        { title: 'Toggle Chart: Net Area Curve', subtitle: 'Switch to smooth equity spline', icon: '📈', action: () => { setChartView('AREA'); closeCmdPalette(); } },
+        { title: 'Reset to Sample Data', subtitle: 'Restore default Linear telemetry dataset', icon: '↺', action: () => { resetDefaults(); closeCmdPalette(); } }
+      ];
+
+      function renderCmdResults(query) {
+        const list = document.getElementById('cmdResultsList');
+        if (!list) return;
+
+        const q = query.toLowerCase().trim();
+        const matches = COMMANDS.filter(cmd => cmd.title.toLowerCase().includes(q) || cmd.subtitle.toLowerCase().includes(q));
+
+        if (matches.length === 0) {
+          list.innerHTML = `<div class="py-6 text-center text-zinc-500">No command commands found matching "${query}"</div>`;
+          return;
+        }
+
+        list.innerHTML = matches.map((cmd, idx) => `
+          <div class="cmd-item flex items-center justify-between rounded-lg p-2 hover:bg-zinc-800/80 cursor-pointer transition-colors ${idx === 0 ? 'bg-zinc-800/50' : ''}" data-idx="${idx}">
+            <div class="flex items-center gap-3">
+              <span class="flex h-6 w-6 items-center justify-center rounded border border-white/10 bg-zinc-800 text-[11px] font-mono text-zinc-300">
+                ${cmd.icon}
+              </span>
+              <div>
+                <div class="text-zinc-200 font-medium">${cmd.title}</div>
+                <div class="text-[10px] text-zinc-500">${cmd.subtitle}</div>
+              </div>
+            </div>
+            <kbd class="text-[10px] text-zinc-500 font-mono">↵</kbd>
+          </div>
+        `).join('');
+
+        list.querySelectorAll('.cmd-item').forEach(item => {
+          item.onclick = function() {
+            const idx = parseInt(this.getAttribute('data-idx'), 10);
+            if (matches[idx]) matches[idx].action();
+          };
+        });
+      }
+
+      function setCurrency(curr) {
+        state.currency = curr;
+        saveState();
+        document.querySelectorAll('.curr-btn').forEach(btn => {
+          if (btn.getAttribute('data-curr') === curr) {
+            btn.className = 'curr-btn px-2 py-1 rounded text-zinc-200 bg-zinc-800 font-medium transition-colors';
+          } else {
+            btn.className = 'curr-btn px-2 py-1 rounded text-zinc-400 hover:text-zinc-200 transition-colors';
+          }
+        });
+        recalculateMetrics();
+        renderTable();
+        renderChart();
+        showToast(`Currency format updated to ${curr}`);
+      }
+
+      function setChartView(view) {
+        state.chartView = view;
+        saveState();
+        const areaBtn = document.getElementById('chartViewArea');
+        const barsBtn = document.getElementById('chartViewBars');
+
+        if (view === 'AREA') {
+          if (areaBtn) areaBtn.className = 'chart-mode-btn rounded-md border border-indigo-500/40 bg-indigo-500/10 px-2.5 py-1 text-[11px] font-mono text-indigo-200 transition-colors';
+          if (barsBtn) barsBtn.className = 'chart-mode-btn rounded-md border border-white/10 bg-zinc-900/60 px-2.5 py-1 text-[11px] font-mono text-zinc-400 hover:border-white/20 hover:text-zinc-200 transition-colors';
+        } else {
+          if (barsBtn) barsBtn.className = 'chart-mode-btn rounded-md border border-indigo-500/40 bg-indigo-500/10 px-2.5 py-1 text-[11px] font-mono text-indigo-200 transition-colors';
+          if (areaBtn) areaBtn.className = 'chart-mode-btn rounded-md border border-white/10 bg-zinc-900/60 px-2.5 py-1 text-[11px] font-mono text-zinc-400 hover:border-white/20 hover:text-zinc-200 transition-colors';
+        }
+        renderChart();
+        showToast(`Chart view toggled to ${view === 'AREA' ? 'Net Curve' : 'Cashflow Bars'}`);
+      }
+
+      function exportData() {
+        const blob = new Blob([JSON.stringify(state.transactions, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `apex_finance_ledger_${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('Ledger JSON successfully exported');
+      }
+
+      function resetDefaults() {
+        state.transactions = [...DEFAULT_TRANSACTIONS];
+        saveState();
+        recalculateMetrics();
+        renderTable();
+        renderChart();
+        showToast('Ledger reset to baseline sample dataset');
+      }
+
+      // ==================== EVENT LISTENERS SETUP ====================
+      function setupListeners() {
+        // Clock tick
+        const clock = document.getElementById('headerClock');
+        function updateClock() {
+          if (clock) {
+            const now = new Date();
+            clock.textContent = now.toTimeString().split(' ')[0] + ' UTC';
+          }
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Keyboard Shortcuts (Linear standard)
+        window.addEventListener('keydown', e => {
+          // Check if typing inside input
+          const isTyping = ['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName);
+
+          if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+            e.preventDefault();
+            if (cmdPaletteModal.classList.contains('pointer-events-none')) {
+              openCmdPalette();
+            } else {
+              closeCmdPalette();
+            }
+          } else if (e.key === 'Escape') {
+            closeCmdPalette();
+            closeNewTxModal();
+          } else if (!isTyping) {
+            if (e.key.toLowerCase() === 'n') {
+              e.preventDefault();
+              openNewTxModal();
+            } else if (e.key === '/') {
+              e.preventDefault();
+              const searchInput = document.getElementById('txSearchInput');
+              if (searchInput) searchInput.focus();
+            }
+          }
+        });
+
+        // Trigger Buttons
+        const cmdBtn = document.getElementById('cmdPaletteBtn');
+        if (cmdBtn) cmdBtn.onclick = openCmdPalette;
+
+        const openNewTxBtn = document.getElementById('openNewTxModalBtn');
+        if (openNewTxBtn) openNewTxBtn.onclick = openNewTxModal;
+
+        const addInlineBtn = document.getElementById('addInlineTxBtn');
+        if (addInlineBtn) addInlineBtn.onclick = openNewTxModal;
+
+        const closeNewTxBtn = document.getElementById('closeNewTxModalBtn');
+        if (closeNewTxBtn) closeNewTxBtn.onclick = closeNewTxModal;
+
+        const cancelTxBtn = document.getElementById('cancelTxBtn');
+        if (cancelTxBtn) cancelTxBtn.onclick = closeNewTxModal;
+
+        // Modal backdrop click to close
+        if (newTxModal) {
+          newTxModal.onclick = (e) => {
+            if (e.target === newTxModal) closeNewTxModal();
+          };
+        }
+        if (cmdPaletteModal) {
+          cmdPaletteModal.onclick = (e) => {
+            if (e.target === cmdPaletteModal) closeCmdPalette();
+          };
+        }
+
+        // Command input search typing
+        const cmdSearchInput = document.getElementById('cmdSearchInput');
+        if (cmdSearchInput) {
+          cmdSearchInput.oninput = (e) => renderCmdResults(e.target.value);
+        }
+
+        // New Transaction Form Submission
+        const newForm = document.getElementById('newTxForm');
+        if (newForm) {
+          newForm.onsubmit = function(e) {
+            e.preventDefault();
+            const txType = document.querySelector('input[name="txType"]:checked')?.value || 'OUTFLOW';
+            const desc = document.getElementById('txDesc')?.value.trim();
+            const amount = parseFloat(document.getElementById('txAmount')?.value);
+            const category = document.getElementById('txCategory')?.value;
+            const account = document.getElementById('txAccount')?.value;
+            const date = document.getElementById('txDate')?.value;
+
+            if (!desc || isNaN(amount) || amount <= 0) {
+              alert('Please enter a valid description and positive numerical amount.');
+              return;
+            }
+
+            const newTx = {
+              id: 'tx_' + Math.random().toString(16).substring(2, 6),
+              desc: desc,
+              type: txType,
+              category: category,
+              amount: amount,
+              account: account,
+              date: date || new Date().toISOString().split('T')[0],
+              status: 'Completed'
+            };
+
+            state.transactions.unshift(newTx);
+            saveState();
+            recalculateMetrics();
+            renderTable();
+            renderChart();
+
+            newForm.reset();
+            closeNewTxModal();
+            showToast(`Transaction ${newTx.id} committed to ledger`, 'success');
+          };
+        }
+
+        // Currency buttons
+        document.querySelectorAll('.curr-btn').forEach(btn => {
+          btn.onclick = function() {
+            setCurrency(this.getAttribute('data-curr'));
+          };
+        });
+
+        // Period filter buttons
+        document.querySelectorAll('.period-btn').forEach(btn => {
+          btn.onclick = function() {
+            document.querySelectorAll('.period-btn').forEach(b => {
+              b.className = 'period-btn px-2.5 py-1 rounded text-zinc-400 hover:text-zinc-200 transition-colors';
+            });
+            this.className = 'period-btn px-2.5 py-1 rounded bg-zinc-800 text-zinc-100 font-medium transition-colors';
+            state.period = this.getAttribute('data-period');
+            saveState();
+            renderChart();
+            showToast(`Period range updated to ${state.period}`);
+          };
+        });
+
+        // Chart toggle buttons
+        const areaBtn = document.getElementById('chartViewArea');
+        if (areaBtn) areaBtn.onclick = () => setChartView('AREA');
+
+        const barsBtn = document.getElementById('chartViewBars');
+        if (barsBtn) barsBtn.onclick = () => setChartView('BARS');
+
+        // Export button
+        const exportBtn = document.getElementById('exportDataBtn');
+        if (exportBtn) exportBtn.onclick = exportData;
+
+        // Table filters
+        const searchInput = document.getElementById('txSearchInput');
+        if (searchInput) searchInput.oninput = renderTable;
+
+        const typeFilter = document.getElementById('txTypeFilter');
+        if (typeFilter) typeFilter.onchange = renderTable;
+
+        const catFilter = document.getElementById('txCategoryFilter');
+        if (catFilter) catFilter.onchange = renderTable;
+
+        const resetBtn = document.getElementById('resetFiltersBtn');
+        if (resetBtn) {
+          resetBtn.onclick = function() {
+            if (searchInput) searchInput.value = '';
+            if (typeFilter) typeFilter.value = 'ALL';
+            if (catFilter) catFilter.value = 'ALL';
+            renderTable();
+          };
+        }
+
+        // Info Button
+        const infoBtn = document.getElementById('systemInfoBtn');
+        if (infoBtn) infoBtn.onclick = openCmdPalette;
+
+        // Quick Transfer
+        const quickTransferBtn = document.getElementById('quickTransferBtn');
+        if (quickTransferBtn) {
+          quickTransferBtn.onclick = () => {
+            showToast('Auto-rebalance simulated: $2,500 transferred to High-Yield Vault', 'success');
+          };
+        }
+
+        const addAccountBtn = document.getElementById('addAccountBtn');
+        if (addAccountBtn) {
+          addAccountBtn.onclick = () => {
+            showToast('Account vault configuration available in enterprise edition');
+          };
+        }
+      }
+
+      // ==================== INITIALIZATION ====================
+      function init() {
+        loadState();
+        setupListeners();
+        recalculateMetrics();
+        renderChart();
+        renderTable();
+      }
+
+      // DOM Ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+
+    })();
+  </script>
+</body>
+</html>

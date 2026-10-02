@@ -1,0 +1,1233 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Bloom Finance — Friendly, energetic, and playful personal finance management dashboard inspired by Canva, Duolingo, and Lemon Squeezy.">
+  <title>Bloom — Playful Personal Finance</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans for punchy, friendly, rounded typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='7' fill='%237c3aed'/%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+
+  <!-- Tailwind CSS Browser v4 -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <style type="text/tailwindcss">
+    @theme static {
+      --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+
+      /* Playful Creative Tokens */
+      --color-canvas: #f8fafc;
+      --color-brand-purple: #7c3aed;
+      --color-brand-cyan: #06b6d4;
+      --color-brand-amber: #f59e0b;
+      --color-brand-rose: #f43f5e;
+      --color-brand-emerald: #10b981;
+      
+      --color-slate-900: #0f172a;
+      --color-slate-700: #334155;
+      --color-slate-600: #475569;
+      --color-slate-500: #64748b;
+    }
+  </style>
+
+  <style>
+    /* Ambient warm playground background */
+    body {
+      font-family: var(--font-sans);
+      background-color: #fafaf9;
+      color: #0f172a;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .ambient-glow {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(48rem 32rem at 10% -5%, rgba(167, 139, 250, 0.28), transparent 60%),
+        radial-gradient(42rem 30rem at 95% 5%, rgba(34, 211, 238, 0.22), transparent 55%),
+        radial-gradient(40rem 28rem at 50% 105%, rgba(251, 191, 36, 0.16), transparent 60%);
+    }
+
+    /* Tactile lifted tiles with signature soft colored drop shadows */
+    .tactile-tile {
+      background: #ffffff;
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.3, 1), box-shadow 0.25s ease;
+    }
+    .tactile-tile:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 32px -8px rgba(124, 58, 237, 0.14), 0 10px 14px -6px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Gradients */
+    .grad-primary {
+      background: linear-gradient(135deg, #7c3aed 0%, #6366f1 48%, #06b6d4 100%);
+    }
+    .grad-warm {
+      background: linear-gradient(135deg, #f59e0b 0%, #f43f5e 100%);
+    }
+    .grad-emerald {
+      background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+    }
+
+    /* Joyful animations */
+    @keyframes bounce-gentle {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    .animate-gentle {
+      animation: bounce-gentle 2.4s ease-in-out infinite;
+    }
+
+    @keyframes confetti-burst {
+      0% { transform: scale(0.6) translateY(0); opacity: 1; }
+      100% { transform: scale(1.1) translateY(-20px); opacity: 0; }
+    }
+    .confetti-pop {
+      animation: confetti-burst 0.8s ease-out forwards;
+    }
+
+    /* Custom smooth scrollbars */
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen text-slate-800 antialiased selection:bg-purple-100 selection:text-purple-900 pb-32">
+  <div class="ambient-glow" aria-hidden="true"></div>
+
+  <!-- Header Navigation -->
+  <header class="sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-slate-200/80 transition-all">
+    <!-- Quick Theme Switcher Ribbon -->
+    <div class="border-b border-slate-100 bg-slate-50/80 py-1 px-3 sm:px-6">
+      <div class="max-w-6xl mx-auto flex items-center justify-between text-[11px] font-sans">
+        <div class="flex items-center gap-2">
+          <label for="themeSelect" class="text-slate-500 font-mono text-[10px] uppercase font-bold tracking-wider">Themes:</label>
+          <div class="relative">
+            <select id="themeSelect" onchange="window.location.href=this.value" class="appearance-none bg-purple-50 text-purple-800 text-xs font-bold px-3 py-1 pr-7 rounded-xl border border-purple-200/80 shadow-2xs hover:bg-purple-100 outline-none cursor-pointer transition-colors">
+              <option value="dashboard-playful.html" selected>🎨 Playful Creative</option>
+              <option value="dashboard-editorial.html">📜 Warm Editorial</option>
+              <option value="dashboard-spatial.html">🫧 Spatial Glass</option>
+              <option value="dashboard-ops-terminal.html">🎛️ Ops Terminal</option>
+              <option value="dashboard-cyberpunk.html">⚡ Cyberpunk HUD</option>
+              <option value="dashboard-enterprise.html">🏢 Clean Enterprise</option>
+              <option value="dashboard-linear.html">🔮 Linear Dark</option>
+              <option value="dashboard-quiet.html">🕊️ Quiet Minimal</option>
+              <option value="dashboard-neo-brutalism.html">⚡ Neo-Brutalist</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-purple-500 text-[9px]">
+              ▼
+            </div>
+          </div>
+        </div>
+        <span class="hidden sm:inline text-slate-400 font-mono text-[10px]">Pure HTML + Tailwind CSS v4</span>
+      </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-3 sm:px-6 h-16 sm:h-18 flex items-center justify-between gap-2 sm:gap-4">
+      
+      <!-- Brand & Greeting -->
+      <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+        <a href="#" class="flex items-center gap-2 sm:gap-3 group min-w-0">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl grad-primary flex shrink-0 items-center justify-center text-white shadow-md shadow-purple-500/25 group-hover:scale-105 transition-transform">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+          </div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-1.5">
+              <span class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 truncate">Bloom</span>
+              <span class="text-[9px] sm:text-[10px] font-extrabold uppercase px-1.5 sm:px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 tracking-wider hidden xs:inline-block">Playful</span>
+            </div>
+            <p class="text-[11px] text-slate-500 font-medium hidden md:block" id="ui-tagline">Your cheerful wealth companion</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Center Streak & Encouragement Pill -->
+      <div class="hidden lg:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/70 shadow-xs">
+        <span class="text-base animate-gentle">🔥</span>
+        <span class="text-xs font-bold text-amber-900"><span id="streak-count">18</span>-Day Tracking Streak!</span>
+        <span class="text-[11px] font-semibold text-amber-700 bg-amber-200/60 px-2 py-0.5 rounded-full">Level 4 Saver</span>
+      </div>
+
+      <!-- Controls & Utilities -->
+      <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+        
+        <!-- Currency Selector -->
+        <select id="currency-select" onchange="changeCurrency(this.value)" class="bg-slate-100 hover:bg-slate-200/70 text-slate-700 font-bold text-xs rounded-xl px-2 sm:px-2.5 py-1.5 sm:py-2 border-0 outline-none cursor-pointer transition-colors">
+          <option value="USD">USD ($)</option>
+          <option value="IDR">IDR (Rp)</option>
+          <option value="EUR">EUR (€)</option>
+          <option value="GBP">GBP (£)</option>
+          <option value="JPY">JPY (¥)</option>
+        </select>
+
+        <!-- Language Switcher (EN / ID) -->
+        <button onclick="toggleLanguage()" id="lang-btn" class="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl bg-slate-100 hover:bg-slate-200/70 text-xs font-bold text-slate-700 transition-colors">
+          <span id="lang-flag">🇺🇸</span>
+          <span id="lang-label" class="hidden xs:inline">EN</span>
+        </button>
+
+        <!-- CTA Add Transaction Button -->
+        <button onclick="openModal('add-modal')" class="grad-primary text-white font-bold text-xs sm:text-sm px-2.5 sm:px-4 py-1.5 sm:py-2.5 rounded-xl shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-1.5 cursor-pointer">
+          <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+          </svg>
+          <span id="btn-add-label" class="hidden sm:inline">Add Entry</span>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Layout -->
+  <main class="max-w-6xl mx-auto px-3 sm:px-6 pt-4 sm:pt-6 space-y-6 sm:space-y-8">
+
+    <!-- 1. Cheerful Welcome Banner -->
+    <section class="relative overflow-hidden rounded-3xl grad-primary p-5 sm:p-8 text-white shadow-xl shadow-purple-500/20">
+      <!-- Decorative background circles -->
+      <div class="absolute -right-8 -bottom-10 w-48 h-48 rounded-full bg-white/10 blur-xl pointer-events-none"></div>
+      <div class="absolute right-32 -top-10 w-36 h-36 rounded-full bg-cyan-300/20 blur-lg pointer-events-none"></div>
+
+      <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6">
+        <div class="space-y-2 max-w-xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] sm:text-xs font-bold tracking-wide">
+            <span>✨</span>
+            <span id="banner-badge">Financial Health: 94/100 (Flourishing!)</span>
+          </div>
+          <h1 class="text-xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight">
+            <span id="banner-greeting">You're crushing your goals this month, Andi!</span> 🎉
+          </h1>
+          <p class="text-xs sm:text-sm text-purple-100 font-medium leading-relaxed" id="banner-sub">
+            Your savings rate is up <strong class="text-white underline decoration-amber-400 underline-offset-4">+6.2%</strong>. Keep this up and your Tokyo trip will be funded 2 months early!
+          </p>
+        </div>
+
+        <!-- Quick celebratory stat pill (responsive full-width on mobile) -->
+        <div class="w-full sm:w-auto shrink-0 flex items-center justify-between sm:justify-start gap-3 sm:gap-4 bg-white/15 backdrop-blur-md rounded-2xl p-3.5 sm:p-4 border border-white/20">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white text-purple-600 flex items-center justify-center text-xl sm:text-2xl shadow-inner font-extrabold shrink-0">
+            🎯
+          </div>
+          <div>
+            <div class="text-[10px] sm:text-xs uppercase font-extrabold text-purple-200 tracking-wider" id="banner-free-cash-title">Safe-to-Spend</div>
+            <div class="text-xl sm:text-2xl font-extrabold text-white" id="val-safe-spend">$1,460.00</div>
+            <div class="text-[10px] sm:text-[11px] text-purple-200 font-semibold" id="banner-free-cash-sub">After all bills &amp; savings</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Tactile Lifted KPI Tiles -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      
+      <!-- Tile 1: Total Net Worth -->
+      <div class="tactile-tile rounded-3xl p-5 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-500 uppercase tracking-wider" id="kpi-networth-title">Total Net Worth</span>
+          <span class="w-8 h-8 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-sm font-bold">💎</span>
+        </div>
+        <div>
+          <div class="text-2xl sm:text-3xl font-extrabold text-slate-900" id="val-networth">$84,250.00</div>
+          <div class="flex items-center gap-1.5 mt-1 text-xs font-bold text-emerald-600">
+            <span>▲ +4.8%</span>
+            <span class="text-slate-400 font-normal" id="kpi-networth-sub">vs last month</span>
+          </div>
+        </div>
+        <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+          <div class="h-full grad-primary rounded-full" style="width: 82%"></div>
+        </div>
+      </div>
+
+      <!-- Tile 2: Monthly Inflow -->
+      <div class="tactile-tile rounded-3xl p-5 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-500 uppercase tracking-wider" id="kpi-inflow-title">Total Income</span>
+          <span class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm font-bold">🌱</span>
+        </div>
+        <div>
+          <div class="text-2xl sm:text-3xl font-extrabold text-slate-900" id="val-inflow">$7,800.00</div>
+          <div class="flex items-center gap-1.5 mt-1 text-xs font-bold text-slate-500">
+            <span class="text-purple-600 font-extrabold">2 Paydays</span>
+            <span class="text-slate-400 font-normal" id="kpi-inflow-sub">disbursed</span>
+          </div>
+        </div>
+        <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+          <div class="h-full bg-emerald-500 rounded-full" style="width: 100%"></div>
+        </div>
+      </div>
+
+      <!-- Tile 3: Total Outflow -->
+      <div class="tactile-tile rounded-3xl p-5 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-500 uppercase tracking-wider" id="kpi-outflow-title">Monthly Expenses</span>
+          <span class="w-8 h-8 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center text-sm font-bold">🛒</span>
+        </div>
+        <div>
+          <div class="text-2xl sm:text-3xl font-extrabold text-slate-900" id="val-outflow">$3,240.00</div>
+          <div class="flex items-center gap-1.5 mt-1 text-xs font-bold text-emerald-600">
+            <span>● 41.5%</span>
+            <span class="text-slate-400 font-normal" id="kpi-outflow-sub">of inflow (healthy!)</span>
+          </div>
+        </div>
+        <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+          <div class="h-full bg-rose-400 rounded-full" style="width: 41.5%"></div>
+        </div>
+      </div>
+
+      <!-- Tile 4: Saved & Invested -->
+      <div class="tactile-tile rounded-3xl p-5 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-500 uppercase tracking-wider" id="kpi-savings-title">Stashed &amp; Invested</span>
+          <span class="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-sm font-bold">🚀</span>
+        </div>
+        <div>
+          <div class="text-2xl sm:text-3xl font-extrabold text-slate-900" id="val-savings">$4,560.00</div>
+          <div class="flex items-center gap-1.5 mt-1 text-xs font-bold text-purple-700">
+            <span>★ 58.5%</span>
+            <span class="text-slate-400 font-normal" id="kpi-savings-sub">savings rate</span>
+          </div>
+        </div>
+        <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+          <div class="h-full grad-warm rounded-full" style="width: 58.5%"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 3. Interactive Savings Jars & Dream Goals (Duolingo / Lemon Squeezy inspired) -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 flex items-center gap-2">
+            <span class="text-purple-600">🍯</span>
+            <span id="jars-title">Dream Jars &amp; Savings Goals</span>
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-500 font-medium" id="jars-sub">Watch your future adventures fill up drop by drop!</p>
+        </div>
+        <button onclick="openModal('add-jar-modal')" class="text-xs font-bold text-purple-600 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded-xl transition-colors cursor-pointer flex items-center gap-1">
+          <span>+</span> <span id="jars-btn-new">New Goal Jar</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5" id="jars-container">
+        
+        <!-- Jar 1: Tokyo Cherry Blossom Trip -->
+        <div class="tactile-tile rounded-3xl p-4 sm:p-5 space-y-3 sm:space-y-4 relative group">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center gap-2.5 sm:gap-3">
+              <span class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-xl sm:text-2xl shadow-xs shrink-0">🌸</span>
+              <div class="min-w-0">
+                <h3 class="font-bold text-slate-900 text-sm sm:text-base truncate">Tokyo Trip 2027</h3>
+                <span class="text-[11px] sm:text-xs font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md">Flights &amp; Ryokan</span>
+              </div>
+            </div>
+            <button onclick="topUpJar(0, 50)" class="text-xs font-bold text-purple-600 bg-purple-50 hover:bg-purple-600 hover:text-white px-2.5 py-1.5 rounded-xl transition-all shadow-xs cursor-pointer active:scale-95 shrink-0" title="Add $50">
+              +$50 Drop
+            </button>
+          </div>
+
+          <div class="space-y-1.5">
+            <div class="flex justify-between items-baseline text-xs font-bold">
+              <span class="text-slate-900 font-extrabold text-base" id="jar-val-0">$3,400.00</span>
+              <span class="text-slate-400">Target: $5,000.00</span>
+            </div>
+            <!-- Progress Bar -->
+            <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden p-0.5">
+              <div class="h-full grad-primary rounded-full transition-all duration-500" style="width: 68%"></div>
+            </div>
+            <div class="flex justify-between text-[11px] font-bold text-slate-500">
+              <span>68% funded</span>
+              <span class="text-emerald-600">On Track! ✈️</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Jar 2: New M4 Workstation -->
+        <div class="tactile-tile rounded-3xl p-4 sm:p-5 space-y-3 sm:space-y-4 relative group">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center gap-2.5 sm:gap-3">
+              <span class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-cyan-100 text-cyan-600 flex items-center justify-center text-xl sm:text-2xl shadow-xs shrink-0">💻</span>
+              <div class="min-w-0">
+                <h3 class="font-bold text-slate-900 text-sm sm:text-base truncate">M4 Workstation</h3>
+                <span class="text-[11px] sm:text-xs font-semibold text-cyan-600 bg-cyan-50 px-2 py-0.5 rounded-md">Creative Studio</span>
+              </div>
+            </div>
+            <button onclick="topUpJar(1, 50)" class="text-xs font-bold text-purple-600 bg-purple-50 hover:bg-purple-600 hover:text-white px-2.5 py-1.5 rounded-xl transition-all shadow-xs cursor-pointer active:scale-95 shrink-0" title="Add $50">
+              +$50 Drop
+            </button>
+          </div>
+
+          <div class="space-y-1.5">
+            <div class="flex justify-between items-baseline text-xs font-bold">
+              <span class="text-slate-900 font-extrabold text-base" id="jar-val-1">$1,850.00</span>
+              <span class="text-slate-400">Target: $2,500.00</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden p-0.5">
+              <div class="h-full grad-emerald rounded-full transition-all duration-500" style="width: 74%"></div>
+            </div>
+            <div class="flex justify-between text-[11px] font-bold text-slate-500">
+              <span>74% funded</span>
+              <span class="text-purple-600">Almost there! 🚀</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Jar 3: Emergency Fortress -->
+        <div class="tactile-tile rounded-3xl p-4 sm:p-5 space-y-3 sm:space-y-4 relative group">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center gap-2.5 sm:gap-3">
+              <span class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl sm:text-2xl shadow-xs shrink-0">🛡️</span>
+              <div class="min-w-0">
+                <h3 class="font-bold text-slate-900 text-sm sm:text-base truncate">Emergency Cushion</h3>
+                <span class="text-[11px] sm:text-xs font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md">6-Month Buffer</span>
+              </div>
+            </div>
+            <span class="text-[10px] sm:text-[11px] font-extrabold bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full shrink-0">
+              COMPLETE! 🏆
+            </span>
+          </div>
+
+          <div class="space-y-1.5">
+            <div class="flex justify-between items-baseline text-xs font-bold">
+              <span class="text-slate-900 font-extrabold text-base" id="jar-val-2">$15,000.00</span>
+              <span class="text-slate-400">Target: $15,000.00</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden p-0.5">
+              <div class="h-full bg-emerald-500 rounded-full transition-all duration-500" style="width: 100%"></div>
+            </div>
+            <div class="flex justify-between text-[11px] font-bold text-slate-500">
+              <span>100% Fully Shielded</span>
+              <span class="text-emerald-600">Total Peace of Mind ✨</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 4. Playful Analytics: Cashflow Rhythm & Budget Envelopes -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6">
+      
+      <!-- Interactive Cashflow Rhythm Chart (2 cols) -->
+      <div class="lg:col-span-2 tactile-tile rounded-3xl p-5 sm:p-6 space-y-4 sm:space-y-5">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-base sm:text-lg font-extrabold text-slate-900" id="chart-title">Cash Flow Rhythm</h2>
+            <p class="text-xs text-slate-500 font-medium" id="chart-sub">Monthly incoming waves vs cheerful spending ripples</p>
+          </div>
+          <div class="flex items-center gap-3 text-xs font-bold">
+            <span class="flex items-center gap-1.5 text-purple-700">
+              <span class="w-3 h-3 rounded-full bg-purple-600"></span> <span id="legend-inflow">Inflow</span>
+            </span>
+            <span class="flex items-center gap-1.5 text-rose-600">
+              <span class="w-3 h-3 rounded-full bg-rose-400"></span> <span id="legend-outflow">Outflow</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Joyful SVG Column / Bar Graphic (Responsive Scroll Container) -->
+        <div class="overflow-x-auto scrollbar-none -mx-2 px-2 sm:mx-0 sm:px-0 pt-2">
+          <div class="h-52 sm:h-56 min-w-[420px] sm:min-w-0 w-full relative">
+            <svg viewBox="0 0 540 180" class="w-full h-full overflow-visible" preserveAspectRatio="none">
+              <!-- Background guidelines -->
+              <line x1="0" y1="30" x2="540" y2="30" stroke="#f1f5f9" stroke-width="1.5" stroke-dasharray="4 4"/>
+              <line x1="0" y1="80" x2="540" y2="80" stroke="#f1f5f9" stroke-width="1.5" stroke-dasharray="4 4"/>
+              <line x1="0" y1="130" x2="540" y2="130" stroke="#f1f5f9" stroke-width="1.5" stroke-dasharray="4 4"/>
+
+              <!-- Month 1: May -->
+              <g class="cursor-pointer group">
+                <rect x="35" y="55" width="20" height="95" rx="10" fill="#7c3aed" opacity="0.85" class="group-hover:opacity-100 transition-opacity"/>
+                <rect x="60" y="85" width="20" height="65" rx="10" fill="#fb7185" opacity="0.85" class="group-hover:opacity-100 transition-opacity"/>
+                <text x="57" y="170" text-anchor="middle" font-size="11" font-weight="bold" fill="#64748b">May</text>
+              </g>
+
+              <!-- Month 2: Jun -->
+              <g class="cursor-pointer group">
+                <rect x="125" y="48" width="20" height="102" rx="10" fill="#7c3aed" opacity="0.85" class="group-hover:opacity-100 transition-opacity"/>
+                <rect x="150" y="90" width="20" height="60" rx="10" fill="#fb7185" opacity="0.85" class="group-hover:opacity-100 transition-opacity"/>
+                <text x="147" y="170" text-anchor="middle" font-size="11" font-weight="bold" fill="#64748b">Jun</text>
+              </g>
+
+              <!-- Month 3: Jul -->
+              <g class="cursor-pointer group">
+                <rect x="215" y="40" width="20" height="110" rx="10" fill="#7c3aed" opacity="0.85" class="group-hover:opacity-100 transition-opacity"/>
+                <rect x="240" y="82" width="20" height="68" rx="10" fill="#fb7185" opacity="0.85" class="group-hover:opacity-100 transition-opacity"/>
+                <text x="237" y="170" text-anchor="middle" font-size="11" font-weight="bold" fill="#64748b">Jul</text>
+              </g>
+
+              <!-- Month 4: Aug -->
+              <g class="cursor-pointer group">
+                <rect x="305" y="42" width="20" height="108" rx="10" fill="#7c3aed" opacity="0.85" class="group-hover:opacity-100 transition-opacity"/>
+                <rect x="330" y="88" width="20" height="62" rx="10" fill="#fb7185" opacity="0.85" class="group-hover:opacity-100 transition-opacity"/>
+                <text x="327" y="170" text-anchor="middle" font-size="11" font-weight="bold" fill="#64748b">Aug</text>
+              </g>
+
+              <!-- Month 5: Sep -->
+              <g class="cursor-pointer group">
+                <rect x="395" y="32" width="20" height="118" rx="10" fill="#7c3aed" opacity="0.85" class="group-hover:opacity-100 transition-opacity"/>
+                <rect x="420" y="78" width="20" height="72" rx="10" fill="#fb7185" opacity="0.85" class="group-hover:opacity-100 transition-opacity"/>
+                <text x="417" y="170" text-anchor="middle" font-size="11" font-weight="bold" fill="#64748b">Sep</text>
+              </g>
+
+              <!-- Month 6: Oct (Active glow) -->
+              <g class="cursor-pointer group">
+                <rect x="480" y="24" width="22" height="126" rx="11" fill="url(#grad-oct-in)" class="filter drop-shadow-md"/>
+                <rect x="506" y="84" width="22" height="66" rx="11" fill="url(#grad-oct-out)" class="filter drop-shadow-sm"/>
+                <text x="504" y="170" text-anchor="middle" font-size="12" font-weight="800" fill="#7c3aed">Oct ★</text>
+              </g>
+
+              <defs>
+                <linearGradient id="grad-oct-in" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#06b6d4"/>
+                  <stop offset="100%" stop-color="#7c3aed"/>
+                </linearGradient>
+                <linearGradient id="grad-oct-out" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#f43f5e"/>
+                  <stop offset="100%" stop-color="#f59e0b"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between text-xs text-slate-500 font-medium gap-2">
+          <span class="flex items-center gap-1.5">
+            <span class="text-amber-500">💡</span>
+            <span id="chart-tip">Tip: October savings margin is your highest of the year!</span>
+          </span>
+          <span class="font-extrabold text-purple-700 bg-purple-50 px-2.5 py-1 rounded-full">+58.5% Stash Rate</span>
+        </div>
+      </div>
+
+      <!-- Playful Spending Categories (1 col) -->
+      <div class="tactile-tile rounded-3xl p-5 sm:p-6 space-y-4">
+        <div>
+          <h2 class="text-base sm:text-lg font-extrabold text-slate-900" id="cats-title">Budget Envelopes</h2>
+          <p class="text-xs text-slate-500 font-medium" id="cats-sub">Where the joy went this month</p>
+        </div>
+
+        <div class="space-y-3.5">
+          <!-- Food & Treats -->
+          <div class="space-y-1.5">
+            <div class="flex justify-between text-xs font-bold">
+              <span class="flex items-center gap-1.5 text-slate-800">
+                <span>🍣</span> <span id="cat-label-food">Food &amp; Treats</span>
+              </span>
+              <span class="text-slate-600 font-mono" id="cat-food-val">$680 / $900</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+              <div class="h-full bg-amber-400 rounded-full" style="width: 75%"></div>
+            </div>
+            <div class="text-[10px] text-slate-400 font-semibold text-right">75% used · $220 left</div>
+          </div>
+
+          <!-- Cozy Home & Utilities -->
+          <div class="space-y-1.5">
+            <div class="flex justify-between text-xs font-bold">
+              <span class="flex items-center gap-1.5 text-slate-800">
+                <span>🏡</span> <span id="cat-label-home">Cozy Home &amp; Bills</span>
+              </span>
+              <span class="text-slate-600 font-mono" id="cat-home-val">$1,650 / $1,700</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+              <div class="h-full bg-purple-500 rounded-full" style="width: 97%"></div>
+            </div>
+            <div class="text-[10px] text-slate-400 font-semibold text-right">97% used · Settled for Oct</div>
+          </div>
+
+          <!-- Fun, Games & Gear -->
+          <div class="space-y-1.5">
+            <div class="flex justify-between text-xs font-bold">
+              <span class="flex items-center gap-1.5 text-slate-800">
+                <span>🎮</span> <span id="cat-label-fun">Fun &amp; Hobbies</span>
+              </span>
+              <span class="text-slate-600 font-mono" id="cat-fun-val">$480 / $800</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+              <div class="h-full bg-cyan-400 rounded-full" style="width: 60%"></div>
+            </div>
+            <div class="text-[10px] text-slate-400 font-semibold text-right">60% used · $320 play money remaining!</div>
+          </div>
+
+          <!-- Learning & Books -->
+          <div class="space-y-1.5">
+            <div class="flex justify-between text-xs font-bold">
+              <span class="flex items-center gap-1.5 text-slate-800">
+                <span>📚</span> <span id="cat-label-books">Brain &amp; Growth</span>
+              </span>
+              <span class="text-slate-600 font-mono" id="cat-books-val">$120 / $300</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+              <div class="h-full bg-emerald-400 rounded-full" style="width: 40%"></div>
+            </div>
+            <div class="text-[10px] text-slate-400 font-semibold text-right">40% used · Read more books! 📖</div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 5. Playful Transaction Ledger (Tiles & Tag Chips) -->
+    <section class="space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 flex items-center gap-2">
+            <span>🧾</span>
+            <span id="tx-title">Transaction Adventure Log</span>
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-500 font-medium" id="tx-sub">Every coffee, invoice, and investment accounted for with joy</p>
+        </div>
+
+        <!-- Filter Chips & Search -->
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- Search input -->
+          <div class="relative w-full sm:w-auto">
+            <input 
+              type="text" 
+              id="tx-search" 
+              oninput="filterTransactions()" 
+              placeholder="Search adventures..." 
+              class="w-full sm:w-56 bg-white border border-slate-200 text-xs rounded-xl px-3 py-2 pl-8 font-semibold text-slate-800 placeholder:text-slate-400 outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all shadow-xs"
+            >
+            <span class="pointer-events-none absolute left-2.5 top-2.5 text-slate-400 text-xs">🔍</span>
+          </div>
+
+          <!-- Type filter pill buttons -->
+          <div class="inline-flex rounded-xl bg-slate-100 p-1 text-xs font-bold shrink-0">
+            <button onclick="setTxFilter('all')" id="btn-flt-all" class="px-2.5 py-1 rounded-lg bg-white text-purple-700 shadow-xs transition-all">All</button>
+            <button onclick="setTxFilter('expense')" id="btn-flt-expense" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all">Spent</button>
+            <button onclick="setTxFilter('income')" id="btn-flt-income" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all">Earned</button>
+          </div>
+
+          <!-- Export CSV -->
+          <button onclick="exportCSV()" class="p-2 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-purple-600 hover:border-purple-300 transition-all shadow-xs cursor-pointer shrink-0" title="Export CSV">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Transaction Cards List -->
+      <div class="tactile-tile rounded-3xl overflow-hidden divide-y divide-slate-100" id="tx-list">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 6. Floating Action Dock (Fast Shortcuts & Fun prompts) -->
+  <div class="fixed bottom-4 inset-x-3 sm:inset-x-auto sm:bottom-6 sm:left-1/2 sm:-translate-x-1/2 max-w-xl w-[calc(100%-1.5rem)] sm:w-full z-40">
+    <div class="rounded-full bg-white/95 backdrop-blur-md border border-purple-200/80 shadow-xl shadow-purple-500/15 p-1.5 sm:p-2 flex items-center justify-between gap-1.5 sm:gap-2">
+      
+      <!-- Quick tap chips with smooth horizontal scroll -->
+      <div class="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5 px-1.5 text-xs font-bold min-w-0 flex-1">
+        <span class="text-purple-600 font-extrabold text-[10px] uppercase tracking-wider hidden xs:inline shrink-0">Quick:</span>
+        <button onclick="quickAdd('☕ Flat White & Pastry', 6.50, 'Food & Treats', 'expense')" class="shrink-0 px-2.5 sm:px-3 py-1 rounded-full bg-amber-50 hover:bg-amber-100 text-amber-800 transition-colors cursor-pointer active:scale-95 text-[11px] sm:text-xs">☕ $6.50 Coffee</button>
+        <button onclick="quickAdd('🍣 Ramen Dinner with Friends', 38.00, 'Food & Treats', 'expense')" class="shrink-0 px-2.5 sm:px-3 py-1 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-800 transition-colors cursor-pointer active:scale-95 text-[11px] sm:text-xs">🍣 $38 Ramen</button>
+        <button onclick="quickAdd('🎨 UI Design Gig Bonus', 450.00, 'Income', 'income')" class="shrink-0 px-2.5 sm:px-3 py-1 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 transition-colors cursor-pointer active:scale-95 text-[11px] sm:text-xs">💰 +$450 Bonus</button>
+      </div>
+
+      <!-- Add Action Button -->
+      <button onclick="openModal('add-modal')" class="shrink-0 grad-primary text-white font-extrabold text-xs px-3 sm:px-4 py-2 rounded-full shadow-md shadow-purple-500/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-1 cursor-pointer">
+        <span>+</span>
+        <span id="dock-btn-add" class="hidden xs:inline">New Entry</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Pill -->
+  <div id="toast" class="fixed top-20 right-4 sm:right-6 z-50 hidden transition-all duration-300">
+    <div class="flex items-center gap-2.5 bg-slate-900 text-white font-bold text-xs px-4 py-3 rounded-2xl shadow-2xl">
+      <span id="toast-icon">🎉</span>
+      <span id="toast-msg">Entry recorded!</span>
+    </div>
+  </div>
+
+  <!-- Modal: Add Transaction (Mobile Bottom Sheet & Desktop Center Modal) -->
+  <div id="add-modal" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="w-full max-w-md rounded-t-[2rem] sm:rounded-3xl bg-white shadow-2xl border border-slate-100 p-5 sm:p-6 pb-8 sm:pb-6 space-y-4 sm:space-y-5 animate-in slide-in-from-bottom sm:zoom-in-95 duration-200 max-h-[92vh] overflow-y-auto">
+      
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-9 h-9 rounded-xl grad-primary text-white flex items-center justify-center font-bold text-sm">✨</span>
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-base" id="modal-add-title">Record Adventure</h3>
+            <p class="text-[11px] text-slate-400 font-medium" id="modal-add-sub">Add money in or money out</p>
+          </div>
+        </div>
+        <button onclick="closeModal('add-modal')" class="text-slate-400 hover:text-slate-700 p-1.5 rounded-xl hover:bg-slate-100 min-h-[40px] min-w-[40px] flex items-center justify-center">
+          ✕
+        </button>
+      </div>
+
+      <form id="tx-form" onsubmit="handleManualAdd(event)" class="space-y-4 text-xs font-bold">
+        
+        <!-- Type Radio -->
+        <div class="grid grid-cols-2 gap-2">
+          <label class="cursor-pointer">
+            <input type="radio" name="m-type" value="expense" checked class="peer sr-only">
+            <div class="text-center py-2.5 rounded-2xl border border-slate-200 peer-checked:bg-rose-500 peer-checked:text-white peer-checked:border-rose-500 transition-all">
+              🛒 Expense Outflow
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="m-type" value="income" class="peer sr-only">
+            <div class="text-center py-2.5 rounded-2xl border border-slate-200 peer-checked:bg-emerald-500 peer-checked:text-white peer-checked:border-emerald-500 transition-all">
+              🌱 Inflow Payday
+            </div>
+          </label>
+        </div>
+
+        <!-- Description -->
+        <div class="space-y-1">
+          <label class="text-slate-600" id="modal-lbl-desc">What was it?</label>
+          <input type="text" id="m-desc" required placeholder="e.g. Kinokuniya Books, Monthly Salary" class="w-full rounded-2xl border border-slate-200 px-3.5 py-2.5 font-semibold text-slate-900 outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100">
+        </div>
+
+        <!-- Amount & Date -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1">
+            <label class="text-slate-600" id="modal-lbl-amount">Amount (<span class="sym-display">$</span>)</label>
+            <input type="number" step="0.01" id="m-amount" required placeholder="0.00" class="w-full font-mono rounded-2xl border border-slate-200 px-3.5 py-2.5 font-bold text-slate-900 outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100">
+          </div>
+          <div class="space-y-1">
+            <label class="text-slate-600" id="modal-lbl-date">Date</label>
+            <input type="date" id="m-date" required class="w-full rounded-2xl border border-slate-200 px-3.5 py-2.5 font-semibold text-slate-900 outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100">
+          </div>
+        </div>
+
+        <!-- Category -->
+        <div class="space-y-1">
+          <label class="text-slate-600" id="modal-lbl-cat">Category Bucket</label>
+          <select id="m-cat" class="w-full rounded-2xl border border-slate-200 px-3.5 py-2.5 font-bold text-slate-800 outline-none focus:border-purple-500">
+            <option value="Food & Treats">🍣 Food &amp; Treats</option>
+            <option value="Cozy Home">🏡 Cozy Home &amp; Bills</option>
+            <option value="Fun & Hobbies">🎮 Fun &amp; Hobbies</option>
+            <option value="Brain & Growth">📚 Brain &amp; Growth</option>
+            <option value="Income">💰 Salary &amp; Inflow</option>
+            <option value="Investment">🚀 Investments &amp; Jars</option>
+          </select>
+        </div>
+
+        <div class="pt-3 flex justify-end gap-2 border-t border-slate-100">
+          <button type="button" onclick="closeModal('add-modal')" class="px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-100 min-h-[44px]" id="modal-btn-cancel">Cancel</button>
+          <button type="submit" class="px-5 py-2.5 rounded-xl grad-primary text-white font-extrabold shadow-md hover:scale-[1.02] active:scale-95 transition-all cursor-pointer min-h-[44px]" id="modal-btn-save">
+            Save Entry! 🎉
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add New Dream Jar (Mobile Bottom Sheet & Desktop Modal) -->
+  <div id="add-jar-modal" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="w-full max-w-sm rounded-t-[2rem] sm:rounded-3xl bg-white shadow-2xl border border-slate-100 p-5 sm:p-6 pb-8 sm:pb-6 space-y-4 animate-in slide-in-from-bottom sm:zoom-in-95 duration-200 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="font-extrabold text-slate-900 text-base" id="modal-jar-title">Create Dream Jar 🍯</h3>
+        <button onclick="closeModal('add-jar-modal')" class="text-slate-400 hover:text-slate-700 min-h-[40px] min-w-[40px] flex items-center justify-center">✕</button>
+      </div>
+
+      <div class="space-y-3 text-xs font-bold">
+        <div class="space-y-1">
+          <label class="text-slate-600">Goal Name</label>
+          <input type="text" id="jar-new-name" placeholder="e.g. Bali Surf Camp, New Camera" class="w-full rounded-2xl border border-slate-200 px-3.5 py-2 font-semibold">
+        </div>
+        <div class="space-y-1">
+          <label class="text-slate-600">Target Amount (<span class="sym-display">$</span>)</label>
+          <input type="number" id="jar-new-target" placeholder="1000" class="w-full font-mono rounded-2xl border border-slate-200 px-3.5 py-2 font-bold">
+        </div>
+        <div class="space-y-1">
+          <label class="text-slate-600">Pick an Icon</label>
+          <select id="jar-new-icon" class="w-full rounded-2xl border border-slate-200 px-3.5 py-2 font-bold">
+            <option value="🏄">🏄 Surf &amp; Ocean</option>
+            <option value="📷">📷 Photography Gear</option>
+            <option value="🎸">🎸 Music Instrument</option>
+            <option value="🚗">🚗 Roadtrip Van</option>
+            <option value="💍">💍 Special Celebration</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="pt-3 flex justify-end gap-2 text-xs font-bold border-t border-slate-100">
+        <button onclick="closeModal('add-jar-modal')" class="px-3.5 py-2 text-slate-500 min-h-[40px]">Cancel</button>
+        <button onclick="saveNewJar()" class="px-4 py-2 grad-primary text-white rounded-xl font-extrabold cursor-pointer min-h-[40px]">Create Jar! 🚀</button>
+      </div>
+    </div>
+  </div>
+    </div>
+  </div>
+
+  <!-- Pure JavaScript Logic -->
+  <script>
+    // State & Sample Data
+    const DEFAULT_DATA = {
+      lang: "en", // 'en' or 'id'
+      currency: "USD",
+      currencies: {
+        USD: { sym: "$", rate: 1.0 },
+        IDR: { sym: "Rp ", rate: 15600 },
+        EUR: { sym: "€", rate: 0.92 },
+        GBP: { sym: "£", rate: 0.78 },
+        JPY: { sym: "¥", rate: 152.0 }
+      },
+      jars: [
+        { name: "Tokyo Trip 2027", icon: "🌸", tag: "Flights & Ryokan", current: 3400, target: 5000 },
+        { name: "M4 Workstation", icon: "💻", tag: "Creative Studio", current: 1850, target: 2500 },
+        { name: "Emergency Cushion", icon: "🛡️", tag: "6-Month Buffer", current: 15000, target: 15000 }
+      ],
+      transactions: [
+        { id: 1, date: "2026-10-03", desc: "Kinokuniya Design Books", cat: "Brain & Growth", icon: "📚", type: "expense", amount: 68.50 },
+        { id: 2, date: "2026-10-02", desc: "Tech Retainer Consulting", cat: "Income", icon: "💰", type: "income", amount: 3900.00 },
+        { id: 3, date: "2026-10-02", desc: "Apartment Rent & Escrow", cat: "Cozy Home", icon: "🏡", type: "expense", amount: 1650.00 },
+        { id: 4, date: "2026-10-01", desc: "Farmer's Market Fresh Provisions", cat: "Food & Treats", icon: "🍣", type: "expense", amount: 142.00 },
+        { id: 5, date: "2026-09-30", desc: "Figma Professional Subscription", cat: "Fun & Hobbies", icon: "🎨", type: "expense", amount: 15.00 },
+        { id: 6, date: "2026-09-28", desc: "Espresso & Pour-Over Beans", cat: "Food & Treats", icon: "☕", type: "expense", amount: 24.50 },
+        { id: 7, date: "2026-09-25", desc: "Second Client Milestone", cat: "Income", icon: "🌱", type: "income", amount: 3900.00 }
+      ]
+    };
+
+    let state = JSON.parse(localStorage.getItem('bloom_finance_data')) || DEFAULT_DATA;
+    let currentFilter = 'all';
+
+    // Bilingual Dictionary
+    const I18N = {
+      en: {
+        flag: "🇺🇸",
+        label: "EN",
+        tagline: "Your cheerful wealth companion",
+        bannerBadge: "Financial Health: 94/100 (Flourishing!)",
+        bannerGreeting: "You're crushing your goals this month, Andi!",
+        bannerSub: "Your savings rate is up +6.2%. Keep this up and your Tokyo trip will be funded early!",
+        bannerSafeTitle: "Safe-to-Spend",
+        bannerSafeSub: "After all bills & savings",
+        kpiNetworth: "Total Net Worth",
+        kpiInflow: "Total Income",
+        kpiOutflow: "Monthly Expenses",
+        kpiSavings: "Stashed & Invested",
+        jarsTitle: "Dream Jars & Savings Goals",
+        jarsSub: "Watch your future adventures fill up drop by drop!",
+        jarsBtnNew: "New Goal Jar",
+        chartTitle: "Cash Flow Rhythm",
+        chartSub: "Monthly incoming waves vs cheerful spending ripples",
+        chartTip: "Tip: October savings margin is your highest of the year!",
+        catsTitle: "Budget Envelopes",
+        catsSub: "Where the joy went this month",
+        txTitle: "Transaction Adventure Log",
+        txSub: "Every coffee, invoice, and investment accounted for with joy",
+        btnAdd: "Add Entry",
+        quickAddMsg: "Entry added to adventure log!"
+      },
+      id: {
+        flag: "🇮🇩",
+        label: "ID",
+        tagline: "Sahabat ceria perencanaan keuanganmu",
+        bannerBadge: "Kesehatan Finansial: 94/100 (Sangat Sehat!)",
+        bannerGreeting: "Target bulan ini berjalan luar biasa, Andi!",
+        bannerSub: "Tingkat tabunganmu naik +6.2%. Liburan Tokyo bakal tercapai lebih cepat!",
+        bannerSafeTitle: "Uang Aman Dipakai",
+        bannerSafeSub: "Setelah semua tagihan & tabungan",
+        kpiNetworth: "Kekayaan Bersih",
+        kpiInflow: "Total Pemasukan",
+        kpiOutflow: "Pengeluaran Bulan Ini",
+        kpiSavings: "Ditabung & Investasi",
+        jarsTitle: "Toples Impian & Tabungan",
+        jarsSub: "Saksikan impian masa depan terisi tetes demi tetes!",
+        jarsBtnNew: "Buat Toples Baru",
+        chartTitle: "Irama Arus Kas",
+        chartSub: "Gelombang pemasukan vs percikan pengeluaran ceria",
+        chartTip: "Tips: Margin tabungan Oktober adalah yang tertinggi tahun ini!",
+        catsTitle: "Amplop Anggaran",
+        catsSub: "Ke mana uangmu dialokasikan bulan ini",
+        txTitle: "Buku Harian Petualangan Transaksi",
+        txSub: "Setiap kopi, invoice, dan tabungan tercatat dengan rapi",
+        btnAdd: "Tambah Transaksi",
+        quickAddMsg: "Transaksi tersimpan ke catatan petualangan!"
+      }
+    };
+
+    // Money Formatter Helper
+    function formatMoney(amountInUSD) {
+      const curr = state.currencies[state.currency] || state.currencies.USD;
+      const converted = amountInUSD * curr.rate;
+
+      if (state.currency === "IDR" || state.currency === "JPY") {
+        return curr.sym + Math.round(converted).toLocaleString();
+      }
+      return curr.sym + converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Persist
+    function persist() {
+      localStorage.setItem('bloom_finance_data', JSON.stringify(state));
+      render();
+    }
+
+    // Toggle Language
+    function toggleLanguage() {
+      state.lang = state.lang === "en" ? "id" : "en";
+      persist();
+      showToast(`Language switched to ${state.lang.toUpperCase()}`);
+    }
+
+    // Change Currency
+    function changeCurrency(curr) {
+      state.currency = curr;
+      persist();
+      showToast(`Currency updated to ${curr}`);
+    }
+
+    // Render Dashboard
+    function render() {
+      const lang = I18N[state.lang] || I18N.en;
+
+      // Update Texts
+      document.getElementById('lang-flag').textContent = lang.flag;
+      document.getElementById('lang-label').textContent = lang.label;
+      document.getElementById('ui-tagline').textContent = lang.tagline;
+      document.getElementById('banner-badge').textContent = lang.bannerBadge;
+      document.getElementById('banner-greeting').textContent = lang.bannerGreeting;
+      document.getElementById('banner-sub').innerHTML = lang.bannerSub;
+      document.getElementById('banner-free-cash-title').textContent = lang.bannerSafeTitle;
+      document.getElementById('banner-free-cash-sub').textContent = lang.bannerSafeSub;
+      document.getElementById('kpi-networth-title').textContent = lang.kpiNetworth;
+      document.getElementById('kpi-inflow-title').textContent = lang.kpiInflow;
+      document.getElementById('kpi-outflow-title').textContent = lang.kpiOutflow;
+      document.getElementById('kpi-savings-title').textContent = lang.kpiSavings;
+      document.getElementById('jars-title').textContent = lang.jarsTitle;
+      document.getElementById('jars-sub').textContent = lang.jarsSub;
+      document.getElementById('jars-btn-new').textContent = lang.jarsBtnNew;
+      document.getElementById('chart-title').textContent = lang.chartTitle;
+      document.getElementById('chart-sub').textContent = lang.chartSub;
+      document.getElementById('chart-tip').textContent = lang.chartTip;
+      document.getElementById('cats-title').textContent = lang.catsTitle;
+      document.getElementById('cats-sub').textContent = lang.catsSub;
+      document.getElementById('tx-title').textContent = lang.txTitle;
+      document.getElementById('tx-sub').textContent = lang.txSub;
+      document.getElementById('btn-add-label').textContent = lang.btnAdd;
+      document.getElementById('dock-btn-add').textContent = lang.btnAdd;
+
+      // Update Symbols in Modals
+      document.querySelectorAll('.sym-display').forEach(el => {
+        el.textContent = state.currencies[state.currency].sym;
+      });
+
+      // Compute Financial Totals
+      let inflow = 0;
+      let outflow = 0;
+      state.transactions.forEach(t => {
+        if (t.type === 'income') inflow += t.amount;
+        if (t.type === 'expense') outflow += t.amount;
+      });
+
+      const netSavings = Math.max(0, inflow - outflow);
+      const safeSpend = Math.max(0, netSavings * 0.32);
+      const baseNetWorth = 84250.00 + (inflow - outflow - 4560.00);
+
+      document.getElementById('val-networth').textContent = formatMoney(baseNetWorth);
+      document.getElementById('val-inflow').textContent = formatMoney(inflow);
+      document.getElementById('val-outflow').textContent = formatMoney(outflow);
+      document.getElementById('val-savings').textContent = formatMoney(netSavings);
+      document.getElementById('val-safe-spend').textContent = formatMoney(safeSpend);
+
+      // Render Dream Jars
+      renderJars();
+
+      // Render Transaction List
+      renderTransactions();
+    }
+
+    // Render Jars
+    function renderJars() {
+      const container = document.getElementById('jars-container');
+      container.innerHTML = '';
+
+      state.jars.forEach((jar, idx) => {
+        const pct = Math.min(100, Math.round((jar.current / jar.target) * 100));
+        const isComplete = pct >= 100;
+
+        const card = document.createElement('div');
+        card.className = "tactile-tile rounded-3xl p-4 sm:p-5 space-y-3 sm:space-y-4 relative group";
+        card.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+              <span class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl sm:text-2xl shadow-xs shrink-0">${jar.icon}</span>
+              <div class="min-w-0">
+                <h3 class="font-extrabold text-slate-900 text-sm sm:text-base truncate">${escapeHtml(jar.name)}</h3>
+                <span class="text-[11px] sm:text-xs font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-md truncate">${escapeHtml(jar.tag)}</span>
+              </div>
+            </div>
+            ${isComplete ? `
+              <span class="text-[10px] font-extrabold bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full shrink-0">COMPLETE! 🏆</span>
+            ` : `
+              <button onclick="topUpJar(${idx}, 50)" class="text-xs font-bold text-purple-600 bg-purple-50 hover:bg-purple-600 hover:text-white px-2.5 py-1.5 rounded-xl transition-all shadow-xs cursor-pointer active:scale-95 shrink-0 min-h-[38px]" title="Add $50">
+                +$50 Drop
+              </button>
+            `}
+          </div>
+
+          <div class="space-y-1.5">
+            <div class="flex justify-between items-baseline text-xs font-bold">
+              <span class="text-slate-900 font-extrabold text-base">${formatMoney(jar.current)}</span>
+              <span class="text-slate-400">Target: ${formatMoney(jar.target)}</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden p-0.5">
+              <div class="h-full grad-primary rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+            </div>
+            <div class="flex justify-between text-[11px] font-bold text-slate-500">
+              <span>${pct}% funded</span>
+              <span class="${isComplete ? 'text-emerald-600' : 'text-purple-600'}">${isComplete ? 'Goal Achieved! ✨' : 'Growing Steady! 🌱'}</span>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Top up jar by $50
+    function topUpJar(idx, amount) {
+      if (state.jars[idx]) {
+        state.jars[idx].current += amount;
+        persist();
+        showToast(`Added ${formatMoney(amount)} to ${state.jars[idx].name}! 🎉`);
+      }
+    }
+
+    // Add new jar
+    function saveNewJar() {
+      const name = document.getElementById('jar-new-name').value.trim();
+      const target = parseFloat(document.getElementById('jar-new-target').value);
+      const icon = document.getElementById('jar-new-icon').value;
+
+      if (!name || isNaN(target) || target <= 0) return;
+
+      state.jars.push({
+        name,
+        icon,
+        tag: "Personal Goal",
+        current: 0,
+        target
+      });
+
+      persist();
+      closeModal('add-jar-modal');
+      document.getElementById('jar-new-name').value = '';
+      document.getElementById('jar-new-target').value = '';
+      showToast(`Goal Jar "${name}" created! 🍯`);
+    }
+
+    // Render Transactions
+    function renderTransactions() {
+      const list = document.getElementById('tx-list');
+      const search = (document.getElementById('tx-search').value || '').toLowerCase();
+      list.innerHTML = '';
+
+      const filtered = state.transactions.filter(t => {
+        const matchesSearch = t.desc.toLowerCase().includes(search) || t.cat.toLowerCase().includes(search);
+        const matchesType = (currentFilter === 'all') || (t.type === currentFilter);
+        return matchesSearch && matchesType;
+      });
+
+      if (filtered.length === 0) {
+        list.innerHTML = `
+          <div class="p-8 text-center text-slate-400 font-bold text-xs">
+            No adventure entries found. Try adding one! 🎈
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(tx => {
+        const isIncome = tx.type === 'income';
+        const item = document.createElement('div');
+        item.className = "p-3 sm:p-4 flex items-center justify-between gap-2 sm:gap-3 hover:bg-slate-50/80 transition-colors group";
+        item.innerHTML = `
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
+            <span class="w-9 h-9 sm:w-10 sm:h-10 shrink-0 rounded-2xl ${isIncome ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'} flex items-center justify-center text-base sm:text-lg font-bold shadow-xs">
+              ${tx.icon || (isIncome ? '🌱' : '🛒')}
+            </span>
+            <div class="min-w-0 flex-1">
+              <div class="font-bold text-slate-900 text-xs sm:text-sm truncate">${escapeHtml(tx.desc)}</div>
+              <div class="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] text-slate-400 font-semibold mt-0.5">
+                <span class="shrink-0">${tx.date}</span>
+                <span>•</span>
+                <span class="px-1.5 sm:px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-bold truncate max-w-[110px] sm:max-w-none">${escapeHtml(tx.cat)}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 shrink-0">
+            <span class="font-extrabold text-xs sm:text-base font-mono whitespace-nowrap ${isIncome ? 'text-emerald-600' : 'text-slate-800'}">
+              ${isIncome ? '+' : '-'} ${formatMoney(tx.amount)}
+            </span>
+            <button onclick="deleteTx(${tx.id})" class="text-slate-300 hover:text-rose-500 p-1.5 rounded-xl opacity-80 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center" title="Delete">
+              ✕
+            </button>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function setTxFilter(f) {
+      currentFilter = f;
+      ['all', 'expense', 'income'].forEach(type => {
+        const btn = document.getElementById(`btn-flt-${type}`);
+        if (type === f) {
+          btn.className = "px-2.5 py-1 rounded-lg bg-white text-purple-700 shadow-xs transition-all";
+        } else {
+          btn.className = "px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all";
+        }
+      });
+      renderTransactions();
+    }
+
+    function filterTransactions() {
+      renderTransactions();
+    }
+
+    function deleteTx(id) {
+      state.transactions = state.transactions.filter(t => t.id !== id);
+      persist();
+      showToast("Entry removed");
+    }
+
+    // Fast Shortcut Add
+    function quickAdd(desc, amount, cat, type) {
+      const newTx = {
+        id: Date.now(),
+        date: new Date().toISOString().split('T')[0],
+        desc,
+        cat,
+        icon: type === 'income' ? '🌱' : '☕',
+        type,
+        amount
+      };
+      state.transactions.unshift(newTx);
+      persist();
+      showToast(`Added: ${desc} (${formatMoney(amount)})! 🚀`);
+    }
+
+    // Manual Modal Form Submission
+    function handleManualAdd(e) {
+      e.preventDefault();
+      const type = document.querySelector('input[name="m-type"]:checked').value;
+      const desc = document.getElementById('m-desc').value.trim();
+      const amount = parseFloat(document.getElementById('m-amount').value);
+      const date = document.getElementById('m-date').value;
+      const cat = document.getElementById('m-cat').value;
+
+      if (!desc || isNaN(amount) || amount <= 0) return;
+
+      const icons = {
+        "Food & Treats": "🍣",
+        "Cozy Home": "🏡",
+        "Fun & Hobbies": "🎮",
+        "Brain & Growth": "📚",
+        "Income": "💰",
+        "Investment": "🚀"
+      };
+
+      const newTx = {
+        id: Date.now(),
+        date: date || new Date().toISOString().split('T')[0],
+        desc,
+        cat,
+        icon: icons[cat] || "✨",
+        type,
+        amount
+      };
+
+      state.transactions.unshift(newTx);
+      persist();
+      closeModal('add-modal');
+      document.getElementById('tx-form').reset();
+      showToast(`Woohoo! ${desc} saved! 🎉`);
+    }
+
+    // Modal Controls
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) {
+        modal.classList.remove('hidden');
+        if (id === 'add-modal') {
+          document.getElementById('m-date').value = new Date().toISOString().split('T')[0];
+          document.getElementById('m-desc').focus();
+        }
+      }
+    }
+
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.add('hidden');
+    }
+
+    // Toast Notification
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      toast.classList.remove('hidden');
+      clearTimeout(window._toastT);
+      window._toastT = setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3000);
+    }
+
+    // CSV Export
+    function exportCSV() {
+      let csv = "ID,Date,Description,Category,Type,Amount\n";
+      state.transactions.forEach(t => {
+        csv += `${t.id},"${t.date}","${t.desc}","${t.cat}","${t.type}",${t.amount}\n`;
+      });
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `bloom-finance-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast("CSV exported!");
+    }
+
+    // Escape helper
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      const sel = document.getElementById('currency-select');
+      if (sel) sel.value = state.currency;
+      render();
+    });
+  </script>
+</body>
+</html>

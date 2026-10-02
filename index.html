@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Compendium of Visual Disciplines — Agentic Design Codex</title>
+  
+  <!-- Tailwind CSS v4 Browser Engine -->
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+  
+  <!-- Typography: Newsreader (Literary Serif) + Plus Jakarta Sans (Editorial Body) + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --canvas-parchment: #FBF9F5;
+      --paper-white: #FFFFFF;
+      --paper-inset: #F3EFE6;
+      --hairline-divider: #E5E0D8;
+      --ink-deep: #1C1917;
+      --ink-charcoal: #44403C;
+      --ink-stone: #78716C;
+      --accent-terracotta: #C25E3E;
+      --accent-sage: #4A6B53;
+      --accent-gold: #B48C36;
+    }
+
+    body {
+      background-color: var(--canvas-parchment);
+      color: var(--ink-deep);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .font-serif-editorial {
+      font-family: 'Newsreader', Georgia, serif;
+      font-feature-settings: "kern", "liga", "onum";
+    }
+
+    .font-mono-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Subtle paper texture overlay */
+    .paper-texture {
+      background-image: radial-gradient(rgba(120, 113, 108, 0.04) 1px, transparent 0);
+      background-size: 24px 24px;
+    }
+
+    /* Editorial hair-rule styling */
+    .hairline-all {
+      border: 1px solid var(--hairline-divider);
+    }
+    .hairline-b {
+      border-bottom: 1px solid var(--hairline-divider);
+    }
+    .hairline-t {
+      border-top: 1px solid var(--hairline-divider);
+    }
+
+    /* Subtle print-grade box shadow */
+    .shadow-editorial {
+      box-shadow: 0 4px 24px -4px rgba(28, 25, 23, 0.04), 0 1px 2px 0 rgba(28, 25, 23, 0.02);
+    }
+
+    /* Drop-cap for preamble */
+    .preamble-dropcap::first-letter {
+      float: left;
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 3.2rem;
+      line-height: 0.85;
+      padding-top: 4px;
+      padding-right: 8px;
+      padding-bottom: 2px;
+      color: var(--accent-terracotta);
+      font-weight: 500;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen text-stone-900 paper-texture pb-24 selection:bg-[#F3EFE6] selection:text-[#C25E3E]">
+
+  <!-- TOP FOLIO BANNER -->
+  <aside aria-label="Folio Information" class="border-b border-[#E5E0D8] bg-[#F7F4EE] py-2 px-4 sm:px-8">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] font-sans text-stone-500 uppercase tracking-wider">
+      <div class="flex items-center gap-3">
+        <span class="font-bold text-stone-800">Agentic Design Codex</span>
+        <span class="text-[#D4CDC3]">/</span>
+        <time datetime="2026-10-02">Autumn 2026 Edition</time>
+        <span class="text-[#D4CDC3] hidden md:inline">/</span>
+        <span class="hidden md:inline">Universal Skill Registry</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span>Framework: <strong class="text-stone-800">Pure HTML + Tailwind v4</strong></span>
+        <span class="text-[#D4CDC3]">/</span>
+        <a href="README.md" class="text-[#C25E3E] font-medium hover:underline">Read Repository Spec →</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- EDITORIAL MASTHEAD -->
+  <header class="border-b border-[#E5E0D8] bg-[#FBF9F5] py-10 sm:py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4">
+      
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-[#F3EFE6] border border-[#E5E0D8] text-[11px] font-sans font-semibold uppercase tracking-widest text-stone-700">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#4A6B53]"></span>
+        <span>Anthology of Visual Systems</span>
+      </div>
+
+      <h1 class="font-serif-editorial text-4xl sm:text-6xl font-normal tracking-tight text-stone-950 leading-[1.08]">
+        The Compendium <br class="hidden sm:inline">
+        <span class="italic font-normal text-stone-700">of</span> Visual Disciplines
+      </h1>
+
+      <p class="font-sans text-stone-600 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+        A curated suite of nine aesthetic skills engineered for autonomous coding agents. Each system dictates precise typographical cadence, palette harmony, and responsive spatial discipline.
+      </p>
+
+      <div class="pt-2 flex flex-wrap items-center justify-center gap-3 text-xs font-mono-num text-stone-500">
+        <span class="bg-white px-2.5 py-1 rounded-sm hairline-all">9 Visual Archetypes</span>
+        <span class="bg-white px-2.5 py-1 rounded-sm hairline-all">Zero Build Bundler</span>
+        <span class="bg-white px-2.5 py-1 rounded-sm hairline-all">Pure Vanilla JS</span>
+        <span class="bg-white px-2.5 py-1 rounded-sm hairline-all">Adaptive Viewports</span>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- PREAMBLE DISPATCH -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 pt-10 pb-6">
+    <div class="bg-white hairline-all p-6 sm:p-8 rounded-sm shadow-editorial">
+      <div class="flex items-center justify-between border-b border-[#E5E0D8] pb-2.5 text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-[#C25E3E]">
+        <span>Editorial Note on Agentic Aesthetics</span>
+        <span>Repository Architecture</span>
+      </div>
+      
+      <div class="mt-4 text-xs sm:text-sm text-stone-700 leading-relaxed font-sans preamble-dropcap space-y-3">
+        <p>
+          Generic, uncurated AI web generation typically suffers from predictable visual fatigue: sterile gray palettes, uniform cards, and forgotten responsive edges. This repository functions as a deliberate antidote. Stored within <code class="font-mono-num text-xs bg-[#F3EFE6] px-1.5 py-0.5 rounded text-stone-900">.agents/skills/</code>, each skill equips the AI agent with strict domain principles and guardrails.
+        </p>
+        <p>
+          The showcases catalogued below are living reference outputs—independent personal finance dashboards generated strictly under each skill's philosophy.
+        </p>
+      </div>
+
+      <div class="mt-5 pt-3 border-t border-[#E5E0D8] flex flex-col sm:flex-row sm:items-center justify-between text-xs text-stone-500 gap-2">
+        <span class="font-serif-editorial italic">"Form and typography should reveal, not conceal, the intent of the builder."</span>
+        <span class="font-mono-num text-[11px]">DIR: /.agents/skills/</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE CATALOG: 9 VISUAL DISCIPLINES -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 pt-6 space-y-8">
+    
+    <div class="flex items-baseline justify-between border-b border-[#E5E0D8] pb-3">
+      <div>
+        <span class="text-[11px] font-semibold uppercase tracking-widest text-stone-500 font-sans">The Codex Gallery</span>
+        <h2 class="font-serif-editorial text-2xl sm:text-3xl font-normal text-stone-900 mt-0.5">
+          Nine Architectural Showcases
+        </h2>
+      </div>
+      <span class="text-xs font-mono-num text-stone-500 hidden sm:inline">9 TITLES CATALOGUED</span>
+    </div>
+
+    <!-- 3-Column Broadsheet Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- § 01: Warm Editorial -->
+      <article class="bg-white hairline-all p-6 rounded-sm shadow-editorial flex flex-col justify-between space-y-5 hover:border-stone-400 transition-all group">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between border-b border-[#E5E0D8] pb-2 text-[10px] font-mono-num uppercase tracking-wider text-stone-500">
+            <span>DISCIPLINE § 01</span>
+            <span class="text-[#C25E3E] font-semibold">SWISS PAPER</span>
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl">📜</span>
+            <h3 class="font-serif-editorial text-xl font-medium text-stone-900 group-hover:text-[#C25E3E] transition-colors">
+              Warm Editorial
+            </h3>
+          </div>
+
+          <p class="text-xs text-stone-600 leading-relaxed font-sans">
+            Warm parchment surfaces (#FBF9F5), Newsreader serif typography, drop-caps, and hairline ink rules inspired by Substack and fine digital journalism.
+          </p>
+
+          <div class="pt-1 flex items-center gap-1.5 text-[10px] font-mono-num text-stone-500">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#FBF9F5] border border-stone-300"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#1C1917]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#C25E3E]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#4A6B53]"></span>
+            <span class="ml-1 text-stone-400">Parchment & Deep Ink</span>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-[#EAE4D9] space-y-2.5 text-xs font-sans">
+          <div class="flex items-center justify-between text-[11px] text-stone-500">
+            <a href=".agents/skills/style-warm-editorial/SKILL.md" class="hover:text-stone-900 underline decoration-stone-300 transition-colors">
+              Read SKILL.md
+            </a>
+            <span class="font-mono-num text-stone-400">Pure HTML+JS</span>
+          </div>
+          <a href="showcases/dashboard-editorial.html" class="block w-full text-center py-2 bg-[#1C1917] hover:bg-[#2E2A27] text-[#FBF9F5] rounded-sm font-medium transition-all shadow-xs">
+            Open Living Showcase →
+          </a>
+        </div>
+      </article>
+
+      <!-- § 02: Spatial Glass -->
+      <article class="bg-white hairline-all p-6 rounded-sm shadow-editorial flex flex-col justify-between space-y-5 hover:border-stone-400 transition-all group">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between border-b border-[#E5E0D8] pb-2 text-[10px] font-mono-num uppercase tracking-wider text-stone-500">
+            <span>DISCIPLINE § 02</span>
+            <span class="text-sky-600 font-semibold">FROSTED GLASS</span>
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl">🫧</span>
+            <h3 class="font-serif-editorial text-xl font-medium text-stone-900 group-hover:text-sky-700 transition-colors">
+              Spatial Glass
+            </h3>
+          </div>
+
+          <p class="text-xs text-stone-600 leading-relaxed font-sans">
+            Translucent frosted panels, ambient multi-color light cones, top specular edge reflections, and soft radii inspired by VisionOS and macOS.
+          </p>
+
+          <div class="pt-1 flex items-center gap-1.5 text-[10px] font-mono-num text-stone-500">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#020617]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-violet-400"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+            <span class="ml-1 text-stone-400">Obsidian & Specular</span>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-[#EAE4D9] space-y-2.5 text-xs font-sans">
+          <div class="flex items-center justify-between text-[11px] text-stone-500">
+            <a href=".agents/skills/style-spatial-glass/SKILL.md" class="hover:text-stone-900 underline decoration-stone-300 transition-colors">
+              Read SKILL.md
+            </a>
+            <span class="font-mono-num text-stone-400">Pure HTML+JS</span>
+          </div>
+          <a href="showcases/dashboard-spatial.html" class="block w-full text-center py-2 bg-slate-900 hover:bg-slate-800 text-sky-200 rounded-sm font-medium transition-all shadow-xs">
+            Open Living Showcase →
+          </a>
+        </div>
+      </article>
+
+      <!-- § 03: Linear Dark -->
+      <article class="bg-white hairline-all p-6 rounded-sm shadow-editorial flex flex-col justify-between space-y-5 hover:border-stone-400 transition-all group">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between border-b border-[#E5E0D8] pb-2 text-[10px] font-mono-num uppercase tracking-wider text-stone-500">
+            <span>DISCIPLINE § 03</span>
+            <span class="text-indigo-600 font-semibold">DEV DARK</span>
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl">🔮</span>
+            <h3 class="font-serif-editorial text-xl font-medium text-stone-900 group-hover:text-indigo-700 transition-colors">
+              Linear Dark
+            </h3>
+          </div>
+
+          <p class="text-xs text-stone-600 leading-relaxed font-sans">
+            Ultra-sleek dark mode with subtle inset highlights, micro-borders, indigo accents, and Swiss developer precision ala Linear, Raycast, and Supabase.
+          </p>
+
+          <div class="pt-1 flex items-center gap-1.5 text-[10px] font-mono-num text-stone-500">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#08090a]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#121316]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-zinc-400"></span>
+            <span class="ml-1 text-stone-400">Midnight & Indigo</span>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-[#EAE4D9] space-y-2.5 text-xs font-sans">
+          <div class="flex items-center justify-between text-[11px] text-stone-500">
+            <a href=".agents/skills/style-linear-dark/SKILL.md" class="hover:text-stone-900 underline decoration-stone-300 transition-colors">
+              Read SKILL.md
+            </a>
+            <span class="font-mono-num text-stone-400">Pure HTML+JS</span>
+          </div>
+          <a href="showcases/dashboard-linear.html" class="block w-full text-center py-2 bg-stone-900 hover:bg-stone-800 text-indigo-300 rounded-sm font-medium transition-all shadow-xs">
+            Open Living Showcase →
+          </a>
+        </div>
+      </article>
+
+      <!-- § 04: Ops Terminal -->
+      <article class="bg-white hairline-all p-6 rounded-sm shadow-editorial flex flex-col justify-between space-y-5 hover:border-stone-400 transition-all group">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between border-b border-[#E5E0D8] pb-2 text-[10px] font-mono-num uppercase tracking-wider text-stone-500">
+            <span>DISCIPLINE § 04</span>
+            <span class="text-teal-700 font-semibold">OBSERVABILITY</span>
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl">🎛️</span>
+            <h3 class="font-serif-editorial text-xl font-medium text-stone-900 group-hover:text-teal-700 transition-colors">
+              Ops Terminal
+            </h3>
+          </div>
+
+          <p class="text-xs text-stone-600 leading-relaxed font-sans">
+            High-density telemetry dashboard layaways styled after Grafana, Datadog, and Bloomberg Terminal with monospaced tabular data.
+          </p>
+
+          <div class="pt-1 flex items-center gap-1.5 text-[10px] font-mono-num text-stone-500">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#0b0c0e]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#00e599]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#00d8f6]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#8b949e]"></span>
+            <span class="ml-1 text-stone-400">Phosphor & Cyan</span>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-[#EAE4D9] space-y-2.5 text-xs font-sans">
+          <div class="flex items-center justify-between text-[11px] text-stone-500">
+            <a href=".agents/skills/style-ops-terminal/SKILL.md" class="hover:text-stone-900 underline decoration-stone-300 transition-colors">
+              Read SKILL.md
+            </a>
+            <span class="font-mono-num text-stone-400">Pure HTML+JS</span>
+          </div>
+          <a href="showcases/dashboard-ops-terminal.html" class="block w-full text-center py-2 bg-stone-900 hover:bg-stone-800 text-[#00d8f6] rounded-sm font-medium transition-all shadow-xs">
+            Open Living Showcase →
+          </a>
+        </div>
+      </article>
+
+      <!-- § 05: Cyberpunk HUD -->
+      <article class="bg-white hairline-all p-6 rounded-sm shadow-editorial flex flex-col justify-between space-y-5 hover:border-stone-400 transition-all group">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between border-b border-[#E5E0D8] pb-2 text-[10px] font-mono-num uppercase tracking-wider text-stone-500">
+            <span>DISCIPLINE § 05</span>
+            <span class="text-cyan-700 font-semibold">NEON HUD</span>
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl">⚡</span>
+            <h3 class="font-serif-editorial text-xl font-medium text-stone-900 group-hover:text-cyan-700 transition-colors">
+              Cyberpunk HUD
+            </h3>
+          </div>
+
+          <p class="text-xs text-stone-600 leading-relaxed font-sans">
+            High-energy futuristic telemetry HUD with chamfered geometry, scanline grids, glowing neon cyan and toxic green borders.
+          </p>
+
+          <div class="pt-1 flex items-center gap-1.5 text-[10px] font-mono-num text-stone-500">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#050811]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#00f0ff]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#ff003c]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#39ff14]"></span>
+            <span class="ml-1 text-stone-400">Laser Cyan & Crimson</span>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-[#EAE4D9] space-y-2.5 text-xs font-sans">
+          <div class="flex items-center justify-between text-[11px] text-stone-500">
+            <a href=".agents/skills/style-cyberpunk-hud/SKILL.md" class="hover:text-stone-900 underline decoration-stone-300 transition-colors">
+              Read SKILL.md
+            </a>
+            <span class="font-mono-num text-stone-400">Pure HTML+JS</span>
+          </div>
+          <a href="showcases/dashboard-cyberpunk.html" class="block w-full text-center py-2 bg-slate-950 hover:bg-slate-900 text-[#00f0ff] rounded-sm font-medium transition-all shadow-xs">
+            Open Living Showcase →
+          </a>
+        </div>
+      </article>
+
+      <!-- § 06: Clean Enterprise -->
+      <article class="bg-white hairline-all p-6 rounded-sm shadow-editorial flex flex-col justify-between space-y-5 hover:border-stone-400 transition-all group">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between border-b border-[#E5E0D8] pb-2 text-[10px] font-mono-num uppercase tracking-wider text-stone-500">
+            <span>DISCIPLINE § 06</span>
+            <span class="text-blue-700 font-semibold">B2B SAAS</span>
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl">🏢</span>
+            <h3 class="font-serif-editorial text-xl font-medium text-stone-900 group-hover:text-blue-700 transition-colors">
+              Clean Enterprise
+            </h3>
+          </div>
+
+          <p class="text-xs text-stone-600 leading-relaxed font-sans">
+            Crisp, reliable, high-trust corporate SaaS design inspired by Stripe, GitHub, and TailwindUI with WCAG AA compliance.
+          </p>
+
+          <div class="pt-1 flex items-center gap-1.5 text-[10px] font-mono-num text-stone-500">
+            <span class="w-2.5 h-2.5 rounded-full bg-white border border-stone-300"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#2563EB]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#0F172A]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#10B981]"></span>
+            <span class="ml-1 text-stone-400">Royal Blue & Slate</span>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-[#EAE4D9] space-y-2.5 text-xs font-sans">
+          <div class="flex items-center justify-between text-[11px] text-stone-500">
+            <a href=".agents/skills/style-clean-enterprise/SKILL.md" class="hover:text-stone-900 underline decoration-stone-300 transition-colors">
+              Read SKILL.md
+            </a>
+            <span class="font-mono-num text-stone-400">Pure HTML+JS</span>
+          </div>
+          <a href="showcases/dashboard-enterprise.html" class="block w-full text-center py-2 bg-blue-700 hover:bg-blue-600 text-white rounded-sm font-medium transition-all shadow-xs">
+            Open Living Showcase →
+          </a>
+        </div>
+      </article>
+
+      <!-- § 07: Quiet Minimal -->
+      <article class="bg-white hairline-all p-6 rounded-sm shadow-editorial flex flex-col justify-between space-y-5 hover:border-stone-400 transition-all group">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between border-b border-[#E5E0D8] pb-2 text-[10px] font-mono-num uppercase tracking-wider text-stone-500">
+            <span>DISCIPLINE § 07</span>
+            <span class="text-stone-600 font-semibold">KANSO ZEN</span>
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl">🕊️</span>
+            <h3 class="font-serif-editorial text-xl font-medium text-stone-900 group-hover:text-stone-700 transition-colors">
+              Quiet Minimal
+            </h3>
+          </div>
+
+          <p class="text-xs text-stone-600 leading-relaxed font-sans">
+            Japanese Kanso philosophy: low distraction, content-first, whisper-thin borders, and tranquil negative space ala Notion and Claude.
+          </p>
+
+          <div class="pt-1 flex items-center gap-1.5 text-[10px] font-mono-num text-stone-500">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#fdfdfc] border border-stone-300"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#18181b]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#71717a]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#e4e4e7]"></span>
+            <span class="ml-1 text-stone-400">Zinc & Pure Canvas</span>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-[#EAE4D9] space-y-2.5 text-xs font-sans">
+          <div class="flex items-center justify-between text-[11px] text-stone-500">
+            <a href=".agents/skills/style-quiet-minimal/SKILL.md" class="hover:text-stone-900 underline decoration-stone-300 transition-colors">
+              Read SKILL.md
+            </a>
+            <span class="font-mono-num text-stone-400">Pure HTML+JS</span>
+          </div>
+          <a href="showcases/dashboard-quiet.html" class="block w-full text-center py-2 bg-stone-800 hover:bg-stone-700 text-stone-100 rounded-sm font-medium transition-all shadow-xs">
+            Open Living Showcase →
+          </a>
+        </div>
+      </article>
+
+      <!-- § 08: Playful Creative -->
+      <article class="bg-white hairline-all p-6 rounded-sm shadow-editorial flex flex-col justify-between space-y-5 hover:border-stone-400 transition-all group">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between border-b border-[#E5E0D8] pb-2 text-[10px] font-mono-num uppercase tracking-wider text-stone-500">
+            <span>DISCIPLINE § 08</span>
+            <span class="text-purple-700 font-semibold">VIBRANT</span>
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl">🎨</span>
+            <h3 class="font-serif-editorial text-xl font-medium text-stone-900 group-hover:text-purple-700 transition-colors">
+              Playful Creative
+            </h3>
+          </div>
+
+          <p class="text-xs text-stone-600 leading-relaxed font-sans">
+            Warm, approachable, dopamine-driven interface with soft rounded pills, cheerful pastel cards, and micro-animations inspired by Duolingo.
+          </p>
+
+          <div class="pt-1 flex items-center gap-1.5 text-[10px] font-mono-num text-stone-500">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#7C3AED]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#F43F5E]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#10B981]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#FBBF24]"></span>
+            <span class="ml-1 text-stone-400">Violet & Sweet Coral</span>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-[#EAE4D9] space-y-2.5 text-xs font-sans">
+          <div class="flex items-center justify-between text-[11px] text-stone-500">
+            <a href=".agents/skills/style-playful-creative/SKILL.md" class="hover:text-stone-900 underline decoration-stone-300 transition-colors">
+              Read SKILL.md
+            </a>
+            <span class="font-mono-num text-stone-400">Pure HTML+JS</span>
+          </div>
+          <a href="showcases/dashboard-playful.html" class="block w-full text-center py-2 bg-purple-700 hover:bg-purple-600 text-white rounded-sm font-medium transition-all shadow-xs">
+            Open Living Showcase →
+          </a>
+        </div>
+      </article>
+
+      <!-- § 09: Neo-Brutalist -->
+      <article class="bg-white hairline-all p-6 rounded-sm shadow-editorial flex flex-col justify-between space-y-5 hover:border-stone-400 transition-all group">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between border-b border-[#E5E0D8] pb-2 text-[10px] font-mono-num uppercase tracking-wider text-stone-500">
+            <span>DISCIPLINE § 09</span>
+            <span class="text-amber-700 font-semibold">NEO BRUTAL</span>
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <span class="text-2xl">⚡</span>
+            <h3 class="font-serif-editorial text-xl font-medium text-stone-900 group-hover:text-amber-800 transition-colors">
+              Neo-Brutalist
+            </h3>
+          </div>
+
+          <p class="text-xs text-stone-600 leading-relaxed font-sans">
+            Tactile, high-impact retro-indie aesthetic with thick solid black borders (2–3px), bold yellow canvas, and offset drop shadows inspired by Gumroad.
+          </p>
+
+          <div class="pt-1 flex items-center gap-1.5 text-[10px] font-mono-num text-stone-500">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#FFE600] border border-black"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#000000]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#FF6B6B]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#70FFAF]"></span>
+            <span class="ml-1 text-stone-400">Cyber Yellow & Stark Black</span>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-[#EAE4D9] space-y-2.5 text-xs font-sans">
+          <div class="flex items-center justify-between text-[11px] text-stone-500">
+            <a href=".agents/skills/style-neo-brutalism/SKILL.md" class="hover:text-stone-900 underline decoration-stone-300 transition-colors">
+              Read SKILL.md
+            </a>
+            <span class="font-mono-num text-stone-400">Pure HTML+JS</span>
+          </div>
+          <a href="showcases/dashboard-neo-brutalism.html" class="block w-full text-center py-2 bg-stone-900 hover:bg-black text-[#FFE600] font-bold rounded-sm transition-all shadow-xs">
+            Open Living Showcase →
+          </a>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- CODE SNIPPET / USAGE DIRECTIVE -->
+    <section class="mt-12 bg-white hairline-all p-6 sm:p-8 rounded-sm shadow-editorial space-y-4">
+      <div class="flex items-center justify-between border-b border-[#E5E0D8] pb-2 text-[10px] sm:text-[11px] uppercase tracking-widest font-semibold text-stone-500">
+        <span>How to Install a Discipline into Your Project</span>
+        <span>Developer Guide</span>
+      </div>
+
+      <p class="text-xs sm:text-sm text-stone-700 leading-relaxed font-sans">
+        To inject any of these visual standards into your own project, copy its folder directly into your workspace's <code class="font-mono-num text-xs bg-[#F3EFE6] px-1.5 py-0.5 rounded text-stone-900">.agents/skills/</code> directory:
+      </p>
+
+      <div class="bg-[#F3EFE6] border border-[#E5E0D8] p-3.5 rounded-sm flex items-center justify-between text-xs font-mono-num text-stone-800 overflow-x-auto">
+        <code>cp -r .agents/skills/style-spatial-glass /path/to/my-project/.agents/skills/</code>
+        <button onclick="copySnippet()" id="copyBtn" class="ml-3 shrink-0 px-2.5 py-1 bg-white hairline-all hover:bg-stone-900 hover:text-white rounded-xs text-[11px] font-sans font-medium transition-colors cursor-pointer">
+          Copy Command
+        </button>
+      </div>
+
+      <p class="text-xs text-stone-500 italic font-serif-editorial">
+        Then invoke the skill in conversation: <span class="text-stone-800 font-sans not-italic font-mono-num">/style-spatial-glass create a personal finance dashboard</span>
+      </p>
+    </section>
+
+  </main>
+
+  <!-- EDITORIAL FOOTER -->
+  <footer class="max-w-5xl mx-auto px-4 sm:px-6 pt-12 border-t border-[#E5E0D8] mt-16 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-stone-500 gap-4 font-sans">
+    <div>
+      <span class="font-serif-editorial text-sm text-stone-800 font-medium">The Compendium of Visual Disciplines</span>
+      <span class="block text-[11px] text-stone-400">Crafted with HTML5 + Tailwind CSS v4 Browser Engine • Zero Build Step</span>
+    </div>
+    <div class="flex items-center gap-4 text-xs font-mono-num">
+      <a href="README.md" class="hover:text-stone-900 underline decoration-stone-300">README</a>
+      <span>•</span>
+      <a href="https://github.com" target="_blank" rel="noopener" class="hover:text-stone-900 underline decoration-stone-300">GitHub Repository</a>
+    </div>
+  </footer>
+
+  <script>
+    function copySnippet() {
+      const text = 'cp -r .agents/skills/style-spatial-glass /path/to/my-project/.agents/skills/';
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copyBtn');
+        btn.textContent = 'Copied!';
+        btn.classList.add('bg-stone-900', 'text-white');
+        setTimeout(() => {
+          btn.textContent = 'Copy Command';
+          btn.classList.remove('bg-stone-900', 'text-white');
+        }, 2000);
+      });
+    }
+  </script>
+
+</body>
+</html>

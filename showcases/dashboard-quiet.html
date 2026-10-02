@@ -1,0 +1,1287 @@
+<!doctype html>
+<html lang="en" class="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Kanso — A quiet, content-first personal finance intelligence system inspired by the calm minimalism of Claude, Notion, and ChatGPT.">
+  <title>Kanso — Quiet Personal Finance</title>
+  
+  <!-- Fonts: Inter & Newsreader for intellectual editorial clarity -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap">
+  
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2318181b' stroke-width='1.75'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v10M8.5 9.5h7M9.5 14.5h5'/%3E%3C/svg%3E">
+
+  <!-- Tailwind CSS Browser v4 -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <style type="text/tailwindcss">
+    @theme static {
+      --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-serif: "Newsreader", Georgia, serif;
+      --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+
+      /* Quiet Minimal Theme Tokens */
+      --color-canvas-light: #ffffff;
+      --color-canvas-dark: #212121;
+      --color-subtle-light: #f9f9f9;
+      --color-subtle-dark: #171717;
+      --color-card-dark: #262626;
+      --color-dock-dark: #2f2f2f;
+      --color-border-light: rgba(0, 0, 0, 0.08);
+      --color-border-dark: rgba(255, 255, 255, 0.09);
+    }
+  </style>
+
+  <style>
+    /* Smooth transitions and font rendering */
+    * {
+      border-color: rgba(0, 0, 0, 0.08);
+    }
+    .dark * {
+      border-color: rgba(255, 255, 255, 0.09);
+    }
+    
+    body {
+      font-family: var(--font-sans);
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .font-serif-title {
+      font-family: var(--font-serif);
+    }
+
+    /* Subtle custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.15);
+      border-radius: 9999px;
+    }
+    .dark ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Print styles for clean financial reports */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-full-width {
+        max-width: 100% !important;
+        padding: 0 !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-[#ffffff] dark:bg-[#212121] text-[#0d0d0d] dark:text-[#ececec] transition-colors duration-200 antialiased selection:bg-zinc-200 dark:selection:bg-zinc-700">
+
+  <!-- Top Navigation & Subtle Status Bar -->
+  <header class="sticky top-0 z-30 border-b border-black/[0.07] dark:border-white/[0.08] bg-white/90 dark:bg-[#212121]/90 backdrop-blur-md transition-colors">
+    <!-- Quick Theme Switcher Ribbon -->
+    <div class="border-b border-black/[0.05] dark:border-white/[0.05] bg-zinc-50/80 dark:bg-[#1c1c1c]/80 py-1 px-3 sm:px-6">
+      <div class="max-w-5xl mx-auto flex items-center justify-between text-[11px] font-sans">
+        <div class="flex items-center gap-2">
+          <label for="themeSelect" class="text-zinc-400 font-mono text-[10px] uppercase">Theme:</label>
+          <div class="relative">
+            <select id="themeSelect" onchange="window.location.href=this.value" class="appearance-none bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 text-xs font-medium px-2 py-0.5 pr-5 rounded border border-transparent hover:border-black/10 dark:hover:border-white/10 outline-none cursor-pointer transition-colors">
+              <option value="dashboard-quiet.html" selected>🕊️ Quiet Minimal</option>
+              <option value="dashboard-editorial.html">📜 Warm Editorial</option>
+              <option value="dashboard-spatial.html">🫧 Spatial Glass</option>
+              <option value="dashboard-ops-terminal.html">🎛️ Ops Terminal</option>
+              <option value="dashboard-cyberpunk.html">⚡ Cyberpunk HUD</option>
+              <option value="dashboard-enterprise.html">🏢 Clean Enterprise</option>
+              <option value="dashboard-linear.html">🔮 Linear Dark</option>
+              <option value="dashboard-playful.html">🎨 Playful Creative</option>
+              <option value="dashboard-neo-brutalism.html">⚡ Neo-Brutalist</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-1.5 flex items-center text-zinc-400 text-[8px]">
+              ▼
+            </div>
+          </div>
+        </div>
+        <span class="hidden sm:inline text-zinc-400 font-mono text-[10px]">Pure HTML + Tailwind CSS v4</span>
+      </div>
+    </div>
+
+    <div class="max-w-5xl mx-auto px-3 sm:px-6 h-14 flex items-center justify-between gap-2 sm:gap-4">
+      
+      <!-- Brand & Quiet Philosophy -->
+      <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+        <a href="#" class="flex items-center gap-2 group min-w-0">
+          <div class="w-7 h-7 shrink-0 rounded-lg border border-black/10 dark:border-white/10 flex items-center justify-center bg-zinc-50 dark:bg-[#1a1a1a] text-zinc-900 dark:text-zinc-100 group-hover:border-black/25 dark:group-hover:border-white/30 transition-colors">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/>
+              <path d="M12 7v10M8.5 9.5h7M9.5 14.5h5"/>
+            </svg>
+          </div>
+          <span class="font-serif-title font-medium text-lg tracking-tight text-zinc-900 dark:text-zinc-100 truncate">Kanso</span>
+          <span class="text-xs text-zinc-400 dark:text-zinc-500 font-mono hidden md:inline-block">/ mindful finance</span>
+        </a>
+      </div>
+
+      <!-- Center Period Selector (Responsive: hidden on xs, flex on sm+) -->
+      <div class="hidden sm:flex items-center rounded-lg bg-zinc-100/70 dark:bg-[#1a1a1a] p-0.5 border border-black/[0.04] dark:border-white/[0.06] text-xs font-medium">
+        <button id="period-month" onclick="setPeriod('month')" class="px-2.5 py-1 rounded-md transition-colors bg-white dark:bg-[#2c2c2c] text-zinc-900 dark:text-zinc-100 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">October 2026</button>
+        <button id="period-quarter" onclick="setPeriod('quarter')" class="px-2.5 py-1 rounded-md transition-colors text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100">Q3 Trailing</button>
+        <button id="period-year" onclick="setPeriod('year')" class="px-2.5 py-1 rounded-md transition-colors text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hidden md:inline-block">Full Year</button>
+      </div>
+
+      <!-- Controls & Utilities -->
+      <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+        
+        <!-- Currency Dropdown -->
+        <div class="relative">
+          <select id="currency-select" onchange="changeCurrency(this.value)" class="appearance-none bg-transparent hover:bg-zinc-100 dark:hover:bg-zinc-800/60 rounded-md px-2 sm:px-2.5 py-1.5 pr-5 sm:pr-6 text-xs text-zinc-600 dark:text-zinc-300 font-medium cursor-pointer border border-transparent hover:border-black/5 dark:hover:border-white/5 focus:outline-none transition-colors">
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="GBP">GBP (£)</option>
+            <option value="IDR">IDR (Rp)</option>
+            <option value="JPY">JPY (¥)</option>
+            <option value="SGD">SGD (S$)</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-1 sm:right-1.5 flex items-center text-zinc-400 dark:text-zinc-500">
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Zen Reader Mode (Hides side panels & distraction) -->
+        <button onclick="toggleZenMode()" id="zen-toggle-btn" title="Toggle Zen Reading View" class="p-1.5 rounded-md text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-colors">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6h16M4 12h16M4 18h7"/>
+          </svg>
+        </button>
+
+        <!-- Theme Toggle (Light / Dark) -->
+        <button onclick="toggleTheme()" title="Toggle Quiet Dark/Light" class="p-1.5 rounded-md text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-colors">
+          <!-- Sun icon (shown in dark mode) -->
+          <svg id="theme-sun-icon" class="w-4 h-4 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <circle cx="12" cy="12" r="5" stroke-width="1.8"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+          <!-- Moon icon (shown in light mode) -->
+          <svg id="theme-moon-icon" class="w-4 h-4 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+          </svg>
+        </button>
+
+        <!-- Add Transaction Quick Trigger -->
+        <button onclick="openModal('add-tx-modal')" class="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-md bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 hover:opacity-90 text-xs font-medium transition-opacity">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          <span class="hidden sm:inline">Record</span>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workstation Layout: Generous measure and breathable white space -->
+  <main class="max-w-5xl mx-auto px-3 sm:px-6 pt-6 sm:pt-8 pb-36 space-y-8 sm:space-y-12">
+
+    <!-- 1. Editorial Header & Calm Statement -->
+    <section class="space-y-3 pt-2">
+      <div class="flex flex-wrap items-center justify-between text-xs text-zinc-400 dark:text-zinc-500 font-mono tracking-wide uppercase gap-2">
+        <span id="current-date-badge">Sunday, October 4, 2026</span>
+        <span class="flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>
+          Reserves Solitary & Healthy
+        </span>
+      </div>
+
+      <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-3 border-b border-black/[0.06] dark:border-white/[0.08] pb-5 sm:pb-6">
+        <div>
+          <h1 class="text-2xl sm:text-4xl font-serif-title font-normal tracking-tight text-zinc-900 dark:text-zinc-100">
+            Financial Equilibrium
+          </h1>
+          <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1 max-w-lg leading-relaxed">
+            A quiet ledger of capital, commitments, and steady long-term freedom. No noise, no speculative pressure.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2 sm:gap-3 pt-1 sm:pt-0">
+          <button onclick="exportDataCSV()" class="inline-flex items-center gap-1 text-xs text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 px-2 py-1 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            Export Ledger
+          </button>
+          <button onclick="window.print()" class="inline-flex items-center gap-1 text-xs text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 px-2 py-1 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+            </svg>
+            Print
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Primary Financial Telemetry (Understated Flat Metrics) -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 lg:gap-8">
+      
+      <!-- Net Worth -->
+      <div class="space-y-1.5 border-l-2 border-zinc-900/10 dark:border-white/20 pl-3.5 sm:pl-4 py-0.5">
+        <div class="text-xs text-zinc-500 dark:text-zinc-400 font-medium">Consolidated Net Worth</div>
+        <div class="text-2xl sm:text-3xl font-normal tracking-tight font-serif-title text-zinc-900 dark:text-zinc-100" id="val-net-worth">
+          $184,320.00
+        </div>
+        <div class="flex items-center gap-1 text-xs text-zinc-500 dark:text-zinc-400">
+          <span class="text-emerald-700 dark:text-emerald-400 font-mono font-medium">+2.4%</span>
+          <span>from previous month</span>
+        </div>
+      </div>
+
+      <!-- Monthly Inflow -->
+      <div class="space-y-1.5 border-l-2 border-black/[0.05] dark:border-white/10 pl-3.5 sm:pl-4 py-0.5">
+        <div class="text-xs text-zinc-500 dark:text-zinc-400 font-medium">Monthly Inflow (Income)</div>
+        <div class="text-2xl sm:text-3xl font-normal tracking-tight font-serif-title text-zinc-900 dark:text-zinc-100" id="val-inflow">
+          $8,450.00
+        </div>
+        <div class="text-xs text-zinc-400 dark:text-zinc-500 font-mono">
+          Salary, dividends & consulting
+        </div>
+      </div>
+
+      <!-- Monthly Outflow -->
+      <div class="space-y-1.5 border-l-2 border-black/[0.05] dark:border-white/10 pl-3.5 sm:pl-4 py-0.5">
+        <div class="text-xs text-zinc-500 dark:text-zinc-400 font-medium">Monthly Outflow (Spend)</div>
+        <div class="text-2xl sm:text-3xl font-normal tracking-tight font-serif-title text-zinc-900 dark:text-zinc-100" id="val-outflow">
+          $3,820.00
+        </div>
+        <div class="flex items-center gap-1 text-xs text-zinc-500 dark:text-zinc-400">
+          <span class="text-zinc-600 dark:text-zinc-400 font-mono">45.2%</span>
+          <span>of total monthly budget</span>
+        </div>
+      </div>
+
+      <!-- Net Savings Rate & Runway -->
+      <div class="space-y-1.5 border-l-2 border-emerald-600/30 dark:border-emerald-400/40 pl-3.5 sm:pl-4 py-0.5">
+        <div class="text-xs text-zinc-500 dark:text-zinc-400 font-medium">Net Savings & Runway</div>
+        <div class="text-2xl sm:text-3xl font-normal tracking-tight font-serif-title text-zinc-900 dark:text-zinc-100" id="val-savings">
+          +$4,630.00
+        </div>
+        <div class="flex items-center gap-1 text-xs text-zinc-500 dark:text-zinc-400">
+          <span class="text-emerald-700 dark:text-emerald-400 font-mono font-medium">54.8% rate</span>
+          <span class="text-zinc-300 dark:text-zinc-600">·</span>
+          <span>19.4 mos buffer</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 3. Calm Visual Telemetry: Cashflow Rhythm & Allocation Balance -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 pt-2 sm:pt-4">
+      
+      <!-- Cashflow Trajectory Chart (2 cols) -->
+      <div class="lg:col-span-2 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-base font-medium text-zinc-900 dark:text-zinc-100">Cash Flow Trajectory</h2>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400">Six-month comparison of inflow vs essential/discretionary outflow</p>
+          </div>
+          <div class="flex items-center gap-3 text-xs text-zinc-500 dark:text-zinc-400 font-mono">
+            <span class="flex items-center gap-1.5">
+              <span class="w-2.5 h-0.5 bg-zinc-800 dark:bg-zinc-200"></span> Inflow
+            </span>
+            <span class="flex items-center gap-1.5">
+              <span class="w-2.5 h-0.5 bg-zinc-400 dark:bg-zinc-500"></span> Outflow
+            </span>
+          </div>
+        </div>
+
+        <!-- Clean SVG Minimal Line/Area Chart (Responsive scroll on mobile) -->
+        <div class="rounded-xl border border-black/[0.07] dark:border-white/[0.08] bg-[#fdfdfd] dark:bg-[#1a1a1a]/60 p-4 sm:p-6 transition-colors">
+          <div class="overflow-x-auto scrollbar-none -mx-2 px-2 sm:mx-0 sm:px-0">
+            <div class="h-48 min-w-[420px] sm:min-w-0 w-full relative">
+            
+            <svg viewBox="0 0 540 180" class="w-full h-full overflow-visible" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="quiet-fill-grad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="currentColor" class="text-zinc-200 dark:text-zinc-700" stop-opacity="0.5"/>
+                  <stop offset="100%" stop-color="currentColor" class="text-zinc-200 dark:text-zinc-700" stop-opacity="0.0"/>
+                </linearGradient>
+              </defs>
+
+              <!-- Subtle Horizontal Grid Lines -->
+              <line x1="0" y1="30" x2="540" y2="30" stroke="currentColor" class="text-zinc-100 dark:text-zinc-800/80" stroke-dasharray="3 3"/>
+              <line x1="0" y1="80" x2="540" y2="80" stroke="currentColor" class="text-zinc-100 dark:text-zinc-800/80" stroke-dasharray="3 3"/>
+              <line x1="0" y1="130" x2="540" y2="130" stroke="currentColor" class="text-zinc-100 dark:text-zinc-800/80" stroke-dasharray="3 3"/>
+
+              <!-- Outflow Area & Curve -->
+              <path d="M 30,135 Q 110,120 180,125 T 320,130 T 420,118 T 510,122 L 510,170 L 30,170 Z" 
+                    fill="url(#quiet-fill-grad)"/>
+
+              <path d="M 30,135 Q 110,120 180,125 T 320,130 T 420,118 T 510,122" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    class="text-zinc-400 dark:text-zinc-500" 
+                    stroke-width="1.75"/>
+
+              <!-- Inflow Curve (Dark / Crisp line) -->
+              <path d="M 30,70 Q 110,65 180,55 T 320,58 T 420,45 T 510,40" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    class="text-zinc-800 dark:text-zinc-200" 
+                    stroke-width="2"/>
+
+              <!-- Month Data Points -->
+              <g class="cursor-pointer group">
+                <circle cx="30" cy="70" r="3.5" class="fill-zinc-800 dark:fill-zinc-200"/>
+                <circle cx="30" cy="135" r="3" class="fill-zinc-400 dark:fill-zinc-500"/>
+              </g>
+              <g class="cursor-pointer group">
+                <circle cx="126" cy="63" r="3.5" class="fill-zinc-800 dark:fill-zinc-200"/>
+                <circle cx="126" cy="122" r="3" class="fill-zinc-400 dark:fill-zinc-500"/>
+              </g>
+              <g class="cursor-pointer group">
+                <circle cx="222" cy="56" r="3.5" class="fill-zinc-800 dark:fill-zinc-200"/>
+                <circle cx="222" cy="127" r="3" class="fill-zinc-400 dark:fill-zinc-500"/>
+              </g>
+              <g class="cursor-pointer group">
+                <circle cx="318" cy="58" r="3.5" class="fill-zinc-800 dark:fill-zinc-200"/>
+                <circle cx="318" cy="129" r="3" class="fill-zinc-400 dark:fill-zinc-500"/>
+              </g>
+              <g class="cursor-pointer group">
+                <circle cx="414" cy="46" r="3.5" class="fill-zinc-800 dark:fill-zinc-200"/>
+                <circle cx="414" cy="119" r="3" class="fill-zinc-400 dark:fill-zinc-500"/>
+              </g>
+              <g class="cursor-pointer group">
+                <circle cx="510" cy="40" r="4.5" class="fill-zinc-900 dark:fill-zinc-100 ring-4 ring-black/5 dark:ring-white/10"/>
+                <circle cx="510" cy="122" r="4" class="fill-zinc-400 dark:fill-zinc-500"/>
+              </g>
+            </svg>
+
+            <!-- Month Labels on bottom axis -->
+            <div class="flex justify-between text-[11px] font-mono text-zinc-400 dark:text-zinc-500 mt-2 px-1">
+              <span>May</span>
+              <span>Jun</span>
+              <span>Jul</span>
+              <span>Aug</span>
+              <span>Sep</span>
+              <span class="text-zinc-800 dark:text-zinc-200 font-semibold">Oct 26</span>
+            </div>
+          </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-black/[0.04] dark:border-white/[0.05] flex flex-wrap items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 gap-2">
+            <span>Average monthly surplus: <strong class="text-zinc-800 dark:text-zinc-200 font-mono">$4,310</strong></span>
+            <span class="text-[11px] text-zinc-400">Disciplined expenditure within 45% corridor</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Allocations & Budget Envelopes (1 col) -->
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-base font-medium text-zinc-900 dark:text-zinc-100">Discipline Allocations</h2>
+          <span class="text-xs text-zinc-400 font-mono">50 / 30 / 20</span>
+        </div>
+
+        <div class="rounded-xl border border-black/[0.07] dark:border-white/[0.08] bg-[#fdfdfd] dark:bg-[#1a1a1a]/60 p-4 sm:p-5 space-y-4 sm:space-y-5 transition-colors">
+          
+          <!-- Category 1: Essential Living -->
+          <div class="space-y-1.5">
+            <div class="flex justify-between items-baseline text-xs">
+              <span class="text-zinc-700 dark:text-zinc-300 font-medium">Essentials & Housing</span>
+              <span class="font-mono text-zinc-500 dark:text-zinc-400">$2,100 / $2,500</span>
+            </div>
+            <!-- Hairline Progress -->
+            <div class="w-full h-1 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+              <div class="h-full bg-zinc-800 dark:bg-zinc-300 rounded-full" style="width: 84%"></div>
+            </div>
+            <div class="flex justify-between text-[11px] text-zinc-400">
+              <span>Rent, utilities, nourishment</span>
+              <span>84% utilized</span>
+            </div>
+          </div>
+
+          <!-- Category 2: Discretionary & Culture -->
+          <div class="space-y-1.5">
+            <div class="flex justify-between items-baseline text-xs">
+              <span class="text-zinc-700 dark:text-zinc-300 font-medium">Discretionary & Culture</span>
+              <span class="font-mono text-zinc-500 dark:text-zinc-400">$980 / $1,400</span>
+            </div>
+            <div class="w-full h-1 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+              <div class="h-full bg-zinc-600 dark:bg-zinc-400 rounded-full" style="width: 70%"></div>
+            </div>
+            <div class="flex justify-between text-[11px] text-zinc-400">
+              <span>Books, dining, subscriptions</span>
+              <span>70% utilized</span>
+            </div>
+          </div>
+
+          <!-- Category 3: Capital & Retirement Accumulation -->
+          <div class="space-y-1.5">
+            <div class="flex justify-between items-baseline text-xs">
+              <span class="text-zinc-700 dark:text-zinc-300 font-medium">Capital DCA & Reserve</span>
+              <span class="font-mono text-zinc-500 dark:text-zinc-400">$4,630 / $4,000</span>
+            </div>
+            <div class="w-full h-1 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+              <div class="h-full bg-emerald-600 dark:bg-emerald-400 rounded-full" style="width: 100%"></div>
+            </div>
+            <div class="flex justify-between text-[11px] text-emerald-600 dark:text-emerald-400">
+              <span>Automated index funds + HYSA</span>
+              <span>115% of goal</span>
+            </div>
+          </div>
+
+          <!-- Calm Summary Pill -->
+          <div class="pt-2 border-t border-black/[0.04] dark:border-white/[0.05] text-[11px] text-zinc-500 dark:text-zinc-400 flex items-center justify-between">
+            <span>Discretionary surplus remaining:</span>
+            <span class="font-mono font-medium text-zinc-800 dark:text-zinc-200">+$420.00</span>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 4. Asset Allocation & Balance Sheet (Notion / Claude Clean Cards) -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-medium text-zinc-900 dark:text-zinc-100">Capital Architecture & Reserves</h2>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400">Separation of liquid solvency, growth investments, and sovereign debt</p>
+        </div>
+        <button onclick="openModal('add-asset-modal')" class="text-xs text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 flex items-center gap-1 min-h-[36px] px-2">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          Add Position
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4" id="asset-cards-grid">
+        
+        <!-- Liquid Cash & Emergency Fund -->
+        <div class="rounded-xl border border-black/[0.07] dark:border-white/[0.08] bg-[#fdfdfd] dark:bg-[#1a1a1a]/60 p-4 space-y-3 transition-colors hover:border-black/20 dark:hover:border-white/20">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono text-zinc-400 uppercase tracking-wider">Liquid Solvency</span>
+            <span class="text-[11px] font-mono text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">4.6% APY</span>
+          </div>
+          <div>
+            <div class="text-xl font-serif-title font-medium text-zinc-900 dark:text-zinc-100" id="card-liquid-val">$42,850.00</div>
+            <div class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">High Yield Savings & Checking</div>
+          </div>
+          <div class="pt-2 border-t border-black/[0.04] dark:border-white/[0.05] text-[11px] text-zinc-400 flex justify-between">
+            <span>Runway coverage</span>
+            <span class="font-mono text-zinc-700 dark:text-zinc-300">11.2 months</span>
+          </div>
+        </div>
+
+        <!-- Equities & Index Portfolios -->
+        <div class="rounded-xl border border-black/[0.07] dark:border-white/[0.08] bg-[#fdfdfd] dark:bg-[#1a1a1a]/60 p-4 space-y-3 transition-colors hover:border-black/20 dark:hover:border-white/20">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono text-zinc-400 uppercase tracking-wider">Long-Term Equities</span>
+            <span class="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded">+11.4% YTD</span>
+          </div>
+          <div>
+            <div class="text-xl font-serif-title font-medium text-zinc-900 dark:text-zinc-100" id="card-invest-val">$143,920.00</div>
+            <div class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Total World ETF (VT) + S&amp;P 500</div>
+          </div>
+          <div class="pt-2 border-t border-black/[0.04] dark:border-white/[0.05] text-[11px] text-zinc-400 flex justify-between">
+            <span>Monthly DCA injection</span>
+            <span class="font-mono text-zinc-700 dark:text-zinc-300">$3,000 / mo</span>
+          </div>
+        </div>
+
+        <!-- Liabilities & Clearable Balance -->
+        <div class="rounded-xl border border-black/[0.07] dark:border-white/[0.08] bg-[#fdfdfd] dark:bg-[#1a1a1a]/60 p-4 space-y-3 transition-colors hover:border-black/20 dark:hover:border-white/20">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono text-zinc-400 uppercase tracking-wider">Floating Obligations</span>
+            <span class="text-[11px] font-mono text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded">Auto-Cleared</span>
+          </div>
+          <div>
+            <div class="text-xl font-serif-title font-medium text-zinc-900 dark:text-zinc-100" id="card-debt-val">$2,450.00</div>
+            <div class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Credit card cycle (0 interest accrued)</div>
+          </div>
+          <div class="pt-2 border-t border-black/[0.04] dark:border-white/[0.05] text-[11px] text-zinc-400 flex justify-between">
+            <span>Next settlement</span>
+            <span class="font-mono text-zinc-700 dark:text-zinc-300">Oct 18, 2026</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 5. Content-First Ledger: Mindful Journal & Transactions Table -->
+    <section class="space-y-4">
+      
+      <!-- Table Header & Controls -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 class="text-base font-medium text-zinc-900 dark:text-zinc-100">Mindful Journal &amp; Ledger</h2>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400">Contextual reflections, receipts, and line-item clarity</p>
+        </div>
+
+        <!-- Search & Filter Controls -->
+        <div class="flex flex-wrap items-center gap-2">
+          
+          <!-- Search input -->
+          <div class="relative w-full sm:w-auto">
+            <input 
+              type="text" 
+              id="tx-search" 
+              oninput="filterTransactions()" 
+              placeholder="Search entity, note, tag..." 
+              class="w-full sm:w-60 bg-transparent text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 border border-black/[0.08] dark:border-white/[0.1] rounded-lg px-2.5 py-1.5 pl-8 focus:outline-none focus:border-zinc-400 dark:focus:border-zinc-500 transition-colors"
+            >
+            <div class="pointer-events-none absolute inset-y-0 left-2.5 flex items-center text-zinc-400">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Type Filter -->
+          <select id="tx-type-filter" onchange="filterTransactions()" class="bg-transparent text-xs text-zinc-600 dark:text-zinc-300 border border-black/[0.08] dark:border-white/[0.1] rounded-lg px-2.5 py-1.5 focus:outline-none transition-colors shrink-0">
+            <option value="all">All Types</option>
+            <option value="expense">Expenses Only</option>
+            <option value="income">Inflow Only</option>
+            <option value="investment">Investments Only</option>
+          </select>
+
+          <!-- Add Button for Mobile -->
+          <button onclick="openModal('add-tx-modal')" class="sm:hidden p-1.5 rounded-lg border border-black/10 dark:border-white/10 text-zinc-700 dark:text-zinc-300 min-h-[36px] min-w-[36px] flex items-center justify-center">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- Ledger Table (Content-First, Notion/Claude Unadorned Aesthetic) -->
+      <div class="rounded-xl border border-black/[0.07] dark:border-white/[0.08] overflow-hidden bg-white dark:bg-[#1f1f1f]">
+        <div class="overflow-x-auto scrollbar-none">
+          <table class="w-full text-left text-xs min-w-[500px] sm:min-w-0">
+            <thead>
+              <tr class="border-b border-black/[0.06] dark:border-white/[0.06] bg-zinc-50/60 dark:bg-[#191919]/60 text-zinc-500 dark:text-zinc-400 font-mono">
+                <th class="py-2.5 px-4 font-normal">Date</th>
+                <th class="py-2.5 px-4 font-normal">Entity & Description</th>
+                <th class="py-2.5 px-4 font-normal hidden sm:table-cell">Intent & Note</th>
+                <th class="py-2.5 px-4 font-normal">Category</th>
+                <th class="py-2.5 px-4 font-normal text-right">Amount</th>
+                <th class="py-2.5 px-3 font-normal text-center w-12">Action</th>
+              </tr>
+            </thead>
+            <tbody id="transaction-table-body" class="divide-y divide-black/[0.04] dark:divide-white/[0.04]">
+              <!-- Populated via Javascript -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table Summary / Footer -->
+        <div class="p-3 border-t border-black/[0.05] dark:border-white/[0.06] bg-zinc-50/40 dark:bg-[#1a1a1a]/40 flex flex-wrap items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 gap-2">
+          <span id="tx-count-display">Showing 8 entries</span>
+          <div class="flex items-center gap-4">
+            <span>Filtered Total: <strong id="tx-filtered-sum" class="font-mono text-zinc-900 dark:text-zinc-100">$0.00</strong></span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 6. Notion-Style Financial Rules & Mental Model Notes (Collapsible) -->
+    <section class="space-y-3 pt-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-medium text-zinc-600 dark:text-zinc-400 font-mono uppercase tracking-wider">
+          Mindful Operating Principles
+        </h2>
+        <button onclick="toggleNotes()" id="notes-toggle-label" class="text-xs text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200">
+          Collapse Notes
+        </button>
+      </div>
+
+      <div id="notes-content" class="rounded-xl border border-black/[0.07] dark:border-white/[0.08] bg-[#fbfbfb] dark:bg-[#1b1b1b] p-4 sm:p-5 space-y-4 text-xs leading-relaxed text-zinc-600 dark:text-zinc-400 transition-all">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
+          <div class="space-y-1">
+            <div class="font-medium text-zinc-900 dark:text-zinc-200">1. Friction on Outflow</div>
+            <p>Wait 48 hours for any non-essential purchase exceeding $100. If the impulse fades, the money stays in compounding assets.</p>
+          </div>
+          <div class="space-y-1">
+            <div class="font-medium text-zinc-900 dark:text-zinc-200">2. Automated Inflow DCA</div>
+            <p>Every 1st of the month, $3,000 is automatically drafted into broad market index portfolios before lifestyle spending occurs.</p>
+          </div>
+          <div class="space-y-1">
+            <div class="font-medium text-zinc-900 dark:text-zinc-200">3. Solvency as Serenity</div>
+            <p>Maintain 12+ months of baseline living expenses strictly in cash-equivalents to insulate mental peace from market turbulence.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 7. Floating Intelligent Assistant Capsule (Inspired by Claude & ChatGPT) -->
+  <div class="fixed bottom-4 inset-x-3 sm:inset-x-auto sm:bottom-6 sm:left-1/2 sm:-translate-x-1/2 max-w-2xl w-[calc(100%-1.5rem)] sm:w-full z-40 no-print">
+    <div class="rounded-3xl border border-black/10 dark:border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.08)] bg-white/95 dark:bg-[#2f2f2f]/95 backdrop-blur-md p-1.5 transition-all">
+      
+      <!-- Input bar -->
+      <form id="dock-form" onsubmit="handleDockCommand(event)" class="flex items-center gap-2 pl-3 pr-1 py-1">
+        <div class="text-zinc-400 dark:text-zinc-500 shrink-0">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+        </div>
+
+        <input 
+          type="text" 
+          id="dock-input" 
+          placeholder="Ask or record: 'Paid $45 books' or 'What is my runway?'..." 
+          class="w-full bg-transparent text-xs sm:text-sm text-zinc-900 dark:text-zinc-100 outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
+          autocomplete="off"
+        />
+
+        <button 
+          type="submit" 
+          title="Execute Command or Add Entry" 
+          class="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-full bg-zinc-900 text-white hover:opacity-85 dark:bg-white dark:text-zinc-900 transition-opacity"
+        >
+          <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+          </svg>
+        </button>
+      </form>
+
+      <!-- Suggested Quick Prompt Chips -->
+      <div class="flex items-center gap-1.5 px-3 py-1 overflow-x-auto text-[11px] text-zinc-500 dark:text-zinc-400 font-mono scrollbar-none border-t border-black/[0.04] dark:border-white/[0.05] mt-1 pt-1.5">
+        <span class="text-zinc-400 text-[10px] uppercase shrink-0">Quick:</span>
+        <button type="button" onclick="setDockText('Paid $45 Coffee & Lunch')" class="px-2 py-0.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors whitespace-nowrap">+ $45 Lunch</button>
+        <button type="button" onclick="setDockText('Received $1200 Consulting')" class="px-2 py-0.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors whitespace-nowrap">+ $1200 Income</button>
+        <button type="button" onclick="setDockText('What is my savings rate?')" class="px-2 py-0.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors whitespace-nowrap">Savings Rate?</button>
+        <button type="button" onclick="setDockText('Filter: books')" class="px-2 py-0.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors whitespace-nowrap">Filter: books</button>
+      </div>
+
+    </div>
+
+    <!-- Feedback Message Pill -->
+    <div id="dock-toast" class="hidden mt-2 mx-auto max-w-sm text-center text-xs py-1.5 px-3 rounded-full bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-lg font-mono transition-opacity">
+      Action confirmed
+    </div>
+  </div>
+
+  <!-- Modal: Record New Transaction (Bottom Sheet on mobile) -->
+  <div id="add-tx-modal" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="w-full max-w-md rounded-t-[2rem] sm:rounded-2xl bg-white dark:bg-[#242424] border border-black/10 dark:border-white/10 shadow-2xl p-5 sm:p-6 pb-8 sm:pb-6 space-y-4 sm:space-y-5 animate-in slide-in-from-bottom sm:zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
+      
+      <div class="flex items-center justify-between border-b border-black/[0.06] dark:border-white/[0.06] pb-3">
+        <h3 class="text-base font-serif-title font-medium text-zinc-900 dark:text-zinc-100">Record Transaction</h3>
+        <button onclick="closeModal('add-tx-modal')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 min-h-[36px] min-w-[36px] flex items-center justify-center">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <form id="tx-form" onsubmit="handleManualTxSubmit(event)" class="space-y-4 text-xs">
+        
+        <!-- Type Selection Pills -->
+        <div class="space-y-1">
+          <label class="text-zinc-500 dark:text-zinc-400 font-medium">Entry Flow</label>
+          <div class="grid grid-cols-3 gap-2">
+            <label class="cursor-pointer">
+              <input type="radio" name="modal-tx-type" value="expense" checked class="peer sr-only">
+              <div class="text-center py-2 rounded-lg border border-black/10 dark:border-white/10 peer-checked:bg-zinc-900 peer-checked:text-white dark:peer-checked:bg-white dark:peer-checked:text-zinc-900 transition-colors">
+                Expense
+              </div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="modal-tx-type" value="income" class="peer sr-only">
+              <div class="text-center py-2 rounded-lg border border-black/10 dark:border-white/10 peer-checked:bg-zinc-900 peer-checked:text-white dark:peer-checked:bg-white dark:peer-checked:text-zinc-900 transition-colors">
+                Inflow
+              </div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="modal-tx-type" value="investment" class="peer sr-only">
+              <div class="text-center py-2 rounded-lg border border-black/10 dark:border-white/10 peer-checked:bg-zinc-900 peer-checked:text-white dark:peer-checked:bg-white dark:peer-checked:text-zinc-900 transition-colors">
+                Invest
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Entity / Description -->
+        <div class="space-y-1">
+          <label for="modal-desc" class="text-zinc-500 dark:text-zinc-400 font-medium">Merchant or Counterparty</label>
+          <input 
+            type="text" 
+            id="modal-desc" 
+            required 
+            placeholder="e.g. Kinokuniya Books, Monthly Stipend"
+            class="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-zinc-900 dark:text-zinc-100 outline-none focus:border-zinc-400"
+          >
+        </div>
+
+        <!-- Amount & Date -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1">
+            <label for="modal-amount" class="text-zinc-500 dark:text-zinc-400 font-medium">Amount (<span class="currency-symbol">$</span>)</label>
+            <input 
+              type="number" 
+              step="0.01" 
+              id="modal-amount" 
+              required 
+              placeholder="0.00"
+              class="w-full font-mono bg-zinc-50 dark:bg-zinc-800/60 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-zinc-900 dark:text-zinc-100 outline-none focus:border-zinc-400"
+            >
+          </div>
+          <div class="space-y-1">
+            <label for="modal-date" class="text-zinc-500 dark:text-zinc-400 font-medium">Date</label>
+            <input 
+              type="date" 
+              id="modal-date" 
+              required
+              class="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-zinc-900 dark:text-zinc-100 outline-none focus:border-zinc-400"
+            >
+          </div>
+        </div>
+
+        <!-- Category -->
+        <div class="space-y-1">
+          <label for="modal-category" class="text-zinc-500 dark:text-zinc-400 font-medium">Category</label>
+          <select id="modal-category" class="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-zinc-900 dark:text-zinc-100 outline-none focus:border-zinc-400">
+            <option value="Essentials">Essentials &amp; Housing</option>
+            <option value="Discretionary">Discretionary &amp; Living</option>
+            <option value="Food & Dining">Food &amp; Nourishment</option>
+            <option value="Learning">Learning &amp; Books</option>
+            <option value="Income">Salary / Income</option>
+            <option value="Investment">Capital &amp; Portfolio</option>
+          </select>
+        </div>
+
+        <!-- Intent Note -->
+        <div class="space-y-1">
+          <label for="modal-note" class="text-zinc-500 dark:text-zinc-400 font-medium">Intentional Note (Optional)</label>
+          <input 
+            type="text" 
+            id="modal-note" 
+            placeholder="Why this was incurred or personal reflection"
+            class="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-zinc-900 dark:text-zinc-100 outline-none focus:border-zinc-400"
+          >
+        </div>
+
+        <!-- Actions -->
+        <div class="pt-3 flex items-center justify-end gap-2 border-t border-black/[0.06] dark:border-white/[0.06]">
+          <button type="button" onclick="closeModal('add-tx-modal')" class="px-3 py-2 rounded-lg text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 min-h-[40px]">
+            Cancel
+          </button>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 font-medium hover:opacity-90 min-h-[40px]">
+            Save Entry
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add / Adjust Asset Position (Bottom Sheet on mobile) -->
+  <div id="add-asset-modal" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="w-full max-w-sm rounded-t-[2rem] sm:rounded-2xl bg-white dark:bg-[#242424] border border-black/10 dark:border-white/10 shadow-2xl p-5 sm:p-6 pb-8 sm:pb-6 space-y-4 animate-in slide-in-from-bottom sm:zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-black/[0.06] dark:border-white/[0.06] pb-3">
+        <h3 class="text-base font-serif-title font-medium text-zinc-900 dark:text-zinc-100">Adjust Asset Position</h3>
+        <button onclick="closeModal('add-asset-modal')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 min-h-[36px] min-w-[36px] flex items-center justify-center">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div class="space-y-1">
+          <label class="text-zinc-500 dark:text-zinc-400">Target Asset Class</label>
+          <select id="asset-type-select" class="w-full bg-zinc-50 dark:bg-zinc-800/60 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-zinc-900 dark:text-zinc-100">
+            <option value="liquid">Liquid Solvency (HYSA / Checking)</option>
+            <option value="invest">Long-Term Equities (Index Funds)</option>
+            <option value="debt">Floating Obligations (Credit Cards)</option>
+          </select>
+        </div>
+        <div class="space-y-1">
+          <label class="text-zinc-500 dark:text-zinc-400">Adjustment Amount (<span class="currency-symbol">$</span>)</label>
+          <input type="number" id="asset-adjust-amt" placeholder="e.g. 500" class="w-full font-mono bg-zinc-50 dark:bg-zinc-800/60 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-zinc-900 dark:text-zinc-100">
+        </div>
+      </div>
+
+      <div class="pt-2 flex justify-end gap-2 text-xs">
+        <button onclick="closeModal('add-asset-modal')" class="px-3 py-2 rounded-lg text-zinc-600 dark:text-zinc-400 min-h-[40px]">Cancel</button>
+        <button onclick="applyAssetAdjustment()" class="px-4 py-2 rounded-lg bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 font-medium min-h-[40px]">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Logic (Pure Vanilla JavaScript) -->
+  <script>
+    // Financial State Storage
+    const DEFAULT_DATA = {
+      currency: "USD",
+      exchangeRate: 1.0, // multiplier vs USD base
+      currencySymbols: {
+        USD: "$",
+        EUR: "€",
+        GBP: "£",
+        IDR: "Rp ",
+        JPY: "¥",
+        SGD: "S$"
+      },
+      currencyRates: {
+        USD: 1.0,
+        EUR: 0.92,
+        GBP: 0.78,
+        IDR: 15600,
+        JPY: 152.0,
+        SGD: 1.34
+      },
+      assets: {
+        liquid: 42850.00,
+        invest: 143920.00,
+        debt: 2450.00
+      },
+      transactions: [
+        { id: 1, date: "2026-10-03", entity: "Vanguard Total World ETF", note: "Monthly scheduled DCA auto-investment", category: "Investment", type: "investment", amount: 3000.00 },
+        { id: 2, date: "2026-10-02", entity: "Primary Tech Consulting", note: "Bi-weekly retainer invoice disbursement", category: "Income", type: "income", amount: 4250.00 },
+        { id: 3, date: "2026-10-02", entity: "City Apartments Residential", note: "October rent and maintenance escrow", category: "Essentials", type: "expense", amount: 1650.00 },
+        { id: 4, date: "2026-10-01", entity: "Local Organic Provisions", note: "Weekly whole foods & household staples", category: "Essentials", type: "expense", amount: 184.50 },
+        { id: 5, date: "2026-09-30", entity: "Kinokuniya Book Emporium", note: "Philosophy & systems engineering journals", category: "Learning", type: "expense", amount: 68.20 },
+        { id: 6, date: "2026-09-29", entity: "Anthropic Claude Pro", note: "Thought partner subscription workspace", category: "Discretionary", type: "expense", amount: 20.00 },
+        { id: 7, date: "2026-09-28", entity: "Artisan Coffee Roastery", note: "Morning focus espresso & pour over beans", category: "Food & Dining", type: "expense", amount: 26.50 },
+        { id: 8, date: "2026-09-27", entity: "High Yield Savings Interest", note: "Monthly compound yield accumulation", category: "Income", type: "income", amount: 164.20 }
+      ]
+    };
+
+    let state = JSON.parse(localStorage.getItem('kanso_finance_state')) || DEFAULT_DATA;
+
+    // Currency Formatter Helper
+    function formatMoney(amountInUSD) {
+      const sym = state.currencySymbols[state.currency] || "$";
+      const rate = state.currencyRates[state.currency] || 1.0;
+      const converted = amountInUSD * rate;
+
+      if (state.currency === "IDR" || state.currency === "JPY") {
+        return sym + Math.round(converted).toLocaleString();
+      }
+      return sym + converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Save State
+    function persistState() {
+      localStorage.setItem('kanso_finance_state', JSON.stringify(state));
+      renderDashboard();
+    }
+
+    // Render All Metrics & Table
+    function renderDashboard() {
+      // 1. Calculate Income & Expenses from current state
+      let totalIncome = 0;
+      let totalExpense = 0;
+
+      state.transactions.forEach(tx => {
+        if (tx.type === 'income') totalIncome += tx.amount;
+        if (tx.type === 'expense') totalExpense += tx.amount;
+      });
+
+      // Calculate Net Worth: Liquid + Investments - Floating Liabilities
+      const netWorth = (state.assets.liquid + state.assets.invest) - state.assets.debt;
+      const netSavings = totalIncome - totalExpense;
+
+      // Update Metric Cards
+      document.getElementById('val-net-worth').textContent = formatMoney(netWorth);
+      document.getElementById('val-inflow').textContent = formatMoney(totalIncome);
+      document.getElementById('val-outflow').textContent = formatMoney(totalExpense);
+      document.getElementById('val-savings').textContent = (netSavings >= 0 ? "+" : "-") + formatMoney(Math.abs(netSavings));
+
+      // Update Asset Cards
+      document.getElementById('card-liquid-val').textContent = formatMoney(state.assets.liquid);
+      document.getElementById('card-invest-val').textContent = formatMoney(state.assets.invest);
+      document.getElementById('card-debt-val').textContent = formatMoney(state.assets.debt);
+
+      // Update Currency Symbol Indicators
+      document.querySelectorAll('.currency-symbol').forEach(el => {
+        el.textContent = state.currencySymbols[state.currency];
+      });
+
+      // Update Ledger Table
+      renderTable();
+    }
+
+    // Render Filtered Table
+    function renderTable() {
+      const tbody = document.getElementById('transaction-table-body');
+      const searchTerm = (document.getElementById('tx-search').value || '').toLowerCase();
+      const filterType = document.getElementById('tx-type-filter').value;
+
+      tbody.innerHTML = '';
+
+      let filtered = state.transactions.filter(tx => {
+        const matchesSearch = tx.entity.toLowerCase().includes(searchTerm) ||
+                              tx.note.toLowerCase().includes(searchTerm) ||
+                              tx.category.toLowerCase().includes(searchTerm);
+        const matchesType = (filterType === 'all') || (tx.type === filterType);
+        return matchesSearch && matchesType;
+      });
+
+      let filteredSum = 0;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="py-8 text-center text-zinc-400 text-xs font-mono">
+              No matching ledger entries found.
+            </td>
+          </tr>
+        `;
+      } else {
+        filtered.forEach(tx => {
+          filteredSum += tx.amount;
+
+          const isIncome = tx.type === 'income';
+          const isInvest = tx.type === 'investment';
+          
+          let amountClass = 'text-zinc-900 dark:text-zinc-100';
+          let sign = '-';
+          if (isIncome) {
+            amountClass = 'text-emerald-700 dark:text-emerald-400';
+            sign = '+';
+          } else if (isInvest) {
+            amountClass = 'text-zinc-600 dark:text-zinc-300';
+            sign = '↗';
+          }
+
+          const tr = document.createElement('tr');
+          tr.className = "hover:bg-zinc-50/70 dark:hover:bg-[#262626]/50 transition-colors group";
+          tr.innerHTML = `
+            <td class="py-3 px-4 font-mono text-[11px] text-zinc-400 whitespace-nowrap">${tx.date}</td>
+            <td class="py-3 px-4 font-medium text-zinc-900 dark:text-zinc-100 whitespace-nowrap">
+              ${escapeHtml(tx.entity)}
+            </td>
+            <td class="py-3 px-4 text-zinc-500 dark:text-zinc-400 hidden sm:table-cell text-[11px] max-w-xs truncate" title="${escapeHtml(tx.note)}">
+              ${escapeHtml(tx.note)}
+            </td>
+            <td class="py-3 px-4 whitespace-nowrap">
+              <span class="inline-block px-2 py-0.5 rounded text-[10px] font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300">
+                ${escapeHtml(tx.category)}
+              </span>
+            </td>
+            <td class="py-3 px-4 font-mono text-right font-medium whitespace-nowrap ${amountClass}">
+              ${sign} ${formatMoney(tx.amount)}
+            </td>
+            <td class="py-3 px-3 text-center">
+              <button onclick="deleteTransaction(${tx.id})" title="Delete entry" class="text-zinc-400 hover:text-rose-500 dark:text-zinc-500 dark:hover:text-rose-400 p-1.5 rounded opacity-80 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity min-h-[36px] min-w-[36px] flex items-center justify-center mx-auto cursor-pointer">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      document.getElementById('tx-count-display').textContent = `Showing ${filtered.length} of ${state.transactions.length} entries`;
+      document.getElementById('tx-filtered-sum').textContent = formatMoney(filteredSum);
+    }
+
+    function filterTransactions() {
+      renderTable();
+    }
+
+    // Delete single transaction
+    function deleteTransaction(id) {
+      state.transactions = state.transactions.filter(t => t.id !== id);
+      persistState();
+      showToast("Entry removed from ledger");
+    }
+
+    // Modal helpers
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) {
+        modal.classList.remove('hidden');
+        if (id === 'add-tx-modal') {
+          // Set today's date as default
+          const today = new Date().toISOString().split('T')[0];
+          document.getElementById('modal-date').value = today;
+          document.getElementById('modal-desc').focus();
+        }
+      }
+    }
+
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.add('hidden');
+    }
+
+    // Manual Transaction Form Submission
+    function handleManualTxSubmit(e) {
+      e.preventDefault();
+      const type = document.querySelector('input[name="modal-tx-type"]:checked').value;
+      const entity = document.getElementById('modal-desc').value.trim();
+      const amount = parseFloat(document.getElementById('modal-amount').value);
+      const date = document.getElementById('modal-date').value;
+      const category = document.getElementById('modal-category').value;
+      const note = document.getElementById('modal-note').value.trim() || 'Mindful recorded expense';
+
+      if (!entity || isNaN(amount) || amount <= 0) return;
+
+      const newEntry = {
+        id: Date.now(),
+        date: date || new Date().toISOString().split('T')[0],
+        entity,
+        note,
+        category,
+        type,
+        amount
+      };
+
+      state.transactions.unshift(newEntry);
+
+      // Adjust liquid buffer accordingly
+      if (type === 'expense') state.assets.liquid -= amount;
+      if (type === 'income') state.assets.liquid += amount;
+      if (type === 'investment') {
+        state.assets.liquid -= amount;
+        state.assets.invest += amount;
+      }
+
+      persistState();
+      closeModal('add-tx-modal');
+      document.getElementById('tx-form').reset();
+      showToast(`Recorded: ${entity} (${formatMoney(amount)})`);
+    }
+
+    // Quick Command Capsule (ChatGPT / Claude style Natural Input)
+    function handleDockCommand(e) {
+      e.preventDefault();
+      const input = document.getElementById('dock-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const lower = text.toLowerCase();
+
+      // Case 1: Filter query like "filter: books"
+      if (lower.startsWith('filter:')) {
+        const query = text.replace(/filter:/i, '').trim();
+        document.getElementById('tx-search').value = query;
+        filterTransactions();
+        showToast(`Filtered ledger by "${query}"`);
+        input.value = '';
+        return;
+      }
+
+      // Case 2: Inquiries
+      if (lower.includes('savings rate') || lower.includes('rate')) {
+        showToast(`Current Savings Rate is 54.8%`);
+        input.value = '';
+        return;
+      }
+      if (lower.includes('runway') || lower.includes('buffer')) {
+        showToast(`Liquid Solvency Buffer: ~19.4 Months`);
+        input.value = '';
+        return;
+      }
+
+      // Case 3: Parse natural expense/income entries e.g. "Paid $45 for lunch", "Coffee $5"
+      const numberMatch = text.match(/[\$£€Rp¥]?\s*(\d+(?:\.\d+)?)/);
+      if (numberMatch) {
+        const parsedAmount = parseFloat(numberMatch[1]);
+        const isIncome = lower.includes('received') || lower.includes('income') || lower.includes('salary');
+        const cleanDesc = text
+          .replace(/[\$£€Rp¥]?\s*\d+(?:\.\d+)?/, '')
+          .replace(/^(paid|bought|spent|received|for)\s+/i, '')
+          .trim() || (isIncome ? "Inflow Credit" : "Mindful Expenditure");
+
+        const newTx = {
+          id: Date.now(),
+          date: new Date().toISOString().split('T')[0],
+          entity: cleanDesc.charAt(0).toUpperCase() + cleanDesc.slice(1),
+          note: "Recorded via Quiet Command Dock",
+          category: isIncome ? "Income" : "Discretionary",
+          type: isIncome ? "income" : "expense",
+          amount: parsedAmount
+        };
+
+        state.transactions.unshift(newTx);
+        if (isIncome) state.assets.liquid += parsedAmount;
+        else state.assets.liquid -= parsedAmount;
+
+        persistState();
+        input.value = '';
+        showToast(`Added: ${newTx.entity} (${formatMoney(parsedAmount)})`);
+        return;
+      }
+
+      showToast("Tip: Try 'Paid $35 Books' or 'Filter: groceries'");
+    }
+
+    function setDockText(val) {
+      const input = document.getElementById('dock-input');
+      input.value = val;
+      input.focus();
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('dock-toast');
+      toast.textContent = msg;
+      toast.classList.remove('hidden');
+      clearTimeout(window._toastTimeout);
+      window._toastTimeout = setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3200);
+    }
+
+    // Asset Adjustment
+    function applyAssetAdjustment() {
+      const type = document.getElementById('asset-type-select').value;
+      const amt = parseFloat(document.getElementById('asset-adjust-amt').value);
+      if (isNaN(amt)) return;
+
+      if (type === 'liquid') state.assets.liquid += amt;
+      if (type === 'invest') state.assets.invest += amt;
+      if (type === 'debt') state.assets.debt = Math.max(0, state.assets.debt + amt);
+
+      persistState();
+      closeModal('add-asset-modal');
+      document.getElementById('asset-adjust-amt').value = '';
+      showToast('Position updated');
+    }
+
+    // Currency Switcher
+    function changeCurrency(newCurr) {
+      state.currency = newCurr;
+      persistState();
+      showToast(`Switched currency to ${newCurr}`);
+    }
+
+    // Period switcher (simulation)
+    function setPeriod(p) {
+      ['month', 'quarter', 'year'].forEach(id => {
+        const btn = document.getElementById(`period-${id}`);
+        if (id === p) {
+          btn.className = "px-2.5 py-1 rounded-md transition-colors bg-white dark:bg-[#2c2c2c] text-zinc-900 dark:text-zinc-100 shadow-[0_1px_3px_rgba(0,0,0,0.06)]";
+        } else {
+          btn.className = "px-2.5 py-1 rounded-md transition-colors text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100";
+        }
+      });
+      showToast(`View updated for ${p}`);
+    }
+
+    // Zen Mode Toggle
+    let isZen = false;
+    function toggleZenMode() {
+      isZen = !isZen;
+      const btn = document.getElementById('zen-toggle-btn');
+      const notes = document.getElementById('notes-content');
+      if (isZen) {
+        btn.classList.add('text-zinc-900', 'dark:text-zinc-100', 'bg-zinc-100', 'dark:bg-zinc-800');
+        if (notes) notes.classList.add('hidden');
+        showToast("Zen mode: Quiet focus enabled");
+      } else {
+        btn.classList.remove('text-zinc-900', 'dark:text-zinc-100', 'bg-zinc-100', 'dark:bg-zinc-800');
+        if (notes) notes.classList.remove('hidden');
+        showToast("Zen mode: Full views restored");
+      }
+    }
+
+    // Toggle Notes Accordion
+    function toggleNotes() {
+      const notes = document.getElementById('notes-content');
+      const label = document.getElementById('notes-toggle-label');
+      if (notes.classList.contains('hidden')) {
+        notes.classList.remove('hidden');
+        label.textContent = "Collapse Notes";
+      } else {
+        notes.classList.add('hidden');
+        label.textContent = "Expand Notes";
+      }
+    }
+
+    // Theme Toggle (Light / Dark)
+    function toggleTheme() {
+      const html = document.documentElement;
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        html.classList.add('light');
+        localStorage.setItem('kanso_theme', 'light');
+      } else {
+        html.classList.remove('light');
+        html.classList.add('dark');
+        localStorage.setItem('kanso_theme', 'dark');
+      }
+    }
+
+    // CSV Export
+    function exportDataCSV() {
+      let csv = "ID,Date,Entity,Category,Type,Amount_USD,Note\n";
+      state.transactions.forEach(t => {
+        csv += `${t.id},"${t.date}","${t.entity}","${t.category}","${t.type}",${t.amount},"${t.note}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `kanso-ledger-${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast("Ledger CSV exported");
+    }
+
+    // Escape HTML utility
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // Initialization on DOM Ready
+    window.addEventListener('DOMContentLoaded', () => {
+      // Restore Theme preference
+      const savedTheme = localStorage.getItem('kanso_theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+      } else {
+        document.documentElement.classList.add('light');
+        document.documentElement.classList.remove('dark');
+      }
+
+      // Set Currency in Dropdown
+      const sel = document.getElementById('currency-select');
+      if (sel) sel.value = state.currency;
+
+      // Render Everything
+      renderDashboard();
+
+      // Keyboard Shortcut: Cmd/Ctrl + K to focus dock input
+      window.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          const dockInput = document.getElementById('dock-input');
+          if (dockInput) dockInput.focus();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

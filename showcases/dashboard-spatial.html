@@ -1,0 +1,1137 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="LUMINA — Luminous Spatial Glass personal finance and wealth management dashboard inspired by macOS, VisionOS, and Raycast.">
+  <title>LUMINA — Spatial Glass Wealth OS</title>
+
+  <!-- Google Fonts: Outfit for smooth spatial luxury & JetBrains Mono for monetary figures -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='8' fill='%230f172a'/%3E%3Ccircle cx='12' cy='12' r='7' fill='none' stroke='%2338bdf8' stroke-width='2' stroke-dasharray='20 10'/%3E%3Ccircle cx='12' cy='12' r='3' fill='%23818cf8'/%3E%3C/svg%3E">
+
+  <!-- Tailwind CSS Browser v4 -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <style type="text/tailwindcss">
+    @theme static {
+      --font-sans: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+
+      /* Spatial Glass Surface Tokens */
+      --color-slate-950: #020617;
+      --color-slate-900: #0f172a;
+      --color-slate-800: #1e293b;
+      --color-slate-700: #334155;
+      
+      --color-glass-cyan: #38bdf8;
+      --color-glass-indigo: #818cf8;
+      --color-glass-emerald: #34d399;
+      --color-glass-rose: #fb7185;
+      --color-glass-amber: #fbbf24;
+    }
+  </style>
+
+  <style>
+    body {
+      font-family: var(--font-sans);
+      background-color: #020617;
+      color: #f8fafc;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .tabular {
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Ambient Spatial Light Cones */
+    .ambient-spatial-glow {
+      position: fixed;
+      inset: 0;
+      z-index: -10;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .ambient-spatial-glow::before {
+      content: "";
+      position: absolute;
+      top: -20%;
+      left: 20%;
+      width: 650px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.16) 0%, transparent 70%);
+      filter: blur(80px);
+    }
+    .ambient-spatial-glow::after {
+      content: "";
+      position: absolute;
+      top: 35%;
+      right: 5%;
+      width: 600px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(129, 140, 248, 0.14) 0%, transparent 65%);
+      filter: blur(90px);
+    }
+    .ambient-glow-bottom {
+      position: absolute;
+      bottom: -10%;
+      left: 10%;
+      width: 550px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(52, 211, 153, 0.12) 0%, transparent 70%);
+      filter: blur(90px);
+      pointer-events: none;
+    }
+
+    /* Frosted Glass Base Panel */
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 
+        0 10px 30px -10px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+      transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .glass-panel:hover {
+      border-color: rgba(255, 255, 255, 0.22);
+      box-shadow: 
+        0 14px 40px -10px rgba(0, 0, 0, 0.6),
+        0 0 20px -5px rgba(56, 189, 248, 0.15),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
+    }
+
+    /* Floating Capsule Dock */
+    .glass-dock {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 
+        0 20px 40px -15px rgba(0, 0, 0, 0.7),
+        0 0 25px -5px rgba(56, 189, 248, 0.2),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.25);
+    }
+
+    /* Smooth Glass Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(2, 6, 23, 0.8);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(56, 189, 248, 0.5);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen text-slate-100 antialiased selection:bg-sky-500/30 selection:text-white pb-32">
+  <div class="ambient-spatial-glow"></div>
+  <div class="ambient-glow-bottom"></div>
+
+  <!-- THEME SWITCHER RIBBON -->
+  <aside aria-label="Theme Navigation" class="border-b border-white/10 bg-slate-950/60 backdrop-blur-md py-1.5 px-3 sm:px-6">
+    <div class="max-w-7xl mx-auto flex items-center justify-between text-xs font-sans">
+      <div class="flex items-center gap-2">
+        <label for="themeSelect" class="text-slate-400 font-mono text-[10px] uppercase font-bold tracking-wider flex items-center gap-1.5">
+          <span>Theme:</span>
+        </label>
+        <div class="relative">
+          <select id="themeSelect" onchange="window.location.href=this.value" class="appearance-none bg-slate-900/80 border border-white/20 text-sky-200 text-xs font-semibold px-2.5 py-1 pr-6 rounded-full shadow-xs hover:border-white/30 focus:outline-none focus:ring-1 focus:ring-sky-400/50 cursor-pointer backdrop-blur-md transition-colors">
+            <option value="dashboard-spatial.html" class="bg-slate-900 text-slate-100" selected>🫧 Spatial Glass</option>
+            <option value="dashboard-editorial.html" class="bg-slate-900 text-slate-100">📜 Warm Editorial</option>
+            <option value="dashboard-ops-terminal.html" class="bg-slate-900 text-slate-100">🎛️ Ops Terminal</option>
+            <option value="dashboard-cyberpunk.html" class="bg-slate-900 text-slate-100">⚡ Cyberpunk HUD</option>
+            <option value="dashboard-enterprise.html" class="bg-slate-900 text-slate-100">🏢 Clean Enterprise</option>
+            <option value="dashboard-linear.html" class="bg-slate-900 text-slate-100">🔮 Linear Dark</option>
+            <option value="dashboard-quiet.html" class="bg-slate-900 text-slate-100">🕊️ Quiet Minimal</option>
+            <option value="dashboard-playful.html" class="bg-slate-900 text-slate-100">🎨 Playful Creative</option>
+            <option value="dashboard-neo-brutalism.html" class="bg-slate-900 text-slate-100">⚡ Neo-Brutalist</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-slate-400 text-[9px]">
+            ▼
+          </div>
+        </div>
+      </div>
+      <div class="hidden md:flex items-center gap-2 text-slate-400 text-[11px]">
+        <span class="w-2 h-2 rounded-full bg-sky-400 shadow-[0_0_8px_#38bdf8]"></span>
+        <span>SPATIAL DEPTH ENGINE v3.4</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- SPATIAL GLASS TOP BAR -->
+  <header class="sticky top-0 z-30 bg-slate-950/70 backdrop-blur-xl border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
+      
+      <!-- Brand & Spatial Icon -->
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-sky-400 via-indigo-500 to-purple-500 p-0.5 shadow-lg shadow-sky-500/20 flex shrink-0 items-center justify-center">
+          <div class="w-full h-full rounded-[14px] bg-slate-950/60 backdrop-blur-md flex items-center justify-center text-white font-bold text-sm">
+            ✦
+          </div>
+        </div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <span class="text-base font-bold tracking-tight text-white truncate">LUMINA</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-semibold text-sky-300 border border-white/15 hidden xs:inline-flex">
+              VisionOS Spatial
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-400 font-medium hidden sm:block">Unified Wealth & Liquidity Experience</p>
+        </div>
+      </div>
+
+      <!-- Controls & Actions -->
+      <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+        
+        <!-- Currency Dropdown -->
+        <div class="relative">
+          <select id="currencySelect" onchange="setCurrency(this.value)" class="appearance-none bg-white/10 hover:bg-white/15 text-slate-200 font-semibold text-xs rounded-xl px-2.5 py-1.5 pr-6 border border-white/15 outline-none cursor-pointer backdrop-blur-md transition-colors shadow-xs">
+            <option value="USD">USD ($)</option>
+            <option value="IDR">IDR (Rp)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="GBP">GBP (£)</option>
+            <option value="JPY">JPY (¥)</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-1.5 flex items-center text-slate-400">
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </div>
+        </div>
+
+        <!-- Period Toggle -->
+        <div class="hidden sm:flex items-center rounded-xl bg-white/5 p-0.5 border border-white/10 backdrop-blur-md text-xs font-medium">
+          <button onclick="setPeriod('this_month')" id="period_this_month" class="px-2.5 py-1 rounded-lg bg-white/15 text-white font-semibold shadow-xs transition-colors">
+            October 2026
+          </button>
+          <button onclick="setPeriod('q3')" id="period_q3" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-colors">
+            Q3 Trailing
+          </button>
+          <button onclick="setPeriod('ytd')" id="period_ytd" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-colors">
+            YTD '26
+          </button>
+        </div>
+
+        <!-- Primary Action -->
+        <button onclick="openModal()" class="rounded-xl bg-gradient-to-r from-sky-400 to-indigo-500 hover:from-sky-300 hover:to-indigo-400 text-slate-950 font-bold px-3.5 py-1.5 sm:py-2 text-xs shadow-md shadow-sky-500/20 hover:shadow-sky-500/30 transition-all flex items-center gap-1.5 cursor-pointer active:scale-95">
+          <span class="text-sm font-black leading-none">＋</span>
+          <span class="hidden xs:inline">Record Entry</span>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN SPATIAL CONTENT -->
+  <main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-5 sm:pt-7 space-y-6 sm:space-y-7">
+
+    <!-- 1. SPATIAL HERO METRICS (4 FROSTED GLASS CARDS) -->
+    <section aria-label="Key Wealth Metrics" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      
+      <!-- 01: Net Liquid Stash -->
+      <div class="glass-panel rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden group">
+        <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/40 to-transparent"></div>
+        <div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Net Liquidity</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-semibold text-emerald-400 border border-emerald-500/20">
+              ▲ +15.8% YoY
+            </span>
+          </div>
+          <div class="mt-3">
+            <div id="metricNetWorth" class="font-mono text-2xl sm:text-3xl font-bold tracking-tight text-white tabular">
+              $158,920.00
+            </div>
+            <p class="mt-1 text-xs text-slate-400">Multi-Chain Vaults & Real Assets</p>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-slate-400">
+          <span>Solvency Health:</span>
+          <span class="text-sky-300 font-semibold">97.4% (Optimal)</span>
+        </div>
+      </div>
+
+      <!-- 02: Gross Inflow Stream -->
+      <div class="glass-panel rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden group">
+        <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/40 to-transparent"></div>
+        <div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Monthly Inflow Stream</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-sky-500/10 px-2 py-0.5 text-xs font-semibold text-sky-400 border border-sky-500/20">
+              ✦ 2 Active Channels
+            </span>
+          </div>
+          <div class="mt-3">
+            <div id="metricInflow" class="font-mono text-2xl sm:text-3xl font-bold tracking-tight text-emerald-400 tabular">
+              +$13,800.00
+            </div>
+            <p class="mt-1 text-xs text-slate-400">Contract Retainers & Salary Payouts</p>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-slate-400">
+          <span>Target Oct:</span>
+          <span class="text-white font-semibold font-mono">$13,500.00 (102%)</span>
+        </div>
+      </div>
+
+      <!-- 03: Monthly Operating Burn -->
+      <div class="glass-panel rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden group">
+        <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-400/40 to-transparent"></div>
+        <div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Operational Burn Rate</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-rose-500/10 px-2 py-0.5 text-xs font-semibold text-rose-400 border border-rose-500/20">
+              31.2% Cap
+            </span>
+          </div>
+          <div class="mt-3">
+            <div id="metricOutflow" class="font-mono text-2xl sm:text-3xl font-bold tracking-tight text-rose-400 tabular">
+              -$4,310.40
+            </div>
+            <p class="mt-1 text-xs text-slate-400">Infrastructure, Workspace & Living</p>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-slate-400">
+          <span>Daily Run Rate:</span>
+          <span class="text-white font-semibold font-mono tabular">$143.68 / day</span>
+        </div>
+      </div>
+
+      <!-- 04: Survival Runway -->
+      <div class="glass-panel rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden group">
+        <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-400/40 to-transparent"></div>
+        <div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Defensive Runway</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-indigo-500/10 px-2 py-0.5 text-xs font-semibold text-indigo-300 border border-indigo-500/20">
+              Grade S Tier
+            </span>
+          </div>
+          <div class="mt-3">
+            <div class="font-mono text-2xl sm:text-3xl font-bold tracking-tight text-white tabular">
+              16.4 <span class="text-sm font-sans font-semibold text-indigo-300">Months</span>
+            </div>
+            <p class="mt-1 text-xs text-slate-400">Zero-Revenue Buffer Capacity</p>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-slate-400">
+          <span>Net Savings Margin:</span>
+          <span class="text-emerald-400 font-semibold font-mono tabular">68.8%</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 2. CASHFLOW SPECTRUM & SPATIAL VAULTS -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
+      
+      <!-- Spatial Flow Spectrum (7 Cols) -->
+      <div class="lg:col-span-7 glass-panel rounded-3xl p-5 sm:p-6 flex flex-col justify-between relative overflow-hidden">
+        <div>
+          <!-- Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/10">
+            <div>
+              <h2 class="text-base font-bold text-white flex items-center gap-2">
+                <span>Spatial Cashflow Dynamics</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-sky-400 animate-ping"></span>
+              </h2>
+              <p class="text-xs text-slate-400 mt-0.5">Trailing 6-month inflow versus operational burn spectrum</p>
+            </div>
+            
+            <div class="flex items-center gap-3 text-xs font-medium">
+              <span class="inline-flex items-center gap-1.5 text-slate-300">
+                <span class="w-3 h-3 rounded-full bg-gradient-to-r from-sky-400 to-indigo-500 inline-block shadow-sm"></span> Inflow
+              </span>
+              <span class="inline-flex items-center gap-1.5 text-slate-300">
+                <span class="w-3 h-3 rounded-full bg-slate-700 border border-white/20 inline-block"></span> Burn
+              </span>
+            </div>
+          </div>
+
+          <!-- Luminous Spectrum Visualizer -->
+          <div class="mt-6 overflow-x-auto scrollbar-none pb-2">
+            <div class="min-w-[440px]">
+              <div class="h-52 flex items-end justify-between gap-4 px-2 border-b border-white/15 relative">
+                
+                <!-- Ambient horizontal guidelines -->
+                <div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-20">
+                  <div class="border-b border-dashed border-white w-full"></div>
+                  <div class="border-b border-dashed border-white w-full"></div>
+                  <div class="border-b border-dashed border-white w-full"></div>
+                  <div class="border-b border-dashed border-white w-full"></div>
+                </div>
+
+                <!-- May -->
+                <div class="flex-1 flex flex-col items-center gap-1.5 group cursor-pointer relative z-10">
+                  <div class="opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900/90 border border-white/20 text-white text-[10px] font-mono py-0.5 px-2 rounded-lg shadow-lg whitespace-nowrap absolute -top-6">+$11.5k / -$4.0k</div>
+                  <div class="w-full flex items-end justify-center gap-1.5 h-40">
+                    <div style="height: 74%" class="w-1/2 max-w-[20px] rounded-t-full bg-gradient-to-t from-indigo-500 to-sky-400 group-hover:brightness-125 transition-all"></div>
+                    <div style="height: 38%" class="w-1/2 max-w-[20px] rounded-t-full bg-slate-700/80 border border-white/10 group-hover:brightness-125 transition-all"></div>
+                  </div>
+                  <span class="text-xs text-slate-400">May</span>
+                </div>
+
+                <!-- Jun -->
+                <div class="flex-1 flex flex-col items-center gap-1.5 group cursor-pointer relative z-10">
+                  <div class="opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900/90 border border-white/20 text-white text-[10px] font-mono py-0.5 px-2 rounded-lg shadow-lg whitespace-nowrap absolute -top-6">+$12.8k / -$4.2k</div>
+                  <div class="w-full flex items-end justify-center gap-1.5 h-40">
+                    <div style="height: 80%" class="w-1/2 max-w-[20px] rounded-t-full bg-gradient-to-t from-indigo-500 to-sky-400 group-hover:brightness-125 transition-all"></div>
+                    <div style="height: 40%" class="w-1/2 max-w-[20px] rounded-t-full bg-slate-700/80 border border-white/10 group-hover:brightness-125 transition-all"></div>
+                  </div>
+                  <span class="text-xs text-slate-400">Jun</span>
+                </div>
+
+                <!-- Jul -->
+                <div class="flex-1 flex flex-col items-center gap-1.5 group cursor-pointer relative z-10">
+                  <div class="opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900/90 border border-white/20 text-white text-[10px] font-mono py-0.5 px-2 rounded-lg shadow-lg whitespace-nowrap absolute -top-6">+$11.9k / -$3.9k</div>
+                  <div class="w-full flex items-end justify-center gap-1.5 h-40">
+                    <div style="height: 75%" class="w-1/2 max-w-[20px] rounded-t-full bg-gradient-to-t from-indigo-500 to-sky-400 group-hover:brightness-125 transition-all"></div>
+                    <div style="height: 36%" class="w-1/2 max-w-[20px] rounded-t-full bg-slate-700/80 border border-white/10 group-hover:brightness-125 transition-all"></div>
+                  </div>
+                  <span class="text-xs text-slate-400">Jul</span>
+                </div>
+
+                <!-- Aug -->
+                <div class="flex-1 flex flex-col items-center gap-1.5 group cursor-pointer relative z-10">
+                  <div class="opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900/90 border border-white/20 text-white text-[10px] font-mono py-0.5 px-2 rounded-lg shadow-lg whitespace-nowrap absolute -top-6">+$14.8k / -$4.6k</div>
+                  <div class="w-full flex items-end justify-center gap-1.5 h-40">
+                    <div style="height: 92%" class="w-1/2 max-w-[20px] rounded-t-full bg-gradient-to-t from-indigo-500 to-sky-400 group-hover:brightness-125 transition-all"></div>
+                    <div style="height: 44%" class="w-1/2 max-w-[20px] rounded-t-full bg-slate-700/80 border border-white/10 group-hover:brightness-125 transition-all"></div>
+                  </div>
+                  <span class="text-xs text-slate-400">Aug</span>
+                </div>
+
+                <!-- Sep -->
+                <div class="flex-1 flex flex-col items-center gap-1.5 group cursor-pointer relative z-10">
+                  <div class="opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900/90 border border-white/20 text-white text-[10px] font-mono py-0.5 px-2 rounded-lg shadow-lg whitespace-nowrap absolute -top-6">+$13.2k / -$4.1k</div>
+                  <div class="w-full flex items-end justify-center gap-1.5 h-40">
+                    <div style="height: 82%" class="w-1/2 max-w-[20px] rounded-t-full bg-gradient-to-t from-indigo-500 to-sky-400 group-hover:brightness-125 transition-all"></div>
+                    <div style="height: 39%" class="w-1/2 max-w-[20px] rounded-t-full bg-slate-700/80 border border-white/10 group-hover:brightness-125 transition-all"></div>
+                  </div>
+                  <span class="text-xs text-slate-400">Sep</span>
+                </div>
+
+                <!-- Oct (Active) -->
+                <div class="flex-1 flex flex-col items-center gap-1.5 group cursor-pointer relative z-10">
+                  <div class="opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900/90 border border-sky-400/40 text-white text-[10px] font-mono py-0.5 px-2 rounded-lg shadow-lg whitespace-nowrap absolute -top-6">+$13.8k / -$4.3k (Current)</div>
+                  <div class="w-full flex items-end justify-center gap-1.5 h-40">
+                    <div style="height: 86%" class="w-1/2 max-w-[20px] rounded-t-full bg-gradient-to-t from-sky-400 to-emerald-400 shadow-[0_0_15px_rgba(56,189,248,0.3)] transition-all"></div>
+                    <div style="height: 41%" class="w-1/2 max-w-[20px] rounded-t-full bg-slate-600 border border-white/20 transition-all"></div>
+                  </div>
+                  <span class="text-xs font-bold text-sky-300 bg-sky-500/10 px-2 py-0.5 rounded-full border border-sky-500/20">Oct</span>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
+          <span>Net Surplus Oct: <strong class="text-emerald-400 font-mono font-semibold tabular">+$9,489.60</strong></span>
+          <span class="text-sky-300 font-semibold flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span> Spatial Flow Optimal
+          </span>
+        </div>
+      </div>
+
+      <!-- Spatial Vaults & Jars (5 Cols) -->
+      <div class="lg:col-span-5 glass-panel rounded-3xl p-5 sm:p-6 flex flex-col justify-between relative overflow-hidden">
+        <div>
+          <div class="flex items-center justify-between pb-3 border-b border-white/10">
+            <div>
+              <h2 class="text-base font-bold text-white">Spatial Vaults</h2>
+              <p class="text-xs text-slate-400 mt-0.5">Segregated liquidity buffers & targets</p>
+            </div>
+            <span class="text-xs font-semibold text-slate-300 bg-white/10 border border-white/15 px-2.5 py-0.5 rounded-full">
+              4 Custody Jars
+            </span>
+          </div>
+
+          <!-- Jars List -->
+          <div class="mt-4 space-y-3.5">
+            
+            <!-- Vault 1: Liquid Buffer -->
+            <div class="p-3 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 transition-colors">
+              <div class="flex items-center justify-between text-xs font-semibold text-white">
+                <span class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-sky-400 shadow-[0_0_8px_#38bdf8]"></span>
+                  Primary Operations Buffer
+                </span>
+                <span class="font-mono text-slate-200 tabular">$38,000 / $40,000</span>
+              </div>
+              <div class="mt-2 w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                <div style="width: 95%" class="h-full bg-gradient-to-r from-sky-400 to-indigo-500 rounded-full"></div>
+              </div>
+              <div class="mt-2 flex items-center justify-between text-[11px] text-slate-400">
+                <span>95.0% Funded</span>
+                <button onclick="injectSpatialVault(500, 'Operations Buffer')" class="text-sky-300 hover:text-white font-semibold">
+                  + Transfer ($500)
+                </button>
+              </div>
+            </div>
+
+            <!-- Vault 2: S&P Index Portfolio -->
+            <div class="p-3 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 transition-colors">
+              <div class="flex items-center justify-between text-xs font-semibold text-white">
+                <span class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]"></span>
+                  Global Index ETF Portfolio
+                </span>
+                <span class="font-mono text-slate-200 tabular">$74,500 / $90,000</span>
+              </div>
+              <div class="mt-2 w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                <div style="width: 82.7%" class="h-full bg-gradient-to-r from-emerald-400 to-sky-400 rounded-full"></div>
+              </div>
+              <div class="mt-2 flex items-center justify-between text-[11px] text-slate-400">
+                <span>82.7% Target Allocation</span>
+                <button onclick="injectSpatialVault(1000, 'Index Portfolio')" class="text-emerald-300 hover:text-white font-semibold">
+                  + Transfer ($1k)
+                </button>
+              </div>
+            </div>
+
+            <!-- Vault 3: Spatial Hardware Rig -->
+            <div class="p-3 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 transition-colors">
+              <div class="flex items-center justify-between text-xs font-semibold text-white">
+                <span class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-indigo-400 shadow-[0_0_8px_#818cf8]"></span>
+                  Vision Pro & M4 Workstation
+                </span>
+                <span class="font-mono text-slate-200 tabular">$8,200 / $9,500</span>
+              </div>
+              <div class="mt-2 w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                <div style="width: 86.3%" class="h-full bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full"></div>
+              </div>
+              <div class="mt-2 flex items-center justify-between text-[11px] text-slate-400">
+                <span>$1,300 to completion</span>
+                <button onclick="injectSpatialVault(250, 'Hardware Rig')" class="text-indigo-300 hover:text-white font-semibold">
+                  + Transfer ($250)
+                </button>
+              </div>
+            </div>
+
+            <!-- Vault 4: Swiss Alpine Retreat -->
+            <div class="p-3 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 transition-colors">
+              <div class="flex items-center justify-between text-xs font-semibold text-white">
+                <span class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-rose-400 shadow-[0_0_8px_#fb7185]"></span>
+                  Swiss Alpine Expedition
+                </span>
+                <span class="font-mono text-slate-200 tabular">$5,200 / $6,000</span>
+              </div>
+              <div class="mt-2 w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                <div style="width: 86.6%" class="h-full bg-gradient-to-r from-rose-400 to-amber-400 rounded-full"></div>
+              </div>
+              <div class="mt-2 flex items-center justify-between text-[11px] text-slate-400">
+                <span>Chalet reservation secured</span>
+                <button onclick="injectSpatialVault(100, 'Alpine Retreat')" class="text-rose-300 hover:text-white font-semibold">
+                  + Transfer ($100)
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-slate-400">
+          <span>Total Vault Custody:</span>
+          <span class="font-semibold text-white font-mono tabular">$125,900.00</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 3. SPATIAL SETTLEMENT STREAM LEDGER -->
+    <section class="glass-panel rounded-3xl overflow-hidden">
+      
+      <!-- Table Header Bar -->
+      <div class="p-5 border-b border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-base font-bold text-white">Spatial Ledger Stream</h2>
+          <p class="text-xs text-slate-400 mt-0.5">Real-time custody tracking across accounts and contracts</p>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          <!-- Filter Tabs -->
+          <div class="flex items-center rounded-xl bg-white/5 p-0.5 border border-white/10 text-xs font-medium backdrop-blur-md">
+            <button onclick="filterTransactions('all')" id="filter_all" class="px-3 py-1 rounded-lg bg-white/15 text-white font-semibold shadow-xs transition-colors">
+              All
+            </button>
+            <button onclick="filterTransactions('expense')" id="filter_expense" class="px-3 py-1 rounded-lg text-slate-400 hover:text-white transition-colors">
+              Outflow
+            </button>
+            <button onclick="filterTransactions('income')" id="filter_income" class="px-3 py-1 rounded-lg text-slate-400 hover:text-white transition-colors">
+              Inflow
+            </button>
+          </div>
+
+          <!-- Live Search Input -->
+          <div class="relative grow sm:grow-0">
+            <input 
+              type="text" 
+              id="ledgerSearch" 
+              oninput="renderLedger()" 
+              placeholder="Filter by description or tag..."
+              class="w-full sm:w-56 rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-white placeholder-slate-400 outline-none focus:bg-white/10 focus:border-sky-400 transition-all"
+            />
+          </div>
+
+          <!-- Export CSV -->
+          <button onclick="exportCSV()" class="rounded-xl border border-white/15 bg-white/10 hover:bg-white/15 px-3 py-1.5 text-xs font-semibold text-white shadow-xs flex items-center gap-1.5 transition-colors">
+            <svg class="w-3.5 h-3.5 text-sky-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            <span>Export CSV</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Spatial Table with Safe Horizontal Overflow -->
+      <div class="overflow-x-auto scrollbar-none">
+        <table class="w-full text-left border-collapse min-w-[700px]">
+          <thead>
+            <tr class="border-b border-white/10 text-xs font-semibold text-slate-400 uppercase tracking-wider bg-white/5">
+              <th class="py-3 px-4">Date</th>
+              <th class="py-3 px-4">Description</th>
+              <th class="py-3 px-4">Category</th>
+              <th class="py-3 px-4">Custody Account</th>
+              <th class="py-3 px-4">State</th>
+              <th class="py-3 px-4 text-right">Amount</th>
+              <th class="py-3 px-4 text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody id="ledgerTableBody" class="divide-y divide-white/5 text-xs font-medium text-slate-200">
+            <!-- Dynamically populated via JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Footer -->
+      <div class="p-4 bg-white/5 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
+        <span id="ledgerCountBadge" class="font-medium text-slate-300">Showing 7 confirmed transactions</span>
+        <div class="flex items-center gap-3">
+          <button onclick="resetDefaultData()" class="text-slate-400 hover:text-white underline text-xs">
+            Reset Demo Dataset
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- FLOATING FROSTED GLASS CAPSULE DOCK -->
+  <div class="fixed bottom-5 left-4 right-4 sm:left-1/2 sm:-translate-x-1/2 sm:w-auto z-40">
+    <div class="glass-dock rounded-full px-3 py-2 flex items-center justify-between sm:justify-center gap-3 sm:gap-4 max-w-lg mx-auto">
+      
+      <div class="hidden sm:flex items-center gap-2 pl-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]"></span>
+        <span class="text-xs font-semibold text-slate-300">Vaults Synced</span>
+      </div>
+
+      <div class="hidden sm:block h-5 w-px bg-white/20"></div>
+
+      <!-- Quick Micro Actions -->
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <button onclick="quickExpense(5.20, 'Artisan Espresso', 'Food & Drink')" class="rounded-full bg-white/10 hover:bg-white/20 border border-white/15 px-3 py-1.5 text-xs font-semibold text-white transition-all active:scale-95">
+          ☕ -$5.20
+        </button>
+        <button onclick="quickExpense(22.00, 'Healthy Lunch Bowl', 'Food & Drink')" class="rounded-full bg-white/10 hover:bg-white/20 border border-white/15 px-3 py-1.5 text-xs font-semibold text-white transition-all active:scale-95">
+          🥗 -$22
+        </button>
+        <button onclick="quickExpense(65.00, 'Cloud Infrastructure', 'Software & Tech')" class="rounded-full bg-white/10 hover:bg-white/20 border border-white/15 px-3 py-1.5 text-xs font-semibold text-white transition-all active:scale-95">
+          💻 -$65
+        </button>
+      </div>
+
+      <!-- Big Primary CTA -->
+      <button onclick="openModal()" class="rounded-full bg-gradient-to-r from-sky-400 to-indigo-500 hover:from-sky-300 hover:to-indigo-400 text-slate-950 px-4 py-1.5 text-xs font-bold shadow-md shadow-sky-500/20 active:scale-95 transition-all whitespace-nowrap">
+        ＋ Record
+      </button>
+
+    </div>
+  </div>
+
+  <!-- MODAL: ADD TRANSACTION (Spatial Frosted Glass Dialog / Mobile Bottom Sheet) -->
+  <div id="txnModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="w-full sm:max-w-lg bg-slate-900/90 border-t sm:border border-white/20 rounded-t-3xl sm:rounded-3xl shadow-2xl p-6 backdrop-blur-2xl transition-all">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-white/10">
+        <div>
+          <h3 class="text-base font-bold text-white">Record Spatial Entry</h3>
+          <p class="text-xs text-slate-400 mt-0.5">Commit new financial receipt or disbursement</p>
+        </div>
+        <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white flex items-center justify-center transition-colors">
+          ✕
+        </button>
+      </div>
+
+      <!-- Form Inputs -->
+      <form id="txnForm" onsubmit="handleFormSubmit(event)" class="mt-4 space-y-4">
+        
+        <!-- Type Selection -->
+        <div class="grid grid-cols-2 gap-2">
+          <label class="cursor-pointer">
+            <input type="radio" name="txnType" value="expense" checked class="peer sr-only">
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-2.5 text-center text-xs font-semibold text-slate-300 peer-checked:bg-rose-500/20 peer-checked:border-rose-400/50 peer-checked:text-rose-300 transition-all">
+              Disbursement (Outflow)
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="txnType" value="income" class="peer sr-only">
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-2.5 text-center text-xs font-semibold text-slate-300 peer-checked:bg-emerald-500/20 peer-checked:border-emerald-400/50 peer-checked:text-emerald-300 transition-all">
+              Receipt (Inflow)
+            </div>
+          </label>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label for="memoInput" class="block text-xs font-semibold text-slate-300 mb-1">
+            Transaction Memo / Counterparty
+          </label>
+          <input 
+            type="text" 
+            id="memoInput" 
+            required 
+            placeholder="e.g. AWS Cloud Services, Client UI Design Retainer..."
+            class="w-full rounded-2xl border border-white/15 bg-white/5 px-3.5 py-2 text-xs font-medium text-white placeholder-slate-500 outline-none focus:bg-white/10 focus:border-sky-400"
+          />
+        </div>
+
+        <!-- Amount & Quick Buttons -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label for="amountInput" class="block text-xs font-semibold text-slate-300">
+              Amount (<span id="modalCurrencySymbol">$</span>)
+            </label>
+            <div class="flex items-center gap-1 text-[11px]">
+              <button type="button" onclick="addAmount(50)" class="px-2 py-0.5 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 font-semibold">+50</button>
+              <button type="button" onclick="addAmount(250)" class="px-2 py-0.5 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 font-semibold">+250</button>
+              <button type="button" onclick="addAmount(1000)" class="px-2 py-0.5 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 font-semibold">+1k</button>
+            </div>
+          </div>
+          <input 
+            type="number" 
+            id="amountInput" 
+            step="0.01" 
+            min="0.01" 
+            required 
+            placeholder="0.00"
+            class="w-full rounded-2xl border border-white/15 bg-white/5 px-3.5 py-2 text-base font-bold font-mono text-white placeholder-slate-500 outline-none focus:bg-white/10 focus:border-sky-400"
+          />
+        </div>
+
+        <!-- Category & Custody Account -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="categoryInput" class="block text-xs font-semibold text-slate-300 mb-1">
+              Category
+            </label>
+            <select id="categoryInput" class="w-full rounded-2xl border border-white/15 bg-slate-900 px-3 py-2 text-xs font-medium text-white outline-none focus:border-sky-400">
+              <option value="Software & Tech">💻 Software & Tech</option>
+              <option value="Food & Drink">🍔 Food & Drink</option>
+              <option value="Housing & Living">🏠 Housing & Living</option>
+              <option value="Client Retainer">💰 Client Retainer (Inflow)</option>
+              <option value="Executive Salary">💼 Executive Salary (Inflow)</option>
+              <option value="Index Investments">📈 Index & ETF Holdings</option>
+              <option value="Travel & Leisure">✈️ Travel & Expedition</option>
+            </select>
+          </div>
+          <div>
+            <label for="accountInput" class="block text-xs font-semibold text-slate-300 mb-1">
+              Custody Account
+            </label>
+            <select id="accountInput" class="w-full rounded-2xl border border-white/15 bg-slate-900 px-3 py-2 text-xs font-medium text-white outline-none focus:border-sky-400">
+              <option value="Mercury Primary">🏦 Mercury Primary Vault</option>
+              <option value="Apple Card Titanium">💳 Apple Card (Titanium)</option>
+              <option value="J.P. Morgan Private">🏛️ J.P. Morgan Private</option>
+              <option value="Hardware Cold Storage">🪙 Hardware Cold Storage</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Date -->
+        <div>
+          <label for="dateInput" class="block text-xs font-semibold text-slate-300 mb-1">
+            Settlement Date
+          </label>
+          <input 
+            type="date" 
+            id="dateInput" 
+            required 
+            class="w-full rounded-2xl border border-white/15 bg-slate-900 px-3.5 py-2 text-xs font-medium text-white outline-none focus:border-sky-400"
+          />
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="pt-3 border-t border-white/10 flex items-center justify-end gap-2.5">
+          <button type="button" onclick="closeModal()" class="rounded-full border border-white/15 bg-white/5 hover:bg-white/10 px-4 py-2 text-xs font-semibold text-slate-300 transition-colors">
+            Cancel
+          </button>
+          <button type="submit" class="rounded-full bg-gradient-to-r from-sky-400 to-indigo-500 hover:from-sky-300 hover:to-indigo-400 text-slate-950 px-5 py-2 text-xs font-bold shadow-md shadow-sky-500/20 active:scale-95 transition-all">
+            Commit Entry ✦
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed top-5 right-5 z-50 rounded-2xl border border-white/20 bg-slate-900/90 backdrop-blur-xl px-4 py-2.5 text-xs font-medium text-white shadow-xl transition-all transform translate-y-[-80px] opacity-0 flex items-center gap-2 pointer-events-none">
+    <span id="toastIcon" class="text-sky-400">✦</span>
+    <span id="toastMsg">Transaction recorded</span>
+  </div>
+
+  <!-- JAVASCRIPT STATE ENGINE (Pure Vanilla JS + LocalStorage) -->
+  <script>
+    // CURRENCY CONFIG
+    const CURRENCIES = {
+      USD: { symbol: '$', rate: 1.0, decimals: 2 },
+      IDR: { symbol: 'Rp ', rate: 15600, decimals: 0 },
+      EUR: { symbol: '€', rate: 0.92, decimals: 2 },
+      GBP: { symbol: '£', rate: 0.78, decimals: 2 },
+      JPY: { symbol: '¥', rate: 151.2, decimals: 0 }
+    };
+
+    let activeCurrency = 'USD';
+    let currentPeriod = 'this_month';
+    let currentFilter = 'all';
+
+    // INITIAL DEMO DATA
+    const INITIAL_TRANSACTIONS = [
+      { id: 'tx-s01', date: '2026-10-02', memo: 'Vision Pro Spatial Computing App License', category: 'Software & Tech', account: 'Apple Card Titanium', type: 'expense', amount: 99.00, status: 'Confirmed' },
+      { id: 'tx-s02', date: '2026-10-02', memo: 'Client Spatial UI Architectural Retainer', category: 'Client Retainer', account: 'Mercury Primary', type: 'income', amount: 6900.00, status: 'Confirmed' },
+      { id: 'tx-s03', date: '2026-10-01', memo: 'Whole Foods Organic Groceries & Cell Nutrients', category: 'Food & Drink', account: 'Apple Card Titanium', type: 'expense', amount: 168.40, status: 'Confirmed' },
+      { id: 'tx-s04', date: '2026-09-30', memo: 'Equinox Tier X High-Performance Health Club', category: 'Housing & Living', account: 'Apple Card Titanium', type: 'expense', amount: 320.00, status: 'Confirmed' },
+      { id: 'tx-s05', date: '2026-09-28', memo: 'Figma Organization & Raycast Team Seat', category: 'Software & Tech', account: 'Mercury Primary', type: 'expense', amount: 75.00, status: 'Confirmed' },
+      { id: 'tx-s06', date: '2026-09-25', memo: 'Executive Engineering Sprint Direct Deposit', category: 'Executive Salary', account: 'Mercury Primary', type: 'income', amount: 6900.00, status: 'Confirmed' },
+      { id: 'tx-s07', date: '2026-09-22', memo: 'Tesla Supercharger Fast Velocity Influx', category: 'Housing & Living', account: 'Apple Card Titanium', type: 'expense', amount: 48.00, status: 'Confirmed' }
+    ];
+
+    // Local Storage Helpers
+    function getStoredTransactions() {
+      const stored = localStorage.getItem('lumina_spatial_txns');
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch (e) {
+          console.error('Error loading stored transactions', e);
+        }
+      }
+      return [...INITIAL_TRANSACTIONS];
+    }
+
+    function saveStoredTransactions(data) {
+      localStorage.setItem('lumina_spatial_txns', JSON.stringify(data));
+    }
+
+    let transactions = getStoredTransactions();
+
+    // Format Monetary Figures
+    function formatMoney(amountUSD) {
+      const cfg = CURRENCIES[activeCurrency];
+      const converted = amountUSD * cfg.rate;
+      if (cfg.decimals === 0) {
+        return cfg.symbol + Math.round(converted).toLocaleString();
+      } else {
+        return cfg.symbol + converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+    }
+
+    // Currency Switcher
+    function setCurrency(cur) {
+      activeCurrency = cur;
+      document.getElementById('currencySelect').value = cur;
+      document.getElementById('modalCurrencySymbol').textContent = CURRENCIES[cur].symbol;
+      updateTelemetry();
+      renderLedger();
+      showToast(`Base converted to ${cur}`);
+    }
+
+    // Period Switcher
+    function setPeriod(p) {
+      currentPeriod = p;
+      ['this_month', 'q3', 'ytd'].forEach(id => {
+        const btn = document.getElementById('period_' + id);
+        if (id === p) {
+          btn.className = "px-2.5 py-1 rounded-lg bg-white/15 text-white font-semibold shadow-xs transition-colors";
+        } else {
+          btn.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-colors";
+        }
+      });
+      showToast(`Period filtered: ${p.toUpperCase()}`);
+    }
+
+    // Filter Transactions
+    function filterTransactions(f) {
+      currentFilter = f;
+      ['all', 'expense', 'income'].forEach(id => {
+        const btn = document.getElementById('filter_' + id);
+        if (id === f) {
+          btn.className = "px-3 py-1 rounded-lg bg-white/15 text-white font-semibold shadow-xs transition-colors";
+        } else {
+          btn.className = "px-3 py-1 rounded-lg text-slate-400 hover:text-white transition-colors";
+        }
+      });
+      renderLedger();
+    }
+
+    // Update Overview Metrics
+    function updateTelemetry() {
+      let inflow = 0;
+      let outflow = 0;
+
+      transactions.forEach(t => {
+        if (t.type === 'income') inflow += t.amount;
+        if (t.type === 'expense') outflow += t.amount;
+      });
+
+      const basePool = 149430.40;
+      const netWorth = basePool + (inflow - outflow);
+
+      document.getElementById('metricNetWorth').textContent = formatMoney(netWorth);
+      document.getElementById('metricInflow').textContent = '+' + formatMoney(inflow);
+      document.getElementById('metricOutflow').textContent = '-' + formatMoney(outflow);
+    }
+
+    // Render Ledger Rows
+    function renderLedger() {
+      const tbody = document.getElementById('ledgerTableBody');
+      const searchQuery = (document.getElementById('ledgerSearch').value || '').toLowerCase().trim();
+
+      let filtered = transactions.filter(t => {
+        if (currentFilter === 'expense' && t.type !== 'expense') return false;
+        if (currentFilter === 'income' && t.type !== 'income') return false;
+        if (searchQuery) {
+          return t.memo.toLowerCase().includes(searchQuery) ||
+                 t.category.toLowerCase().includes(searchQuery) ||
+                 t.account.toLowerCase().includes(searchQuery);
+        }
+        return true;
+      });
+
+      document.getElementById('ledgerCountBadge').textContent = `Showing ${filtered.length} of ${transactions.length} confirmed entries`;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="py-10 text-center text-slate-400 font-medium">
+              ✦ No spatial ledger transactions found matching parameters.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(t => {
+        const isIncome = t.type === 'income';
+        const sign = isIncome ? '+' : '-';
+        const amountClass = isIncome ? 'text-emerald-400 font-semibold' : 'text-white font-semibold';
+
+        return `
+          <tr class="hover:bg-white/5 transition-colors">
+            <td class="py-3 px-4 font-mono text-[11px] text-slate-400 whitespace-nowrap">${t.date}</td>
+            <td class="py-3 px-4">
+              <span class="font-semibold text-white">${t.memo}</span>
+            </td>
+            <td class="py-3 px-4 whitespace-nowrap">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-white/10 text-slate-200 border border-white/15">
+                ${t.category}
+              </span>
+            </td>
+            <td class="py-3 px-4 whitespace-nowrap text-slate-400">${t.account}</td>
+            <td class="py-3 px-4 whitespace-nowrap">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                ${t.status || 'Confirmed'}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-right font-mono tabular whitespace-nowrap ${amountClass}">
+              ${sign}${formatMoney(t.amount)}
+            </td>
+            <td class="py-3 px-4 text-center whitespace-nowrap">
+              <button onclick="deleteTxn('${t.id}')" title="Exciserecord" class="text-slate-400 hover:text-rose-400 p-1 rounded-full hover:bg-white/10 transition-colors">
+                ✕
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Modal Handlers
+    function openModal() {
+      const modal = document.getElementById('txnModal');
+      modal.classList.remove('hidden');
+      document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
+      setTimeout(() => document.getElementById('memoInput').focus(), 50);
+    }
+
+    function closeModal() {
+      document.getElementById('txnModal').classList.add('hidden');
+      document.getElementById('txnForm').reset();
+    }
+
+    function addAmount(delta) {
+      const input = document.getElementById('amountInput');
+      const val = parseFloat(input.value) || 0;
+      input.value = (val + delta).toFixed(2);
+    }
+
+    // Commit Transaction
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const type = document.querySelector('input[name="txnType"]:checked').value;
+      const memo = document.getElementById('memoInput').value.trim();
+      const amount = parseFloat(document.getElementById('amountInput').value);
+      const category = document.getElementById('categoryInput').value;
+      const account = document.getElementById('accountInput').value;
+      const date = document.getElementById('dateInput').value;
+
+      if (!memo || isNaN(amount) || amount <= 0) {
+        showToast('Please specify valid memo and amount', '⚠️');
+        return;
+      }
+
+      const newTx = {
+        id: 'tx-' + Date.now(),
+        date,
+        memo,
+        category,
+        account,
+        type,
+        amount,
+        status: 'Confirmed'
+      };
+
+      transactions.unshift(newTx);
+      saveStoredTransactions(transactions);
+      updateTelemetry();
+      renderLedger();
+      closeModal();
+      showToast(`Committed to stream: ${memo}`);
+    }
+
+    // Quick Expense from Dock
+    function quickExpense(amount, memo, category) {
+      const newTx = {
+        id: 'tx-' + Date.now(),
+        date: new Date().toISOString().split('T')[0],
+        memo,
+        category,
+        account: 'Apple Card Titanium',
+        type: 'expense',
+        amount,
+        status: 'Confirmed'
+      };
+
+      transactions.unshift(newTx);
+      saveStoredTransactions(transactions);
+      updateTelemetry();
+      renderLedger();
+      showToast(`Quick recorded: -${formatMoney(amount)} (${memo})`);
+    }
+
+    // Inject to Spatial Vault
+    function injectSpatialVault(amount, vaultName) {
+      showToast(`Transferred +${formatMoney(amount)} to ${vaultName}`);
+    }
+
+    // Delete Transaction
+    function deleteTxn(id) {
+      transactions = transactions.filter(t => t.id !== id);
+      saveStoredTransactions(transactions);
+      updateTelemetry();
+      renderLedger();
+      showToast('Record excised from stream');
+    }
+
+    // Export CSV
+    function exportCSV() {
+      const headers = ['Spatial_ID', 'Date', 'Type', 'Description', 'Category', 'Custody_Account', 'Amount_USD', 'Status'];
+      const rows = transactions.map(t => [
+        t.id,
+        t.date,
+        t.type,
+        `"${t.memo.replace(/"/g, '""')}"`,
+        `"${t.category}"`,
+        `"${t.account}"`,
+        t.amount.toFixed(2),
+        t.status || 'Confirmed'
+      ]);
+      const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `lumina_spatial_ledger_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Spatial ledger exported as CSV');
+    }
+
+    // Reset default seed
+    function resetDefaultData() {
+      if (confirm('Restore default spatial demo dataset?')) {
+        transactions = [...INITIAL_TRANSACTIONS];
+        saveStoredTransactions(transactions);
+        updateTelemetry();
+        renderLedger();
+        showToast('Restored default spatial records');
+      }
+    }
+
+    // Toast Alert
+    let toastTimeout = null;
+    function showToast(message, icon = '✦') {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = message;
+      document.getElementById('toastIcon').textContent = icon;
+
+      toast.classList.remove('opacity-0', 'translate-y-[-80px]');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-[-80px]');
+      }, 3000);
+    }
+
+    // Keyboard Shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        openModal();
+      }
+    });
+
+    // Close modal on backdrop click
+    document.getElementById('txnModal').addEventListener('click', (e) => {
+      if (e.target.id === 'txnModal') closeModal();
+    });
+
+    // Initialize
+    updateTelemetry();
+    renderLedger();
+  </script>
+</body>
+</html>
