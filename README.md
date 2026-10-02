@@ -41,13 +41,36 @@ npx github:Barrey/fullstack-web-ui-skills add --all --target=all
 ### 🎯 Matrix Target Platform yang Didukung:
 | Platform | Target Output | Keterangan Format |
 |---|---|---|
-| **Google Antigravity** | `.agents/skills/<name>/SKILL.md` | Native Agentic Skill format |
-| **Cursor** | `.cursor/rules/<name>.mdc` | Cursor Rules dengan frontmatter `.mdc` |
+| **Google Antigravity** | `.agents/skills/<name>/SKILL.md` | Native Agentic Skill format (YAML frontmatter + markdown) |
+| **Cursor** | `.cursor/rules/<name>.mdc` | Cursor Rules format (`.mdc` dengan frontmatter `globs` & `alwaysApply`) |
 | **OpenCode** | `.opencode/skills/<name>/SKILL.md` | OpenCode agent skill format |
-| **Claude Code** | `.claude/skills/<name>/SKILL.md` | Native Claude Code skills |
+| **Claude Code** | `.claude/skills/<name>/SKILL.md` | Native Claude Code modular skills |
 | **Windsurf** | `.windsurf/rules/<name>.md` | Cascade rules format |
-| **Codex / GitHub Copilot** | `.github/copilot-instructions.md` | Injected guidelines section |
+| **Codex / GitHub Copilot** | `.github/copilot-instructions.md` | Injected persistent guidelines section |
 | **OMP** | `.omp/skills/<name>/SKILL.md` | Modular prompt structure |
+
+---
+
+### ⚙️ Mekanisme & Install Behavior:
+
+1. **Auto-Detection Cerdas**:
+   - CLI secara otomatis memindai struktur folder project kerja Anda (`.cursor/`, `.opencode/`, `.agents/`, `.claude/`, `.windsurf/`, dll.).
+   - Jika project Anda menggunakan Cursor, file otomatis diarahkan ke `.cursor/rules/` dengan format `.mdc`.
+   - Jika ada beberapa editor sekaligus (misal: Antigravity + Cursor), CLI otomatis meng-install ke keduanya.
+   - Jika belum ada konfigurasi editor apa pun, CLI akan menampilkan prompt pilihan interaktif.
+
+2. **Smart Frontmatter Transpilation**:
+   - CLI tidak sekadar menyalin file mentah, melainkan **menyesuaikan metadata dan frontmatter** sesuai standar masing-masing editor (contoh: menyuntikkan `globs: **/*` dan `alwaysApply: false` untuk Cursor Rules, atau menyematkan tag pembatas khusus untuk Copilot).
+
+3. **Cara Pakai Setelah Terpasang**:
+   - Cukup panggil nama skill di prompt agent / composer editor Anda:
+     ```text
+     /style-spatial-glass with /landing-page-anatomy create a high-converting landing page for a Web3 app
+     ```
+     atau
+     ```text
+     /style-linear-dark build an invoice management dashboard table with stateful filters
+     ```
 
 ---
 
